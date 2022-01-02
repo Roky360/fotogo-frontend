@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -14,6 +16,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final ip = "192.168.1.196";
+  final port = 8000;
+
   Future pickImage() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image == null) return;
@@ -33,29 +38,46 @@ class _HomePageState extends State<HomePage> {
   
   void sendBytesToServer(List<int> data) async {
     print('connecting');
-    final socket = await Socket.connect("192.168.1.196", 4550);
+    final socket = await Socket.connect(ip, port);
     // final socket = await Socket.connect("192.168.1.102", 4550);
 
     int payloadLength = data.length;
-    data.insert(0, payloadLength);
+    print(payloadLength);
+    Uint8List bytes = Uint8List(4)..buffer.asByteData().setInt32(0, payloadLength, Endian.big);
+    List<int> asList = bytes;
+    data = asList + data;
 
     print('connected');
-    print(payloadLength);
     socket.add(data);
     print("DATA SENT TO SERVER");
     socket.close();
   }
 
   void sendStringToServer(String data) async {
-    print('connecting');
-    final socket = await Socket.connect("192.168.1.196", 4550);
-    // final socket = await Socket.connect("192.168.1.102", 4550);
+    print('connecting sending hello');
+    final socket = await Socket.connect(ip, port);
 
     int payloadLength = data.length;
+    String lengthPadded = payloadLength.toString().padLeft(10);
 
-    socket.write(payloadLength.toString() + data);
+    socket.write(data);
+    // socket.write(lengthPadded + data);
     print("DATA SENT TO SERVER");
     socket.close();
+  }
+  
+  void test() {
+    int len = 257;
+    
+    // print(Uint8List.fromList([(len).toRadixString(16)]));
+    print(Uint8List.fromList([len]));
+    debugPrint(len.toString().padLeft(8, '0'));
+    List<int> a = [];
+    while (len > 0) {
+      a.insert(-1, len % 10);
+      // len /= 10;
+    }
+    // print(Uint8List.fromList(elements));
   }
 
   @override
@@ -77,8 +99,6 @@ class _HomePageState extends State<HomePage> {
 
                     final imgBytes = await readFileBytes(img.path);
 
-                    print(imgBytes);
-
                     sendBytesToServer(imgBytes);
 
                     // final imgBytes = readBytes(img.path);
@@ -90,6 +110,7 @@ class _HomePageState extends State<HomePage> {
                 TextButton(
                   onPressed: () async {
                     sendStringToServer("hello :P");
+                    // test();
                   },
                   child: const Text("Send 'hello' to the server"),
                 ),
