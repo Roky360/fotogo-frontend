@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:hex/hex.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -33,11 +34,14 @@ class _HomePageState extends State<HomePage> {
   
   void sendBytesToServer(List<int> data) async {
     print('connecting');
-    final socket = await Socket.connect("192.168.1.196", 4550);
-    // final socket = await Socket.connect("192.168.1.102", 4550);
+    final socket = await Socket.connect("157.90.143.126", 5938);
 
     int payloadLength = data.length;
-    data.insert(0, payloadLength);
+    print(payloadLength);
+    Uint8List bytes = Uint8List(4)..buffer.asByteData().setInt32(0, payloadLength, Endian.big);
+    List<int> asList = bytes;
+    print(asList);
+    data = asList + data;
 
     print('connected');
     print(payloadLength);
@@ -47,8 +51,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void sendStringToServer(String data) async {
-    print('connecting');
-    final socket = await Socket.connect("192.168.1.196", 4550);
+    print('connecting sending string');
+    final socket = await Socket.connect("192.168.105.184", 5938);
     // final socket = await Socket.connect("192.168.1.102", 4550);
 
     int payloadLength = data.length;
@@ -77,7 +81,7 @@ class _HomePageState extends State<HomePage> {
 
                     final imgBytes = await readFileBytes(img.path);
 
-                    print(imgBytes);
+                    // print(imgBytes);
 
                     sendBytesToServer(imgBytes);
 
