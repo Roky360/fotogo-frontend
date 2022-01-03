@@ -15,6 +15,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final hostname = "192.168.105.184";
+  final port = 5938;
+
   Future pickImage() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image == null) return;
@@ -34,13 +37,13 @@ class _HomePageState extends State<HomePage> {
   
   void sendBytesToServer(List<int> data) async {
     print('connecting');
-    final socket = await Socket.connect("157.90.143.126", 5938);
+    final socket = await Socket.connect(hostname, port)/*.then((Socket sock) {
+      sock.listen((event) { })
+    })*/;
 
     int payloadLength = data.length;
-    print(payloadLength);
     Uint8List bytes = Uint8List(4)..buffer.asByteData().setInt32(0, payloadLength, Endian.big);
     List<int> asList = bytes;
-    print(asList);
     data = asList + data;
 
     print('connected');
@@ -52,12 +55,13 @@ class _HomePageState extends State<HomePage> {
 
   void sendStringToServer(String data) async {
     print('connecting sending string');
-    final socket = await Socket.connect("192.168.105.184", 5938);
-    // final socket = await Socket.connect("192.168.1.102", 4550);
+    final socket = await Socket.connect(hostname, port);
 
     int payloadLength = data.length;
+    String paddedLength = payloadLength.toString().padLeft(10);
 
-    socket.write(payloadLength.toString() + data);
+    socket.write(paddedLength + data);
+    print(paddedLength + data);
     print("DATA SENT TO SERVER");
     socket.close();
   }
