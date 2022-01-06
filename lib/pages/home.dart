@@ -37,10 +37,23 @@ class _HomePageState extends State<HomePage> {
   
   void sendBytesToServer(List<int> data) async {
     print('connecting');
-    final socket = await Socket.connect(hostname, port)/*.then((Socket sock) {
-      sock.listen((event) { })
-    })*/;
+    final socket = await Socket.connect(hostname, port).then((Socket sock) {
+      sock.listen((event) {
+        // handle response from server
+      },
+        onError: (error) {
+          print("SocketError: " + error);
+        },
+        onDone: () {
+          sock.destroy();
+        },
+      );
+    });
 
+    sendRequest(socket, data);
+  }
+
+  void sendRequest(Socket sock, List<int> data) async {
     int payloadLength = data.length;
     Uint8List bytes = Uint8List(4)..buffer.asByteData().setInt32(0, payloadLength, Endian.big);
     List<int> asList = bytes;
@@ -48,9 +61,8 @@ class _HomePageState extends State<HomePage> {
 
     print('connected');
     print(payloadLength);
-    socket.add(data);
+    sock.add(data);
     print("DATA SENT TO SERVER");
-    socket.close();
   }
 
   void sendStringToServer(String data) async {
