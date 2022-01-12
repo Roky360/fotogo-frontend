@@ -18,7 +18,7 @@ extension ProportionalInsets on BuildContext {
   }
 
   EdgeInsets getProportionalInsetsBySize(Size size) {
-    return this.getProportionalInsets(
+    return getProportionalInsets(
         left: size.width,
         right: size.width,
         top: size.height,
@@ -51,4 +51,8 @@ extension ProportionalInsets on BuildContext {
 
     return Size(onePercent.width * width, onePercent.height * height);
   }
+}
+
+Size getScreenSize() {
+  return WidgetsBinding.instance!.window.physicalSize;
 }

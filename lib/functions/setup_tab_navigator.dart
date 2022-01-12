@@ -24,6 +24,8 @@ extension SetupTabsNavigator on PageNavigator {
   void calculateSelectedTabTextPositionAndSize() {
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       final GlobalKey currKey = tabTextKeys[pageIndex];
+      if (currKey.currentContext == null) return;
+
       final RenderBox box =
           currKey.currentContext?.findRenderObject() as RenderBox;
       selectedTabOffset = box.localToGlobal(Offset.zero);

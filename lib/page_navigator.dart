@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -7,11 +5,13 @@ import 'package:fotogo/widgets/bottom_tab_bar.dart';
 import 'package:fotogo/functions/setup_tab_navigator.dart';
 import 'package:fotogo/utils/tab_animation_controller.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
+import 'config/constants.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'pages/pages.dart';
+import 'widgets/sliding_up_panel.dart';
 
 export 'package:fotogo/functions/setup_tab_navigator.dart';
 
-///
 class PageNavigator extends HookWidget {
   late ValueNotifier state;
   bool firstBuild = true;
@@ -53,23 +53,28 @@ class PageNavigator extends HookWidget {
               duration: const Duration(milliseconds: 300),
             ));
 
-    return Scaffold(
-      appBar: AppBar(
-        title: fotogoLogo(),
-        centerTitle: true,
-      ),
-      body: PageTransitionSwitcher(
-        duration: const Duration(milliseconds: 500),
-        transitionBuilder: (child, animation, secondaryAnimation) =>
-            FadeThroughTransition(
-          animation: animation,
-          secondaryAnimation: secondaryAnimation,
-          child: child,
+    return getFotogoSlidingUpPanel(
+      context,
+      panelController: createAlbumPanelController,
+      panelWidget: const CreateAlbumPage(),
+      bodyWidget: Scaffold(
+        appBar: AppBar(
+          title: fotogoLogo(),
+          centerTitle: true,
         ),
-        child: pages[pageIndex],
+        body: PageTransitionSwitcher(
+          duration: const Duration(milliseconds: 500),
+          transitionBuilder: (child, animation, secondaryAnimation) =>
+              FadeThroughTransition(
+            animation: animation,
+            secondaryAnimation: secondaryAnimation,
+            child: child,
+          ),
+          child: pages[pageIndex],
+        ),
+        extendBody: true,
+        bottomNavigationBar: bottomTabBar(context),
       ),
-      extendBody: true,
-      bottomNavigationBar: bottomTabBar(context),
     );
   }
 }

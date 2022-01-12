@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'create_album/create_album_page.dart';
 
 class PeoplePage extends StatefulWidget {
   const PeoplePage({Key? key}) : super(key: key);

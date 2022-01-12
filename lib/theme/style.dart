@@ -8,9 +8,9 @@ ThemeData themeData = ThemeData(
   fontFamily: _fontFamily,
   textTheme: const TextTheme(
     caption: TextStyle(
-      color: Color(0xFF013250),
-      fontSize: 22,
-      fontWeight: FontWeight.bold
+        color: Color(0xFF013250), fontSize: 22, fontWeight: FontWeight.bold),
+    headline1: TextStyle(
+
     ),
   ),
 
@@ -26,14 +26,11 @@ ThemeData themeData = ThemeData(
     brightness: Brightness.light,
     surface: Colors.grey.shade800,
     onSurface: Colors.grey.shade200,
-    secondaryVariant: Colors.amber,
     error: Colors.redAccent,
     onError: Colors.red,
     onBackground: Colors.amber,
     secondary: Colors.grey.shade600,
     onSecondary: Colors.amber,
-    primaryVariant: Colors.amber,
-
   ),
 
   appBarTheme: AppBarTheme(
@@ -43,5 +40,4 @@ ThemeData themeData = ThemeData(
   shadowColor: Colors.white,
   // hoverColor: Colors.grey[500],
   // splashColor: Colors.grey[600],
-
 );

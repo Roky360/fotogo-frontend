@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:fotogo/theme/style.dart';
 import 'page_navigator.dart';
+import 'package:sizer/sizer.dart';
 
 void main() {
   runApp(const Launcher());
@@ -12,13 +13,19 @@ class Launcher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "fotogo",
-      theme: themeData,
-      initialRoute: '/page_navigator',
-      routes: {
-        '/page_navigator': (context) => PageNavigator(),
+    return Sizer(
+      builder: (context, orientation, deviceType) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: "fotogo",
+          theme: themeData,
+          initialRoute: '/page_navigator',
+          routes: {
+            '/page_navigator': (context) {
+              return PageNavigator();
+            },
+          },
+        );
       },
     );
   }

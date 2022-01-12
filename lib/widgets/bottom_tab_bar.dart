@@ -3,7 +3,6 @@ import 'package:fotogo/page_navigator.dart';
 import 'package:fotogo/utils/screen_manipulation.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
 
-///
 extension BottomTabBar on PageNavigator {
   Widget bottomTabBar(BuildContext context) {
     return Padding(
