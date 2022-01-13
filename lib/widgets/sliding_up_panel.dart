@@ -15,7 +15,7 @@ Widget getFotogoSlidingUpPanel(
     ),
     body: bodyWidget,
     controller: panelController,
-    maxHeight: 90.h,
+    maxHeight: 95.5.h,
     color: Theme.of(context).colorScheme.background,
     borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),

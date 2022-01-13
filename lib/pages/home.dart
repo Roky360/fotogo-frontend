@@ -15,7 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final hostname = "192.168.36.63";
+  final hostname = "192.168.36.12";
   final port = 5938;
 
   Future pickImage() async {
@@ -27,18 +27,14 @@ class _HomePageState extends State<HomePage> {
 
   Future readFileBytes(String path) async {
     final File file = File(path);
-
-    final a = await file.readAsBytes();
-
-    // print(a);
-
-    return a;
+    final bytes = await file.readAsBytes();
+    return bytes;
   }
 
   void sendBytesToServer(List<int> data) async {
     print('connecting');
-    final socket = await Socket.connect(hostname,
-            port) /*.then((Socket sock) {
+    final socket = await Socket.connect(hostname, port);
+    /*.then((Socket sock) {
       sock.listen(
         (event) {
           // handle response from server
@@ -51,7 +47,6 @@ class _HomePageState extends State<HomePage> {
         },
       );
     })*/
-        ;
 
     sendRequest(socket, data);
   }
@@ -95,9 +90,9 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     if (createAlbumPanelController.isPanelShown) {
                       print('closing');
-                      createAlbumPanelController.animatePanelToSnapPoint();
+                      // createAlbumPanelController.animatePanelToSnapPoint();
                       // createAlbumPanelController.close();
-                      // createAlbumPanelController.hide();
+                      createAlbumPanelController.hide();
                     } else {
                       print('opening');
                       createAlbumPanelController.show();
