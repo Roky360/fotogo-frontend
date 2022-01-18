@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fotogo/widgets/sliding_up_panel.dart';
 import 'package:fotogo/theme/style.dart';
 import 'package:sizer/sizer.dart';
+import 'package:fotogo/widgets/section.dart';
 
 class CreateAlbumPage extends StatelessWidget {
   const CreateAlbumPage({Key? key}) : super(key: key);
@@ -12,7 +13,10 @@ class CreateAlbumPage extends StatelessWidget {
       children: [
         Text(
           'Schedule an album',
-          style: Theme.of(context).textTheme.caption,
+          style: Theme
+              .of(context)
+              .textTheme
+              .caption,
         ),
         const SizedBox(
           height: 12,
@@ -25,15 +29,36 @@ class CreateAlbumPage extends StatelessWidget {
                 contentPadding: const EdgeInsets.fromLTRB(3, 20, 0, 0),
                 enabledBorder: UnderlineInputBorder(
                   borderSide:
-                      BorderSide(color: Theme.of(context).colorScheme.primary),
+                  BorderSide(color: Theme
+                      .of(context)
+                      .colorScheme
+                      .primary),
                 ),
                 focusedBorder: UnderlineInputBorder(
                   borderSide:
-                      BorderSide(color: Theme.of(context).colorScheme.primary),
+                  BorderSide(color: Theme
+                      .of(context)
+                      .colorScheme
+                      .primary),
                 ),
               ),
-              style: Theme.of(context).textTheme.caption,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .caption,
               textInputAction: TextInputAction.next,
+            )),
+        const SizedBox(
+          height: 35,
+        ),
+        section(
+            title: 'Dates',
+            body: TextButton(
+              onPressed: () {},
+              child: Text('Choose dates'),
+              style: ButtonStyle(
+                backgroundColor:  MaterialStateProperty.all<Color>(themeData.colorScheme.onPrimary)
+              ),
             )),
       ],
     );

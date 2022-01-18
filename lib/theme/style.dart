@@ -10,8 +10,14 @@ ThemeData themeData = ThemeData(
     caption: TextStyle(
         color: Color(0xFF013250), fontSize: 22, fontWeight: FontWeight.bold),
     headline1: TextStyle(
-
+      color: Color(0xFF013250),
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
     ),
+  ),
+
+  buttonTheme: ButtonThemeData(
+
   ),
 
   colorScheme: ColorScheme(
