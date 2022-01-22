@@ -13,9 +13,10 @@ extension BottomTabBar on PageNavigator {
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                  color: Colors.blueAccent.withOpacity(0.5),
-                  spreadRadius: -10,
-                  blurRadius: 40)
+                color: Colors.blueAccent.withOpacity(0.5),
+                spreadRadius: -10,
+                blurRadius: 40,
+              )
             ],
             borderRadius: const BorderRadius.all(Radius.circular(15))),
         child: Stack(
@@ -44,7 +45,7 @@ extension BottomTabBar on PageNavigator {
                                         .primary
                                         .withOpacity(.4),
                                     BlendMode.modulate),
-                                child: tabInkAnimation(
+                                child: AppWidgets.tabInkAnimation(
                                     controller: inkAnimationControllers[index]),
                               ),
                             ),

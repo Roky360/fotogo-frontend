@@ -2,9 +2,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:fotogo/theme/style.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
-import 'package:fotogo/config/constants.dart';
+import 'package:fotogo/config/constants/constants.dart';
 import 'package:image_picker/image_picker.dart';
 
 class HomePage extends StatefulWidget {
@@ -75,7 +74,6 @@ class _HomePageState extends State<HomePage> {
           child: Center(
             child: Column(
               children: [
-                fotogoLogo(),
                 TextButton(
                   onPressed: () async {
                     final File? img = await pickImage();
@@ -86,6 +84,7 @@ class _HomePageState extends State<HomePage> {
                   },
                   child: const Text("Send image to server"),
                 ),
+                const SizedBox(height: 20,),
                 TextButton(
                   onPressed: () {
                     if (createAlbumPanelController.isPanelShown) {
@@ -100,6 +99,13 @@ class _HomePageState extends State<HomePage> {
                     }
                   },
                   child: const Text("Open Create Album panel"),
+                ),
+
+                TextButton(
+                  onPressed: () {
+
+                  },
+                  child: const Text("Canvas"),
                 ),
               ],
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:fotogo/theme/style.dart';
+import 'package:fotogo/config/themes/light_theme.dart';
+import 'package:fotogo/config/themes/style.dart';
 import 'page_navigator.dart';
 import 'package:sizer/sizer.dart';
 
@@ -18,7 +19,7 @@ class Launcher extends StatelessWidget {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: "fotogo",
-          theme: themeData,
+          theme: lightTheme,
           initialRoute: '/page_navigator',
           routes: {
             '/page_navigator': (context) {

@@ -38,6 +38,7 @@ dependencies:
   lottie: ^1.1.0
   flutter_hooks: ^0.18.0
   image_picker: ^0.8.4+4
+  syncfusion_flutter_datepicker: ^19.4.43
   flutter_bloc: ^8.0.1
 
   sliding_up_panel: ^2.0.0+1
@@ -75,6 +76,7 @@ flutter:
   assets:
     - assets/
     - assets/animations/
+    - assets/logos/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

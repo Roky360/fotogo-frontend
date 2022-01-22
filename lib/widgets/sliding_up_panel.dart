@@ -1,6 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:sizer/sizer.dart';
+
+class FotogoSlidingPanel {
+
+}
 
 Widget getFotogoSlidingUpPanel(
   BuildContext context, {
@@ -21,6 +28,7 @@ Widget getFotogoSlidingUpPanel(
         topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
     // parallaxEnabled: true,
     minHeight: 150,
+    onPanelSlide: (position) => onPanelSlide(position, context),
   );
 }
 
@@ -50,9 +58,16 @@ Widget buildHandle() {
       height: 8,
       decoration: BoxDecoration(
         // color: Colors.purpleAccent,
-        color: Color.fromARGB(255, 210, 210, 210),
+        color: const Color(0xD2D2D2FF),
         borderRadius: BorderRadius.circular(20),
       ),
     ),
   );
+}
+
+void onPanelSlide(double position, BuildContext context) {
+  if (position > .6) {
+    return;
+  }
+  SystemChannels.textInput.invokeMethod('TextInput.hide');
 }
