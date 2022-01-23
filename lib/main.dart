@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:fotogo/config/themes/light_theme.dart';
 import 'package:fotogo/config/themes/style.dart';
-import 'page_navigator.dart';
+import 'package:fotogo/pages/app_navigator/app_navigator.dart';
+import 'pages/app_navigator/page_navigator.dart';
 import 'package:sizer/sizer.dart';
 
 void main() {
@@ -23,7 +24,7 @@ class Launcher extends StatelessWidget {
           initialRoute: '/page_navigator',
           routes: {
             '/page_navigator': (context) {
-              return PageNavigator();
+              return const AppNavigator();
             },
           },
         );

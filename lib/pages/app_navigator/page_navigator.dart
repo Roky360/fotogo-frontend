@@ -3,15 +3,16 @@ import 'dart:async';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fotogo/pages/app_navigator/app_navigator_data.dart';
 import 'package:fotogo/widgets/bottom_tab_bar.dart';
 import 'package:fotogo/functions/setup_tab_navigator.dart';
 import 'package:fotogo/utils/tab_animation_controller.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:sizer/sizer.dart';
-import 'config/constants/constants.dart';
+import '../../config/constants/constants.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'pages/pages.dart';
-import 'widgets/sliding_up_panel.dart';
+import '../pages.dart';
+import '../../widgets/sliding_up_panel.dart';
 import 'package:fotogo/widgets/bottom_navigation_bar/bottom_navigation_bar.dart';
 
 export 'package:fotogo/functions/setup_tab_navigator.dart';
@@ -69,8 +70,8 @@ class PageNavigator extends HookWidget {
     // );
 
     return Scaffold(
-      backgroundColor: Colors.white24,
-      bottomNavigationBar: fotogoBottomNavigationBar(context),
+      backgroundColor: Theme.of(context).colorScheme.background,
+      bottomNavigationBar: fotogoBottomNavigationBar(context, AppNavigatorData()),
     );
 
     // return getFotogoSlidingUpPanel(

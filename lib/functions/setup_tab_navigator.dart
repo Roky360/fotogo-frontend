@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fotogo/page_navigator.dart';
+import 'package:fotogo/pages/app_navigator/page_navigator.dart';
 
 ///
 extension SetupTabsNavigator on PageNavigator {

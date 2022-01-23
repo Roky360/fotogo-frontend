@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fotogo/page_navigator.dart';
+import 'package:fotogo/pages/app_navigator/page_navigator.dart';
 import 'package:fotogo/utils/screen_manipulation.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
 

@@ -11,6 +11,8 @@ final ThemeData lightTheme = ThemeData.light().copyWith(
     background: Color(0xFFF1F5FB),
 
     secondary: Color(0xFF4C76A7),
+    surface: Color(0xFFB7F2FF),
+    // surface: Color(0xffb3e6ff),
   ),
 
   shadowColor: const Color(0xFFC4E0FF),
