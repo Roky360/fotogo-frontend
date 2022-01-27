@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 
 class FotogoBNBPainter extends CustomPainter {
-  late BuildContext _context;
+  late BuildContext context;
   late PaintingStyle _paintingStyle;
+  late double borderRadius;
 
-  FotogoBNBPainter(context) {
-    _context = context;
-  }
+  FotogoBNBPainter(this.context, {required this.borderRadius});
 
   @override
   void paint(Canvas canvas, Size size) {
     // Define the brush
     var paint = Paint();
-    paint.color = Theme.of(_context).colorScheme.onPrimary;
+    paint.color = Theme.of(context).colorScheme.onPrimary;
     paint.style = PaintingStyle.fill;
 
     // Path painting
     var path = Path();
-    paintBNB(path, size);
+    paintBNB(path, size, borderRadius);
 
     // Stroke painting
     // paint.style = PaintingStyle.stroke;
@@ -28,7 +27,7 @@ class FotogoBNBPainter extends CustomPainter {
     // Shadow
     Offset shadowOffset = const Offset(0, -5);
     Color shadowColor =
-        Theme.of(_context).colorScheme.onPrimary.withOpacity(.5);
+        Theme.of(context).colorScheme.onPrimary.withOpacity(.5);
     canvas.drawShadow(path.shift(shadowOffset), shadowColor, 5, true);
     canvas.drawShadow(path.shift(shadowOffset), shadowColor, 10, true);
     canvas.drawShadow(path.shift(shadowOffset), shadowColor, 15, true);
@@ -41,10 +40,9 @@ class FotogoBNBPainter extends CustomPainter {
     return true;
   }
 
-  void paintBNB(Path path, Size size) {
+  void paintBNB(Path path, Size size, double radius) {
     double width = size.width;
     double height = size.height;
-    double radius = height * .3;
     double rightMiddleEdge = width * .41;
 
     // Left side

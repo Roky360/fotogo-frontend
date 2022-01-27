@@ -16,7 +16,8 @@ class _AppNavigatorState extends State<AppNavigator> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      bottomNavigationBar: fotogoBottomNavigationBar(context, appNavigatorData),
+      bottomNavigationBar: FotogoBottomNavigationBar(data: appNavigatorData,),
+      // bottomNavigationBar: fotogoBottomNavigationBar(context, appNavigatorData),
     );
   }
 }

@@ -71,7 +71,7 @@ class PageNavigator extends HookWidget {
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      bottomNavigationBar: fotogoBottomNavigationBar(context, AppNavigatorData()),
+      // bottomNavigationBar: fotogoBottomNavigationBar(context, AppNavigatorData()),
     );
 
     // return getFotogoSlidingUpPanel(

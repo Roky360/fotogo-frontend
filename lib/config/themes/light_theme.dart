@@ -66,6 +66,11 @@ final ThemeData lightTheme = ThemeData.light().copyWith(
       fontSize: 16,
       color: const Color(0xFF013250),
     ),
-
+    caption: TextStyle(
+      fontFamily: fontFamily,
+      fontSize: 10,
+      fontWeight: FontWeight.bold,
+      color: const Color(0xFF013250),
+    ),
   ),
 );
