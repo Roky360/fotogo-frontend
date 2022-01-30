@@ -11,7 +11,9 @@ class FotogoBNBPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // Define the brush
     var paint = Paint();
-    paint.color = Theme.of(context).colorScheme.onPrimary;
+    paint.color = const Color(0x59447D99).withOpacity(.0);
+    // paint.color = const Color(0x592B433F);
+    // paint.color = Theme.of(context).colorScheme.onPrimary;
     paint.style = PaintingStyle.fill;
 
     // Path painting
@@ -28,9 +30,9 @@ class FotogoBNBPainter extends CustomPainter {
     Offset shadowOffset = const Offset(0, -5);
     Color shadowColor =
         Theme.of(context).colorScheme.onPrimary.withOpacity(.5);
-    canvas.drawShadow(path.shift(shadowOffset), shadowColor, 5, true);
-    canvas.drawShadow(path.shift(shadowOffset), shadowColor, 10, true);
-    canvas.drawShadow(path.shift(shadowOffset), shadowColor, 15, true);
+    // canvas.drawShadow(path.shift(shadowOffset), shadowColor, 5, true);
+    // canvas.drawShadow(path.shift(shadowOffset), shadowColor, 10, true);
+    // canvas.drawShadow(path.shift(shadowOffset), shadowColor, 15, true);
 
     canvas.drawPath(path, paint);
   }

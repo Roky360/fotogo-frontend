@@ -13,6 +13,7 @@ final ThemeData lightTheme = ThemeData.light().copyWith(
     secondary: Color(0xFF4C76A7),
     surface: Color(0xFFB7F2FF),
     // surface: Color(0xffb3e6ff),
+    onSurface: Color(0xFF56B1B7),
   ),
 
   shadowColor: const Color(0xFFC4E0FF),
@@ -70,7 +71,8 @@ final ThemeData lightTheme = ThemeData.light().copyWith(
       fontFamily: fontFamily,
       fontSize: 10,
       fontWeight: FontWeight.bold,
-      color: const Color(0xFF013250),
+      color: const Color(0xffdef2ff),
+      // color: const Color(0xFF013250),
     ),
   ),
 );

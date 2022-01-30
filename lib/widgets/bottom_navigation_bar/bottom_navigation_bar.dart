@@ -1,43 +1,67 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:fotogo/pages/app_navigator/app_navigator_data.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:sizer/sizer.dart';
-import 'package:widget_mask/widget_mask.dart';
 
-import 'fotogo_painter.dart';
+import 'animation_controller.dart';
 
 class FotogoBottomNavigationBar extends StatelessWidget {
-  AppNavigatorData data;
-  Size size = Size(92.w, 60);
-  Size containerSize = Size(100.w, 130);
-  late Size tabSize = Size(size.width * .185, size.height);
-  late double borderRadius = size.height * .3;
+  final AppNavigatorData data;
+  final Size _barSize = Size(92.w, 60);
+  final Size _containerSize = Size(100.w, 130);
+  late final Size _tabSize = Size(_barSize.width * .188, _barSize.height);
+  late final double _borderRadius = _barSize.height * .3;
+  late final _gapBetweenContainerToEdge =
+      (_containerSize.width - _barSize.width) / 2;
+
+  final Function onTabTap;
+  final Function onMiddleButtonTap;
+
+  final AnimationController controller;
 
   FotogoBottomNavigationBar({
     Key? key,
     required this.data,
+    required this.onTabTap,
+    required this.onMiddleButtonTap,
+    required this.controller,
+    // required this.animationController,
   }) : super(key: key);
 
-  Widget getTab(BuildContext context, int index) {
-    print(containerSize);
-    return Container(
-      width: tabSize.width,
-      height: tabSize.height,
-      decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).colorScheme.primary),
-        borderRadius: BorderRadius.circular(borderRadius),
-      ),
-      child: InkWell(
-        splashColor: Colors.red,
-        onTap: () {},
+  double _calculatePosition(int index) {
+    if (index == 0 || index == 1) {
+      return _tabSize.width * index;
+    } else {
+      // index = 2, 3
+      return (_barSize.width - _tabSize.width) -
+          _tabSize.width +
+          _tabSize.width * (index % 2);
+    }
+  }
+
+  Widget _getTab(BuildContext context, int index) {
+    return SizedBox(
+      width: _tabSize.width,
+      height: _tabSize.height,
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.all(0),
+          side: BorderSide.none,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(_borderRadius),
+          ),
+        ),
+        onPressed: () => onTabTap(index),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               data.tabIcons[index],
-              color: Theme.of(context).colorScheme.primary,
+              color: Theme.of(context).colorScheme.onPrimary,
             ),
+            const SizedBox(height: 2),
             Text(
               data.tabTitles[index],
               style: Theme.of(context).textTheme.caption,
@@ -48,105 +72,80 @@ class FotogoBottomNavigationBar extends StatelessWidget {
     );
   }
 
-  double calculatePosition(int index) { // TODO: Implement function
-    if (index == 0 || index == 1) {
-      return ((containerSize.width - tabSize.width) - (containerSize.width - size.width) / 2) - tabSize.width;
-    } else { // index = 2, 3
-      return ((containerSize.width - tabSize.width) - (containerSize.width - size.width) / 2) - tabSize.width;
-    }
+  Widget _getBar(BuildContext context) {
+    return Stack(
+      children: [
+        // Center circle - new album button
+        Center(
+          child: SizedBox(
+            width: _barSize.height + 7,
+            height: _barSize.height + 7,
+            child: FloatingActionButton(
+              onPressed: () => onMiddleButtonTap,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              highlightElevation: 0,
+              // on tap down
+              splashColor: Colors.transparent,
+              child: AppWidgets.fotogoLogoCircle(height: null),
+            ),
+          ),
+        ),
+        // Selected tab
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOutCubic,
+          left: _calculatePosition(data.routeIndex),
+          child: Container(
+            width: _tabSize.width,
+            height: _barSize.height,
+            decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(.5),
+                borderRadius: BorderRadius.circular(_borderRadius)),
+          ),
+        ),
+        // Row of tabs
+        Center(
+          child: SizedBox(
+            width: _barSize.width,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                  data.routes.length, (index) => _getTab(context, index))
+                ..insert(2, const Spacer()),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    double blurValue = 20;
+
     return Stack(
       children: [
-        Positioned(
-          bottom: -10,
-          left: 0,
-          child: Container(
-            // color: Colors.red,
-            width: containerSize.width,
-            height: containerSize.height,
-            child: Stack(
-              clipBehavior: Clip.antiAlias,
-              children: [
-                WidgetMask(
-                  blendMode: BlendMode.srcATop,
-                  childSaveLayer: true,
-                  mask: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Positioned(
-                        left: 50,
-                        top: 110 / 2,
-                        child: Container(
-                          width: 20,
-                          height: 20,
-                          // color: Colors.lightBlue,
-                        ),
-                      ),
-                    ],
-                  ),
-                  child: WidgetMask(
-                    blendMode: BlendMode.srcATop,
-                    childSaveLayer: true,
-                    mask: Container(
-                      color: Theme.of(context).colorScheme.surface,
-                    ),
-                    child: Center(
-                      child: CustomPaint(
-                        size: size,
-                        painter: FotogoBNBPainter(context,
-                            borderRadius: borderRadius),
-                      ),
-                    ),
-                  ),
-                ),
-                Center(
-                  child: SizedBox(
-                    width: size.height + 7,
-                    height: size.height + 7,
-                    // width: 100,
-                    // height: 100,
-                    child: FloatingActionButton(
-                      onPressed: () {},
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      highlightElevation: 0,
-                      // on tap down
-                      splashColor: Colors.red,
-                      child: AppWidgets.fotogoLogoCircle(height: null),
-                    ),
-                  ),
-                ),
-                Center(
-                  child: SizedBox(
-                    width: size.width,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        getTab(context, 0),
-                        getTab(context, 1),
-                        Spacer(),
-                        getTab(context, 2),
-                        getTab(context, 3),
-                      ],
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: (containerSize.height - tabSize.width) * .54, // top: containerSize.height*.27,
-                  left: calculatePosition(0),
-                  // left: (containerSize.width - tabSize.width) / 20,
-                  child: Container(
-                    width: tabSize.width,
-                    height: size.height,
-                    decoration: BoxDecoration(
-                        color: Colors.red.withOpacity(.5),
-                        borderRadius: BorderRadius.circular(borderRadius)),
-                  ),
-                ),
-              ],
+        AnimatedPositioned(
+          left: _gapBetweenContainerToEdge,
+          bottom: controller.value,
+          curve: Curves.easeOutExpo,
+          // curve: Curves.easeInOutBack,
+          duration: const Duration(milliseconds: 700),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(_borderRadius),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaY: blurValue,
+                sigmaX: blurValue,
+                tileMode: TileMode.mirror,
+              ),
+              child: Container(
+                width: _barSize.width,
+                height: _barSize.height,
+                color: const Color(0xFF48ABA8).withOpacity(.6),
+                child: _getBar(context),
+              ),
             ),
           ),
         ),

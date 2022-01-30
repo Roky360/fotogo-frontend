@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:fotogo/pages/pages.dart';
 
 class AppNavigatorData {
+  int routeIndex = 0;
+
   List<Widget> routes = [
     const HomePage(),
     const AlbumsPage(),
