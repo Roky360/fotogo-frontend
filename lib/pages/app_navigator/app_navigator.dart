@@ -18,9 +18,7 @@ class _AppNavigatorState extends State<AppNavigator>
   late AppNavigatorData appNavigatorData;
 
   late AnimationController _controller;
-  // late Animation _animation;
-
-  double a = 2;
+  late Animation _animation;
 
   @override
   void initState() {
@@ -30,13 +28,17 @@ class _AppNavigatorState extends State<AppNavigator>
 
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 700),
-      lowerBound: -60,
-      upperBound: 10,
-      value: 10,
-    )..addListener(() {
-      print(_controller.value);
-    });
+      duration: const Duration(milliseconds: 400),
+      value: 1,
+    );
+
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutBack,
+      reverseCurve: Curves.easeOutExpo,
+    );
+    // curve: Curves.easeOutExpo,
+    // curve: Curves.easeOutBack,
 
     // _animation = Tween(
     //   begin: 10,
@@ -49,29 +51,24 @@ class _AppNavigatorState extends State<AppNavigator>
       children: [
         ElevatedButton(
           onPressed: () {
-            setState(() {
-              _controller.forward();
-            });
-            // setState(() {
-            //   if (a == 2) {
-            //     a = 3.7;
-            //   } else {
-            //     a = 2;
-            //   }
-            // });
+            _controller.forward();
           },
           child: Text('show'),
         ),
         ElevatedButton(
           onPressed: () {
-            setState(() {
-              _controller.reverse();
-            });
+            _controller.reverse();
           },
           child: Text('hide'),
         ),
+        ElevatedButton(
+          onPressed: () {
+            print(_controller.value);
+          },
+          child: Text('val'),
+        ),
         Align(
-          heightFactor: a,
+          heightFactor: 2,
           alignment: Alignment.bottomCenter,
           child: Image.network(
               'https://colors.dopely.top/inside-colors/wp-content/uploads/2021/06/spiritual-colors.jpg'),
@@ -92,7 +89,7 @@ class _AppNavigatorState extends State<AppNavigator>
   Widget getBottomNavigationBar() {
     return FotogoBottomNavigationBar(
       data: appNavigatorData,
-      controller: _controller,
+      controller: _animation,
       onTabTap: onRouteChange,
       onMiddleButtonTap: openCreateAlbumPanel,
     );

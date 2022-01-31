@@ -19,7 +19,7 @@ class FotogoBottomNavigationBar extends StatelessWidget {
   final Function onTabTap;
   final Function onMiddleButtonTap;
 
-  final AnimationController controller;
+  final Animation controller;
 
   FotogoBottomNavigationBar({
     Key? key,
@@ -92,10 +92,18 @@ class FotogoBottomNavigationBar extends StatelessWidget {
           ),
         ),
         // Selected tab
-        AnimatedPositioned(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOutCubic,
-          left: _calculatePosition(data.routeIndex),
+        AnimatedBuilder(
+          animation: () {
+       return controller;
+    }(),
+          builder: (BuildContext context, Widget? staticChild) {
+            return Positioned(
+              // duration: const Duration(milliseconds: 300),
+              // curve: Curves.easeInOutCubic,
+              left: _calculatePosition(data.routeIndex),
+              child: staticChild!,
+            );
+          },
           child: Container(
             width: _tabSize.width,
             height: _barSize.height,
@@ -126,12 +134,15 @@ class FotogoBottomNavigationBar extends StatelessWidget {
 
     return Stack(
       children: [
-        AnimatedPositioned(
-          left: _gapBetweenContainerToEdge,
-          bottom: controller.value,
-          curve: Curves.easeOutExpo,
-          // curve: Curves.easeInOutBack,
-          duration: const Duration(milliseconds: 700),
+        AnimatedBuilder(
+          animation: controller,
+          builder: (BuildContext context, Widget? staticChild) {
+            return Positioned(
+              left: _gapBetweenContainerToEdge,
+              bottom: controller.value * 70 - 60,
+              child: staticChild!,
+            );
+          },
           child: ClipRRect(
             borderRadius: BorderRadius.circular(_borderRadius),
             child: BackdropFilter(
