@@ -5,8 +5,6 @@ import 'package:fotogo/pages/app_navigator/app_navigator_data.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:sizer/sizer.dart';
 
-import 'animation_controller.dart';
-
 class FotogoBottomNavigationBar extends StatelessWidget {
   final AppNavigatorData data;
   final Size _barSize = Size(92.w, 60);
@@ -58,12 +56,12 @@ class FotogoBottomNavigationBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              data.tabIcons[index],
+              data.routes[index].icon,
               color: Theme.of(context).colorScheme.onPrimary,
             ),
             const SizedBox(height: 2),
             Text(
-              data.tabTitles[index],
+              data.routes[index].title,
               style: Theme.of(context).textTheme.caption,
             ),
           ],
@@ -81,7 +79,7 @@ class FotogoBottomNavigationBar extends StatelessWidget {
             width: _barSize.height + 7,
             height: _barSize.height + 7,
             child: FloatingActionButton(
-              onPressed: () => onMiddleButtonTap,
+              onPressed: () => onMiddleButtonTap(),
               backgroundColor: Colors.transparent,
               elevation: 0,
               highlightElevation: 0,
@@ -92,18 +90,10 @@ class FotogoBottomNavigationBar extends StatelessWidget {
           ),
         ),
         // Selected tab
-        AnimatedBuilder(
-          animation: () {
-       return controller;
-    }(),
-          builder: (BuildContext context, Widget? staticChild) {
-            return Positioned(
-              // duration: const Duration(milliseconds: 300),
-              // curve: Curves.easeInOutCubic,
-              left: _calculatePosition(data.routeIndex),
-              child: staticChild!,
-            );
-          },
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOutExpo,
+          left: _calculatePosition(data.routeIndex),
           child: Container(
             width: _tabSize.width,
             height: _barSize.height,

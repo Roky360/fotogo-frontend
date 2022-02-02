@@ -1,10 +1,15 @@
 import 'dart:ui';
 
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:fotogo/pages/app_navigator/app_navigator_data.dart';
-import 'package:fotogo/widgets/bottom_navigation_bar/animation_controller.dart';
+import 'package:fotogo/pages/create_album/create_album_view.dart';
 import 'package:fotogo/widgets/bottom_navigation_bar/bottom_navigation_bar.dart';
+import 'package:fotogo/widgets/sliding_up_panel.dart';
 import 'package:sizer/sizer.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
+
+import '../home.dart';
 
 class AppNavigator extends StatefulWidget {
   const AppNavigator({Key? key}) : super(key: key);
@@ -15,81 +20,72 @@ class AppNavigator extends StatefulWidget {
 
 class _AppNavigatorState extends State<AppNavigator>
     with TickerProviderStateMixin {
-  late AppNavigatorData appNavigatorData;
+  late AppNavigatorData data;
 
-  late AnimationController _controller;
-  late Animation _animation;
+  late Animation _navigationBarAnimation;
 
   @override
   void initState() {
     super.initState();
 
-    appNavigatorData = AppNavigatorData();
+    data = AppNavigatorData();
 
-    _controller = AnimationController(
+    data.navigationBarController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
       value: 1,
     );
 
-    _animation = CurvedAnimation(
-      parent: _controller,
+    _navigationBarAnimation = CurvedAnimation(
+      parent: data.navigationBarController,
       curve: Curves.easeOutBack,
       reverseCurve: Curves.easeOutExpo,
     );
     // curve: Curves.easeOutExpo,
     // curve: Curves.easeOutBack,
 
-    // _animation = Tween(
-    //   begin: 10,
-    //   end: -60,
-    // ).animate(_controller);
-  }
-
-  Widget getBody() {
-    return Column(
-      children: [
-        ElevatedButton(
-          onPressed: () {
-            _controller.forward();
-          },
-          child: Text('show'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            _controller.reverse();
-          },
-          child: Text('hide'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            print(_controller.value);
-          },
-          child: Text('val'),
-        ),
-        Align(
-          heightFactor: 2,
-          alignment: Alignment.bottomCenter,
-          child: Image.network(
-              'https://colors.dopely.top/inside-colors/wp-content/uploads/2021/06/spiritual-colors.jpg'),
-          // child: Image.asset('assets/test_images/amsterdam.png'),
-        ),
-      ],
-    );
+    data.createAlbumPanelController = PanelController();
   }
 
   void onRouteChange(int newIndex) {
     setState(() {
-      appNavigatorData.routeIndex = newIndex;
+      data.routeIndex = newIndex;
     });
   }
 
-  void openCreateAlbumPanel() {}
+  void openCreateAlbumPanel() async {
+    await data.navigationBarController.reverse();
+    if (!data.createAlbumPanelController.isPanelOpen) {
+      await data.createAlbumPanelController.show();
+      data.createAlbumPanelController.animatePanelToPosition(1,
+          duration: const Duration(milliseconds: 700),
+          curve: Curves.easeOutExpo);
+    }
+  }
 
-  Widget getBottomNavigationBar() {
+  Widget _getBody() {
+    return FotogoSlidingUpPanel(
+      panelController: data.createAlbumPanelController,
+      panelWidget: CreateAlbumPage(),
+      bodyWidget: PageTransitionSwitcher(
+        duration: const Duration(milliseconds: 500),
+        transitionBuilder: (Widget child, Animation<double> primaryAnimation,
+                Animation<double> secondaryAnimation) =>
+            FadeThroughTransition(
+          animation: primaryAnimation,
+          secondaryAnimation: secondaryAnimation,
+          child: child,
+          fillColor: Theme.of(context).colorScheme.background,
+        ),
+        child: data.routes[data.routeIndex].widget,
+      ),
+    );
+  }
+
+  Widget _getBottomNavigationBar() {
     return FotogoBottomNavigationBar(
-      data: appNavigatorData,
-      controller: _animation,
+      data: data,
+      controller: _navigationBarAnimation,
       onTabTap: onRouteChange,
       onMiddleButtonTap: openCreateAlbumPanel,
     );
@@ -101,19 +97,17 @@ class _AppNavigatorState extends State<AppNavigator>
       body: SafeArea(
         child: Stack(
           children: [
-            getBody(),
-            getBottomNavigationBar(),
+            _getBody(),
+            _getBottomNavigationBar(),
           ],
         ),
       ),
-      backgroundColor: Theme.of(context).colorScheme.background,
-      // bottomNavigationBar: getBottomNavigationBar(),
     );
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    data.navigationBarController.dispose();
     super.dispose();
   }
 }

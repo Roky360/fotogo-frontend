@@ -2,12 +2,14 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:fotogo/widgets/app_widgets.dart';
-import 'package:fotogo/config/constants/constants.dart';
+import 'package:fotogo/pages/app_navigator/app_navigator_data.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:fotogo/pages/app_navigator/app_navigator.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final AppNavigatorData data;
+
+  const HomePage(this.data, {Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -84,28 +86,24 @@ class _HomePageState extends State<HomePage> {
                   },
                   child: const Text("Send image to server"),
                 ),
-                const SizedBox(height: 20,),
+                const SizedBox(height: 20),
                 TextButton(
-                  onPressed: () {
-                    if (createAlbumPanelController.isPanelShown) {
-                      print('closing');
-                      // createAlbumPanelController.animatePanelToSnapPoint();
-                      // createAlbumPanelController.close();
-                      createAlbumPanelController.hide();
+                  onPressed: () async {
+                    if (widget.data.createAlbumPanelController.isPanelShown) {
+                      widget.data.createAlbumPanelController.close();
+                      widget.data.createAlbumPanelController.hide();
                     } else {
-                      print('opening');
-                      createAlbumPanelController.show();
-                      // createAlbumPanelController.open();
+                      await widget.data.createAlbumPanelController.show();
+                      widget.data.createAlbumPanelController.open();
                     }
                   },
                   child: const Text("Open Create Album panel"),
                 ),
-
                 TextButton(
                   onPressed: () {
-
+                    widget.data.navigationBarController.forward();
                   },
-                  child: const Text("Canvas"),
+                  child: const Text("Show BNB"),
                 ),
               ],
             ),

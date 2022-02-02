@@ -7,11 +7,11 @@ import 'pages/app_navigator/page_navigator.dart';
 import 'package:sizer/sizer.dart';
 
 void main() {
-  runApp(const Launcher());
+  runApp(const FotogoApp());
 }
 
-class Launcher extends StatelessWidget {
-  const Launcher({Key? key}) : super(key: key);
+class FotogoApp extends StatelessWidget {
+  const FotogoApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

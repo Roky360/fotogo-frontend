@@ -44,13 +44,13 @@ class FotogoShadowBNB extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              data.tabIcons[index],
+              AppNavigatorData.tabIcons[index],
               color: const Color(0xFFFFFFFF),
               // color: const Color(0xFFD0F9FF),
               // color: Theme.of(context).colorScheme.primary,
             ),
             Text(
-              data.tabTitles[index],
+              AppNavigatorData.tabTitles[index],
               style: Theme.of(context).textTheme.caption,
             ),
           ],
