@@ -49,6 +49,13 @@ final ThemeData lightTheme = ThemeData.light().copyWith(
 
   // Text
   textTheme: TextTheme(
+    // TODO: replace h4 with h6
+    headline4: TextStyle(
+      fontFamily: fontFamily,
+      color: const Color(0xFFFFFFFF),
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+    ),
     headline5: TextStyle(
       fontFamily: fontFamily,
       color: const Color(0xFF4C76A7),
@@ -67,6 +74,7 @@ final ThemeData lightTheme = ThemeData.light().copyWith(
       fontSize: 16,
       color: const Color(0xFF013250),
     ),
+
     caption: TextStyle(
       fontFamily: fontFamily,
       fontSize: 10,

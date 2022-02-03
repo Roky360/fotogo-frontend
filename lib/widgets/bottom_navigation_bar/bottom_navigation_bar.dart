@@ -7,6 +7,8 @@ import 'package:sizer/sizer.dart';
 
 class FotogoBottomNavigationBar extends StatelessWidget {
   final AppNavigatorData data;
+  final Color foregroundColor;
+
   final Size _barSize = Size(92.w, 60);
   final Size _containerSize = Size(100.w, 130);
   late final Size _tabSize = Size(_barSize.width * .188, _barSize.height);
@@ -21,6 +23,7 @@ class FotogoBottomNavigationBar extends StatelessWidget {
 
   FotogoBottomNavigationBar({
     Key? key,
+    this.foregroundColor = Colors.white,
     required this.data,
     required this.onTabTap,
     required this.onMiddleButtonTap,
@@ -57,7 +60,7 @@ class FotogoBottomNavigationBar extends StatelessWidget {
           children: [
             Icon(
               data.routes[index].icon,
-              color: Theme.of(context).colorScheme.onPrimary,
+              color: foregroundColor,
             ),
             const SizedBox(height: 2),
             Text(
@@ -74,20 +77,31 @@ class FotogoBottomNavigationBar extends StatelessWidget {
     return Stack(
       children: [
         // Center circle - new album button
-        Center(
-          child: SizedBox(
-            width: _barSize.height + 7,
-            height: _barSize.height + 7,
-            child: FloatingActionButton(
-              onPressed: () => onMiddleButtonTap(),
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              highlightElevation: 0,
-              // on tap down
-              splashColor: Colors.transparent,
-              child: AppWidgets.fotogoLogoCircle(height: null),
+        Stack(
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.add,
+                color: foregroundColor,
+              ),
             ),
-          ),
+            Center(
+              child: SizedBox(
+                width: _barSize.height + 7,
+                height: _barSize.height + 7,
+                child: FloatingActionButton(
+                  onPressed: () => onMiddleButtonTap(),
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  highlightElevation: 0,
+                  // on tap down
+                  splashColor: Colors.transparent,
+                  child: AppWidgets.fotogoLogoCircle(height: null),
+                ),
+              ),
+            ),
+          ],
         ),
         // Selected tab
         AnimatedPositioned(
@@ -120,7 +134,7 @@ class FotogoBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double blurValue = 20;
+    double blurAmount = 20;
 
     return Stack(
       children: [
@@ -137,8 +151,8 @@ class FotogoBottomNavigationBar extends StatelessWidget {
             borderRadius: BorderRadius.circular(_borderRadius),
             child: BackdropFilter(
               filter: ImageFilter.blur(
-                sigmaY: blurValue,
-                sigmaX: blurValue,
+                sigmaY: blurAmount,
+                sigmaX: blurAmount,
                 tileMode: TileMode.mirror,
               ),
               child: Container(

@@ -22,7 +22,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
             section(
               context,
               title: 'Albums',
-              body: albumCover(context),
+              body: AlbumCover(),
             ),
           ],
         ),

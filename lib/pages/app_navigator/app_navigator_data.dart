@@ -4,7 +4,7 @@ import 'package:fotogo/pages/pages.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class AppNavigatorData {
-  int routeIndex = 0;
+  int routeIndex = 1;
 
   late final AnimationController navigationBarController;
 

@@ -86,6 +86,7 @@ class _AppNavigatorState extends State<AppNavigator>
     return FotogoBottomNavigationBar(
       data: data,
       controller: _navigationBarAnimation,
+      foregroundColor: Theme.of(context).colorScheme.onPrimary,
       onTabTap: onRouteChange,
       onMiddleButtonTap: openCreateAlbumPanel,
     );
