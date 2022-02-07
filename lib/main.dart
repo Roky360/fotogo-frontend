@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:fotogo/config/themes/light_theme.dart';
-import 'package:fotogo/config/themes/style.dart';
 import 'package:fotogo/pages/app_navigator/app_navigator.dart';
-import 'pages/app_navigator/page_navigator.dart';
+import 'package:fotogo/pages/login_and_setup/setup.dart';
 import 'package:sizer/sizer.dart';
 
 void main() {
@@ -21,11 +20,10 @@ class FotogoApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: "fotogo",
           theme: lightTheme,
-          initialRoute: '/page_navigator',
+          initialRoute: '/setup',
           routes: {
-            '/page_navigator': (context) {
-              return const AppNavigator();
-            },
+            '/page_navigator': (context) => const AppNavigator(),
+            '/setup': (context) => const LoginAndSetup(),
           },
         );
       },
