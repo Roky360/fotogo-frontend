@@ -10,12 +10,14 @@ class FotogoSlidingUpPanel extends StatelessWidget {
   final Widget panelWidget;
   final Widget? bodyWidget;
   final PanelController panelController;
+  final VoidCallback? onPanelSlideCallback;
 
   const FotogoSlidingUpPanel({
     Key? key,
     required this.panelWidget,
     this.bodyWidget,
     required this.panelController,
+    this.onPanelSlideCallback,
   }) : super(key: key);
 
   Widget buildSlidingPanel({
@@ -52,7 +54,7 @@ class FotogoSlidingUpPanel extends StatelessWidget {
     );
   }
 
-  void onPanelSlide(double position, BuildContext context) {
+  void onPanelSlide(double position, BuildContext context) async {
     // Close the keyboard if user closes the panel
     if (position > .6) {
       return;
@@ -63,12 +65,13 @@ class FotogoSlidingUpPanel extends StatelessWidget {
     if (position <= .0) {
       panelController.hide();
     }
+
+    if (onPanelSlideCallback != null) onPanelSlideCallback!();
   }
 
   @override
   Widget build(BuildContext context) {
     return SlidingUpPanel(
-      collapsed: TextButton(onPressed: () {}, child: Text('daisduikb'),),
       panelBuilder: (scrollController) => buildSlidingPanel(
         panelWidget: panelWidget,
         scrollController: scrollController,
@@ -86,66 +89,3 @@ class FotogoSlidingUpPanel extends StatelessWidget {
     );
   }
 }
-
-// Widget getFotogoSlidingUpPanel(
-//   BuildContext context, {
-//   required Widget panelWidget,
-//   required Widget bodyWidget,
-//   required PanelController panelController,
-// }) {
-//   return SlidingUpPanel(
-//     panelBuilder: (scrollController) => buildSlidingPanel(
-//       panelWidget: panelWidget,
-//       scrollController: scrollController,
-//     ),
-//     body: bodyWidget,
-//     controller: panelController,
-//     maxHeight: 95.5.h,
-//     color: Theme.of(context).colorScheme.background,
-//     borderRadius: const BorderRadius.only(
-//         topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
-//     // parallaxEnabled: true,
-//     minHeight: 150,
-//     onPanelSlide: (position) => onPanelSlide(position, context),
-//   );
-// }
-//
-// Widget buildSlidingPanel({
-//   required Widget panelWidget,
-//   required ScrollController scrollController,
-// }) {
-//   return Material(
-//     color: Colors.transparent,
-//     child: Column(
-//       children: [
-//         buildHandle(),
-//         const SizedBox(
-//           height: 10,
-//         ),
-//         panelWidget,
-//       ],
-//     ),
-//   );
-// }
-//
-// Widget buildHandle() {
-//   return Padding(
-//     padding: const EdgeInsets.all(10),
-//     child: Container(
-//       width: 60,
-//       height: 8,
-//       decoration: BoxDecoration(
-//         // color: Colors.purpleAccent,
-//         color: const Color(0xD2D2D2FF),
-//         borderRadius: BorderRadius.circular(20),
-//       ),
-//     ),
-//   );
-// }
-//
-// void onPanelSlide(double position, BuildContext context) {
-//   if (position > .6) {
-//     return;
-//   }
-//   SystemChannels.textInput.invokeMethod('TextInput.hide');
-// }

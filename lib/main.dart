@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:fotogo/config/themes/light_theme.dart';
 import 'package:fotogo/pages/app_navigator/app_navigator.dart';
-import 'package:fotogo/pages/login_and_setup/setup.dart';
+import 'package:fotogo/pages/on_boarding_setup/on_boarding_page.dart';
 import 'package:sizer/sizer.dart';
 
 void main() {

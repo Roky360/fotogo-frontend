@@ -32,7 +32,8 @@ class _AppNavigatorState extends State<AppNavigator>
 
     data.navigationBarController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 300),
+      reverseDuration: const Duration(milliseconds: 400),
       value: 1,
     );
 
@@ -63,10 +64,23 @@ class _AppNavigatorState extends State<AppNavigator>
     }
   }
 
+  void onPanelClose() {
+    double pos = .03;
+
+    if (data.createAlbumPanelController.isPanelShown &&
+        data.createAlbumPanelController.panelPosition <= pos) {
+      data.navigationBarController.forward();
+    } else if (data.createAlbumPanelController.isPanelShown &&
+        data.createAlbumPanelController.panelPosition > pos) {
+      data.navigationBarController.reverse();
+    }
+  }
+
   Widget _getBody() {
     return FotogoSlidingUpPanel(
       panelController: data.createAlbumPanelController,
       panelWidget: CreateAlbumPage(),
+      onPanelSlideCallback: onPanelClose,
       bodyWidget: PageTransitionSwitcher(
         duration: const Duration(milliseconds: 500),
         transitionBuilder: (Widget child, Animation<double> primaryAnimation,

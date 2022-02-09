@@ -47,7 +47,7 @@ class CreateAlbumPage extends StatelessWidget {
             height: 35,
           ),
           // Dates
-          section(context,
+          FotogoSection(
               title: 'Dates',
               body: Row(
                 children: [
@@ -92,8 +92,7 @@ class CreateAlbumPage extends StatelessWidget {
             height: 50,
           ),
           // People
-          section(
-            context,
+          FotogoSection(
             title: 'People',
             body: TextButton(
                 onPressed: () {},

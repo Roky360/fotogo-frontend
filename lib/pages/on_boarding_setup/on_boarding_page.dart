@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fotogo/pages/login_and_setup/login.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'login.dart';
 
 class LoginAndSetup extends StatelessWidget {
   const LoginAndSetup({Key? key}) : super(key: key);
@@ -41,6 +41,7 @@ class LoginAndSetup extends StatelessWidget {
   Widget build(BuildContext context) {
     return IntroductionScreen(
       pages: getPages(context),
+      // rawPages: [],
       showNextButton: true,
       next: Text(
         'Next',
@@ -51,6 +52,8 @@ class LoginAndSetup extends StatelessWidget {
         style: Theme.of(context).textTheme.subtitle1,
       ),
       onDone: () {},
+      curve: Curves.easeInOutCirc,
+      // animationDuration: 500,
     );
   }
 }

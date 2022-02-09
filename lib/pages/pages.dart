@@ -5,4 +5,4 @@ export 'profile.dart';
 
 export 'create_album/create_album_view.dart';
 
-export 'login_and_setup/setup.dart';
+export 'on_boarding_setup/on_boarding_page.dart';
