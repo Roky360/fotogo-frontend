@@ -1,18 +1,18 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:fotogo/pages/albums/album_data.dart';
+import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
 class AlbumCover extends StatelessWidget {
   // TODO: move these to AlbumData class
-  final String title;
-  final String dates;
+  final AlbumData data;
 
   AlbumCover({
     Key? key,
-    this.title = 'Amsterdam',
-    this.dates =
-        '12-18 Jul, 2019', // TODO: figure dates format (what is the variable type..) AND make function to map this data type to string in various formats
+    required this.data,
+    // TODO: figure dates format (what is the variable type..) AND make function to map this data type to string in various formats
   }) : super(key: key);
 
   final Size _size = Size(90.w, 150);
@@ -21,6 +21,25 @@ class AlbumCover extends StatelessWidget {
   final double blurAmount = 3;
 
   final Color textFGColor = Colors.white;
+
+  String formatDatesToString(DateTimeRange timeRange) {
+    if (timeRange.start.year == timeRange.end.year) {
+      // Same year
+      if (timeRange.start.month == timeRange.end.month) {
+        // Same month and year
+        return DateFormat('dd-dd').format(timeRange.start);
+        // return "${timeRange.start.day}-${timeRange.end.day} "
+        //     "${timeRange.start.month}, "
+        //     "${timeRange.start.year == DateTime.now().year ? "" : timeRange.start.year}";
+      } else {
+        // Different months, same year
+        return "";
+      }
+    } else {
+      // Different years
+      return "";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +86,7 @@ class AlbumCover extends StatelessWidget {
                           children: [
                             // Title
                             Text(
-                              title,
+                              data.title,
                               style: Theme.of(context)
                                   .textTheme
                                   .headline4 /*.copyWith()*/,
@@ -75,7 +94,7 @@ class AlbumCover extends StatelessWidget {
                             const SizedBox(height: 2),
                             // Dates
                             Text(
-                              dates,
+                              formatDatesToString(data.dates),
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle1

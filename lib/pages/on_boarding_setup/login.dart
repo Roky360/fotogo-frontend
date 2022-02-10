@@ -21,7 +21,7 @@ class Login extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SvgPicture.asset('assets/logos/google-g-logo.svg', height: 20,),
+                SvgPicture.asset('assets/logos/Google__G__Logo.svg', height: 20,),
                 // Image.network(
                 //     'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/2048px-Google_%22G%22_Logo.svg.png',
                 //   width: 20,

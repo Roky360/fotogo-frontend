@@ -4,6 +4,7 @@ import 'package:fotogo/pages/albums/widgets/album_cover.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../widgets/section.dart';
+import 'album_data.dart';
 
 class AlbumsPage extends StatefulWidget {
   const AlbumsPage({Key? key}) : super(key: key);
@@ -39,7 +40,16 @@ class _AlbumsPageState extends State<AlbumsPage> {
             ),
             FotogoSection(
               title: 'Scheduled',
-              body: AlbumCover(),
+              body: AlbumCover(
+                data: AlbumData(
+                  title: "Amsterdam",
+                  dates: DateTimeRange(
+                    start: DateTime(2019, 7, 12),
+                    end: DateTime(2019, 7, 18),
+                  ),
+                  isShared: true,
+                ),
+              ),
             ),
           ],
         ),

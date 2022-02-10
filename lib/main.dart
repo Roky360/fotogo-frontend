@@ -20,7 +20,7 @@ class FotogoApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: "fotogo",
           theme: lightTheme,
-          initialRoute: '/setup',
+          initialRoute: '/page_navigator',
           routes: {
             '/page_navigator': (context) => const AppNavigator(),
             '/setup': (context) => const LoginAndSetup(),
