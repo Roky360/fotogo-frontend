@@ -45,7 +45,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
                   title: "Amsterdam",
                   dates: DateTimeRange(
                     start: DateTime(2019, 7, 12),
-                    end: DateTime(2019, 7, 18),
+                    end: DateTime(2020, 8, 18),
                   ),
                   isShared: true,
                 ),

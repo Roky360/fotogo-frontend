@@ -6,13 +6,11 @@ import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
 class AlbumCover extends StatelessWidget {
-  // TODO: move these to AlbumData class
   final AlbumData data;
 
   AlbumCover({
     Key? key,
     required this.data,
-    // TODO: figure dates format (what is the variable type..) AND make function to map this data type to string in various formats
   }) : super(key: key);
 
   final Size _size = Size(90.w, 150);
@@ -23,21 +21,25 @@ class AlbumCover extends StatelessWidget {
   final Color textFGColor = Colors.white;
 
   String formatDatesToString(DateTimeRange timeRange) {
+    final monthFormat = DateFormat('MMM');
+
     if (timeRange.start.year == timeRange.end.year) {
       // Same year
       if (timeRange.start.month == timeRange.end.month) {
         // Same month and year
-        return DateFormat('dd-dd').format(timeRange.start);
-        // return "${timeRange.start.day}-${timeRange.end.day} "
-        //     "${timeRange.start.month}, "
-        //     "${timeRange.start.year == DateTime.now().year ? "" : timeRange.start.year}";
+        return "${timeRange.start.day}-${timeRange.end.day} "
+            "${monthFormat.format(timeRange.start)}, "
+            "${timeRange.start.year == DateTime.now().year ? "" : timeRange.start.year}";
       } else {
         // Different months, same year
-        return "";
+        return "${timeRange.start.day} ${monthFormat.format(timeRange.start)} - "
+            "${timeRange.end.day} ${monthFormat.format(timeRange.end)}, "
+            "${timeRange.start.year == DateTime.now().year ? "" : timeRange.start.year}";
       }
     } else {
       // Different years
-      return "";
+      return "${timeRange.start.day} ${monthFormat.format(timeRange.start)} ${timeRange.start.year} - "
+          "${timeRange.end.day} ${monthFormat.format(timeRange.end)} ${timeRange.end.year}";
     }
   }
 
@@ -145,7 +147,13 @@ class AlbumCover extends StatelessWidget {
                 // menuMaxHeight: _size.height,
               ),
             ),
-          )
+          ),
+          InkWell(
+            onTap: () {
+              print(1);
+            },
+            borderRadius: BorderRadius.circular(_borderRadius),
+          ),
         ],
       ),
     );

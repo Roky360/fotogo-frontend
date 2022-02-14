@@ -9,7 +9,7 @@ import 'package:fotogo/widgets/sliding_up_panel.dart';
 import 'package:sizer/sizer.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import '../home.dart';
+import '../home_page.dart';
 
 class AppNavigator extends StatefulWidget {
   const AppNavigator({Key? key}) : super(key: key);
