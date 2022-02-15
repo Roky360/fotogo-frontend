@@ -56,7 +56,7 @@ class FotogoSlidingUpPanel extends StatelessWidget {
 
   void onPanelSlide(double position, BuildContext context) async {
     // Close the keyboard if user closes the panel
-    if (position > .6) {
+    if (position > .8) {
       return;
     }
     SystemChannels.textInput.invokeMethod('TextInput.hide');

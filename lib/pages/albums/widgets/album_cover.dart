@@ -1,7 +1,10 @@
 import 'dart:ui';
 
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:fotogo/pages/albums/album_content_page.dart';
 import 'package:fotogo/pages/albums/album_data.dart';
+import 'package:fotogo/utils/string_formatting.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
@@ -20,27 +23,9 @@ class AlbumCover extends StatelessWidget {
 
   final Color textFGColor = Colors.white;
 
-  String formatDatesToString(DateTimeRange timeRange) {
-    final monthFormat = DateFormat('MMM');
-
-    if (timeRange.start.year == timeRange.end.year) {
-      // Same year
-      if (timeRange.start.month == timeRange.end.month) {
-        // Same month and year
-        return "${timeRange.start.day}-${timeRange.end.day} "
-            "${monthFormat.format(timeRange.start)}, "
-            "${timeRange.start.year == DateTime.now().year ? "" : timeRange.start.year}";
-      } else {
-        // Different months, same year
-        return "${timeRange.start.day} ${monthFormat.format(timeRange.start)} - "
-            "${timeRange.end.day} ${monthFormat.format(timeRange.end)}, "
-            "${timeRange.start.year == DateTime.now().year ? "" : timeRange.start.year}";
-      }
-    } else {
-      // Different years
-      return "${timeRange.start.day} ${monthFormat.format(timeRange.start)} ${timeRange.start.year} - "
-          "${timeRange.end.day} ${monthFormat.format(timeRange.end)} ${timeRange.end.year}";
-    }
+  Route _createRoute() {
+    return MaterialPageRoute(
+        builder: (context) => AlbumContentPage(data: data));
   }
 
   @override
@@ -56,13 +41,17 @@ class AlbumCover extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: Image.asset(
-              'assets/test_images/amsterdam.jpg',
-              width: _size.width,
-              height: _size.height,
-              fit: BoxFit.cover,
+            child: Hero(
+              tag: data,
+              child: Image.asset(
+                'assets/test_images/amsterdam.jpg',
+                width: _size.width,
+                height: _size.height,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
+          // information with blur effect
           Align(
             alignment: Alignment.bottomCenter,
             child: ClipRRect(
@@ -91,12 +80,12 @@ class AlbumCover extends StatelessWidget {
                               data.title,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline4 /*.copyWith()*/,
+                                  .headline4,
                             ),
                             const SizedBox(height: 2),
                             // Dates
                             Text(
-                              formatDatesToString(data.dates),
+                              formatDateRangeToString(data.dates),
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle1
@@ -119,6 +108,16 @@ class AlbumCover extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.push(context, _createRoute());
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //       builder: (context) => const AlbumContentPage()));
+            },
+            borderRadius: BorderRadius.circular(_borderRadius),
           ),
           // options (dropdown menu)
           // TODO: make this more visible
@@ -147,12 +146,6 @@ class AlbumCover extends StatelessWidget {
                 // menuMaxHeight: _size.height,
               ),
             ),
-          ),
-          InkWell(
-            onTap: () {
-              print(1);
-            },
-            borderRadius: BorderRadius.circular(_borderRadius),
           ),
         ],
       ),
