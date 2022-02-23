@@ -1,48 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:fotogo/pages/albums/album_data.dart';
 import 'package:fotogo/utils/string_formatting.dart';
+import 'package:fotogo/widgets/popup_menu_button.dart';
 import 'package:sizer/sizer.dart';
 
 class AlbumContentPage extends StatelessWidget {
-  final AlbumData data;
-
-  AlbumContentPage({
+  const AlbumContentPage({
     Key? key,
     required this.data,
   }) : super(key: key);
 
-  final Size _coverSize = Size(100.w, 20.h);
+  final AlbumData data;
 
   List<Widget> _getActions() {
     return [
-      IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
+      // IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
+      fotogoPopupMenuButton(
+          items: [
+            MenuItem('Delete'),
+          ]
+      )
     ];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   foregroundColor: Theme.of(context).colorScheme.primary,
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      // ),
       backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
         child: CustomScrollView(
           // physics: const BouncingScrollPhysics(),
+          controller: ScrollController(),
           slivers: [
             SliverAppBar(
               expandedHeight: 25.h,
-              // title: Text(data.title),
               foregroundColor: Theme.of(context).colorScheme.primary,
               backgroundColor: Theme.of(context).colorScheme.surface,
               pinned: true,
               stretch: true,
               actions: _getActions(),
+              title: Text(data.title),
               flexibleSpace: FlexibleSpaceBar(
                 expandedTitleScale: 1.1,
-                // positioned 50 50
                 background: Stack(
                   children: [
                     Positioned(
@@ -53,11 +52,10 @@ class AlbumContentPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Title
-                          Text(
-                            data.title,
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                          // const SizedBox(height: 10),
+                          // Text(
+                          //   data.title,
+                          //   style: Theme.of(context).textTheme.headline6,
+                          // ),
                           const Spacer(),
                           // Dates
                           Row(
@@ -77,7 +75,7 @@ class AlbumContentPage extends StatelessWidget {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: 10),
                           // Location
                           Row(
                             children: [
@@ -139,13 +137,13 @@ class AlbumContentPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                // title: Text('fsafsa'),
                 stretchModes: const [
                   // StretchMode.zoomBackground,
                   // StretchMode.blurBackground,
                 ],
               ),
             ),
+            // Images
             SliverToBoxAdapter(
               child: Column(
                 children: List.generate(
@@ -159,20 +157,6 @@ class AlbumContentPage extends StatelessWidget {
                         )),
               ),
             ),
-
-            // SliverList(
-            //     delegate: SliverChildBuilderDelegate(
-            //   (context, index) {
-            //     return SizedBox(
-            //       width: 100.w,
-            //       child: OutlinedButton(
-            //         onPressed: () {},
-            //         child: Text(index.toString()),
-            //       ),
-            //     );
-            //   },
-            //   childCount: 30,
-            // )),
           ],
         ),
       ),

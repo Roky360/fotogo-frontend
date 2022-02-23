@@ -1,11 +1,10 @@
 import 'dart:ui';
 
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:fotogo/pages/albums/album_content_page.dart';
 import 'package:fotogo/pages/albums/album_data.dart';
 import 'package:fotogo/utils/string_formatting.dart';
-import 'package:intl/intl.dart';
+import 'package:fotogo/widgets/popup_menu_button.dart';
 import 'package:sizer/sizer.dart';
 
 class AlbumCover extends StatelessWidget {
@@ -41,15 +40,15 @@ class AlbumCover extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: Hero(
+            child: /*Hero(
               tag: data,
-              child: Image.asset(
+              child:*/ Image.asset(
                 'assets/test_images/amsterdam.jpg',
                 width: _size.width,
                 height: _size.height,
                 fit: BoxFit.cover,
               ),
-            ),
+            // ),
           ),
           // information with blur effect
           Align(
@@ -78,9 +77,7 @@ class AlbumCover extends StatelessWidget {
                             // Title
                             Text(
                               data.title,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline4,
+                              style: Theme.of(context).textTheme.headline4,
                             ),
                             const SizedBox(height: 2),
                             // Dates
@@ -95,13 +92,15 @@ class AlbumCover extends StatelessWidget {
                         ),
                         const Spacer(),
                         // Collaboration icon
-                        Padding(
-                          padding: EdgeInsets.all(margin),
-                          child: Icon(
-                            Icons.groups,
-                            color: textFGColor,
-                          ),
-                        ),
+                        data.isShared
+                            ? Padding(
+                                padding: EdgeInsets.all(margin),
+                                child: Icon(
+                                  Icons.groups,
+                                  color: textFGColor,
+                                ),
+                              )
+                            : const SizedBox(),
                       ],
                     ),
                   ),
@@ -121,30 +120,14 @@ class AlbumCover extends StatelessWidget {
           ),
           // options (dropdown menu)
           // TODO: make this more visible
-          Padding(
-            padding: EdgeInsets.only(right: margin),
-            child: Align(
-              alignment: Alignment.topRight,
-              child: DropdownButton<String>(
-                items: <String>[
-                  'Share',
-                  'Delete',
-                  'C',
-                  'D',
-                ].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (_) {},
-                icon: Icon(
-                  Icons.more_vert,
-                  color: textFGColor,
-                ),
-                elevation: 8,
-                // menuMaxHeight: _size.height,
-              ),
+          Align(
+            alignment: Alignment.topRight,
+            child: fotogoPopupMenuIconButton(
+              items: [
+                IconMenuItem('Share', Icons.share),
+                IconMenuItem('Delete', Icons.delete),
+              ],
+              iconColor: textFGColor,
             ),
           ),
         ],

@@ -5,7 +5,7 @@ import 'package:fotogo/pages/app_navigator/app_navigator.dart';
 import 'package:fotogo/pages/on_boarding_setup/on_boarding_page.dart';
 import 'package:sizer/sizer.dart';
 
-void main() {
+void main() async {
   runApp(const FotogoApp());
 }
 

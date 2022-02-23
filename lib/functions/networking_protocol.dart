@@ -9,8 +9,6 @@ class NetworkingProtocol {
 
   Future<String?> createConnection(List<int> data) async {
     String? response;
-    Stream<Uint8List> stream = const Stream.empty();
-    StreamController streamController = StreamController();
 
     final socket = await Socket.connect(_host, _port);
     socket.listen(

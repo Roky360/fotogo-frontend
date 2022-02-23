@@ -38,8 +38,6 @@ ThemeData themeData = ThemeData(
     onBackground: Colors.amber,
     secondary: Colors.grey.shade600,
     onSecondary: Colors.amber,
-    primaryVariant: Colors.white,
-    secondaryVariant: Colors.white,
   ),
 
   appBarTheme: const AppBarTheme(

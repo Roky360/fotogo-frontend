@@ -17,7 +17,7 @@ class FotogoBottomNavigationBar extends StatelessWidget {
       (_containerSize.width - _barSize.width) / 2;
 
   final Function onTabTap;
-  final Function onMiddleButtonTap;
+  final VoidCallback onMiddleButtonTap;
 
   final Animation controller;
 
@@ -91,10 +91,11 @@ class FotogoBottomNavigationBar extends StatelessWidget {
                 width: _barSize.height + 7,
                 height: _barSize.height + 7,
                 child: FloatingActionButton(
-                  onPressed: () => onMiddleButtonTap(),
+                  onPressed: onMiddleButtonTap,
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                   highlightElevation: 0,
+
                   // on tap down
                   splashColor: Colors.transparent,
                   child: AppWidgets.fotogoLogoCircle(height: null),
@@ -112,7 +113,7 @@ class FotogoBottomNavigationBar extends StatelessWidget {
             width: _tabSize.width,
             height: _barSize.height,
             decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(.5),
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(.6),
                 borderRadius: BorderRadius.circular(_borderRadius)),
           ),
         ),

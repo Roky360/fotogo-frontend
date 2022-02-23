@@ -1,12 +1,23 @@
-import 'package:flutter/material.dart';
-import 'package:sizer/sizer.dart';
-import 'package:fotogo/widgets/section.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+part of '../create_album_page.dart';
 
-class CreateAlbumPage extends StatelessWidget {
-  CreateAlbumPage({Key? key}) : super(key: key);
-  final FocusNode titleNode = FocusNode(debugLabel: "FUCK");
-  final DateRangePickerController controller = DateRangePickerController();
+class CreateAlbumCreating extends StatefulWidget {
+  final AlbumScheduleData data;
+
+  const CreateAlbumCreating({Key? key, required this.data}) : super(key: key);
+
+  @override
+  _CreateAlbumCreatingState createState() => _CreateAlbumCreatingState();
+}
+
+class _CreateAlbumCreatingState extends State<CreateAlbumCreating> {
+  final TextEditingController controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller.text = widget.data.title;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +37,8 @@ class CreateAlbumPage extends StatelessWidget {
           SizedBox(
               width: 90.w,
               child: TextField(
-                focusNode: titleNode,
+                enabled: false,
+                controller: controller,
                 decoration: InputDecoration(
                   hintText: 'Title',
                   contentPadding: const EdgeInsets.fromLTRB(3, 20, 0, 0),
@@ -52,38 +64,15 @@ class CreateAlbumPage extends StatelessWidget {
               body: Row(
                 children: [
                   TextButton(
-                      onPressed: () async {
-                        showDialog<Widget>(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return SfDateRangePicker(
-                                showActionButtons: true,
-                                onSubmit: (Object? value) {
-                                  Navigator.pop(context);
-                                },
-                                onCancel: () {
-                                  Navigator.pop(context);
-                                },
-                              );
-                            });
-
-                        // final datePicked = await
-                        // showDatePicker(
-                        //   context: context,
-                        //   initialDate: DateTime.now(),
-                        //   firstDate: DateTime.now(),
-                        //   lastDate: DateTime(DateTime.now().year + 5),
-                        //   helpText: "SELECT RANGE DATES",
-                        // );
-                      },
-                      child: const Text('Choose dates'),
+                      onPressed: null,
+                      child: Text(formatDateRangeToString(widget.data.dates)),
                       style: Theme.of(context).textButtonTheme.style),
                   const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 20),
+                  const Padding(
+                    padding: EdgeInsets.only(right: 20),
                     child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.event),
+                      onPressed: null,
+                      icon: Icon(Icons.event),
                     ),
                   )
                 ],
@@ -95,17 +84,17 @@ class CreateAlbumPage extends StatelessWidget {
           FotogoSection(
             title: 'People',
             body: TextButton(
-                onPressed: () {},
+                onPressed: null,
                 child: const Text('Add people to your album'),
                 style: Theme.of(context).textButtonTheme.style),
           ),
           SizedBox(
             height: 25.h,
           ),
+          // Submit button
           ElevatedButton(
-            onPressed: () {},
-            child: const Text('Create album schedule'),
-            style: Theme.of(context).elevatedButtonTheme.style,
+            onPressed: null,
+            child: AppWidgets.circularLoadingAnimation(),
           ),
         ],
       ),

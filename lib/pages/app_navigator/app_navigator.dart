@@ -1,15 +1,10 @@
-import 'dart:ui';
-
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:fotogo/pages/app_navigator/app_navigator_data.dart';
-import 'package:fotogo/pages/create_album/create_album_view.dart';
+import 'package:fotogo/pages/create_album/create_album_page.dart';
 import 'package:fotogo/widgets/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:fotogo/widgets/sliding_up_panel.dart';
-import 'package:sizer/sizer.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-
-import '../home_page.dart';
 
 class AppNavigator extends StatefulWidget {
   const AppNavigator({Key? key}) : super(key: key);
@@ -56,12 +51,18 @@ class _AppNavigatorState extends State<AppNavigator>
 
   void openCreateAlbumPanel() async {
     await data.navigationBarController.reverse();
-    if (!data.createAlbumPanelController.isPanelOpen) {
-      await data.createAlbumPanelController.show();
-      data.createAlbumPanelController.animatePanelToPosition(1,
-          duration: const Duration(milliseconds: 700),
-          curve: Curves.easeOutExpo);
-    }
+    await data.createAlbumPanelController.show();
+    data.createAlbumPanelController.animatePanelToPosition(1,
+        duration: const Duration(milliseconds: 700),
+        curve: Curves.easeOutExpo);
+  }
+
+  void closeCreateAlbumPanel() async {
+    // TODO: panel not closing smoothly. duration and curve have no effect.
+    data.createAlbumPanelController.animatePanelToPosition(0,
+        duration: const Duration(milliseconds: 5000),
+        curve: Curves.easeOutExpo);
+    await data.createAlbumPanelController.hide();
   }
 
   void onPanelClose() {
@@ -79,7 +80,7 @@ class _AppNavigatorState extends State<AppNavigator>
   Widget _getBody() {
     return FotogoSlidingUpPanel(
       panelController: data.createAlbumPanelController,
-      panelWidget: CreateAlbumPage(),
+      panelWidget: CreateAlbumPage(closePanelCallBack: closeCreateAlbumPanel,),
       onPanelSlideCallback: onPanelClose,
       bodyWidget: PageTransitionSwitcher(
         duration: const Duration(milliseconds: 500),

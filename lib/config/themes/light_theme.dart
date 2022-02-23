@@ -13,38 +13,34 @@ final ThemeData lightTheme = ThemeData.light().copyWith(
     secondary: Color(0xFF4C76A7),
     surface: Color(0xFFB7F2FF),
     // surface: Color(0xffb3e6ff),
-    onSurface: Color(0xFF56B1B7),
+    onSurface: Color(0xFF2A7279),
+    // onSurface: Color(0xFF56B1B7),
+    shadow: Color(0xFFC4E0FF),
   ),
-
-  shadowColor: const Color(0xFFC4E0FF),
 
   // Appbar
   appBarTheme: const AppBarTheme(
     shadowColor: Colors.white,
+    color: Color(0xFF013250),
     // color: Color(0xFF4C76A7),
-    color: Color(0xFFC4E0FF),
   ),
 
   // Buttons
   textButtonTheme: TextButtonThemeData(
-      style: ButtonStyle(
-    padding: MaterialStateProperty.all(
-        const EdgeInsets.symmetric(horizontal: 17, vertical: 12)),
-    textStyle: MaterialStateProperty.all<TextStyle>(TextStyle(
-        fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.normal)),
-    backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFFCBE5FF)),
-    shape: MaterialStateProperty.all(
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
+      style: TextButton.styleFrom(
+    padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 12),
+    textStyle: TextStyle(
+        fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.normal),
+    backgroundColor: const Color(0xFFCBE5FF),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
   )),
 
   elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ButtonStyle(
-    textStyle: MaterialStateProperty.all<TextStyle>(TextStyle(
-        fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.bold)),
-    padding: MaterialStateProperty.all(
-        const EdgeInsets.symmetric(horizontal: 37, vertical: 16)),
-    shape: MaterialStateProperty.all(
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+      style: ElevatedButton.styleFrom(
+    textStyle: TextStyle(
+        fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.bold),
+    padding: const EdgeInsets.symmetric(horizontal: 37, vertical: 16),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
   )),
 
   // Text
@@ -80,7 +76,18 @@ final ThemeData lightTheme = ThemeData.light().copyWith(
       fontSize: 11,
       fontWeight: FontWeight.bold,
       color: const Color(0xffdef2ff),
-      // color: const Color(0xFF013250),
     ),
   ),
+
+  tooltipTheme: TooltipThemeData(
+      textStyle: TextStyle(
+        fontFamily: fontFamily,
+        fontWeight: FontWeight.normal,
+      ),
+      decoration: BoxDecoration(
+          color: const Color(0xFF013250).withOpacity(.7),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: const Color(0xFF0E6092).withOpacity(.8),
+          ))),
 );
