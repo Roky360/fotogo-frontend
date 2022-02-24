@@ -3,9 +3,19 @@ import 'dart:io';
 
 import 'dart:typed_data';
 
-class NetworkingProtocol {
-  final _host = "192.168.105.109";
-  final _port = 5938;
+class Client {
+  late final String _host;
+  late final int _port;
+
+  Client({
+    host = "192.168.105.109",
+    port = 5938,
+  }) {
+    _host = host;
+    _port = port;
+
+
+  }
 
   Future<String?> createConnection(List<int> data) async {
     String? response;
@@ -26,14 +36,12 @@ class NetworkingProtocol {
       },
     );
 
-    // final socket = await Socket.connect(hostname, port);
-
-    sendRequest(socket, data);
+    _sendRequest(socket, data);
 
     return response;
   }
 
-  void sendRequest(Socket sock, List<int> data) async {
+  void _sendRequest(Socket sock, List<int> data) async {
     int payloadLength = data.length;
     Uint8List bytes = Uint8List(4)
       ..buffer.asByteData().setInt32(0, payloadLength, Endian.big);
