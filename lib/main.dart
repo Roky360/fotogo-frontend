@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'package:fotogo/config/themes/light_theme.dart';
 import 'package:fotogo/pages/app_navigator/app_navigator.dart';
@@ -6,6 +7,9 @@ import 'package:fotogo/pages/on_boarding_setup/on_boarding_page.dart';
 import 'package:sizer/sizer.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(const FotogoApp());
 }
 

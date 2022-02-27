@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "898881886027",
+    "project_id": "fotogo-5e99f",
+    "storage_bucket": "fotogo-5e99f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:898881886027:android:5ce9021f98e369c5bebace",
+        "android_client_info": {
+          "package_name": "com.example.fotogo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "898881886027-tkiiir8v0oibjmbkdf50nbav0nofn7h1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCViZoWbqX425ZXEcOJ29ICYksVpfkGqFo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "898881886027-tkiiir8v0oibjmbkdf50nbav0nofn7h1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
