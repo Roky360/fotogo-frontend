@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'login.dart';
+import 'login/login.dart';
 
 class LoginAndSetup extends StatelessWidget {
   const LoginAndSetup({Key? key}) : super(key: key);
@@ -12,7 +12,7 @@ class LoginAndSetup extends StatelessWidget {
           'PAGE 1',
           style: Theme.of(context).textTheme.headline5,
         ),
-        bodyWidget: const Login(),
+        bodyWidget: Login(),
       ),
       PageViewModel(
         titleWidget: Text(
