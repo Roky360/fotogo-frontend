@@ -94,7 +94,7 @@ class _CreateAlbumCreatingState extends State<CreateAlbumCreating> {
           // Submit button
           ElevatedButton(
             onPressed: null,
-            child: AppWidgets.circularLoadingAnimation(),
+            child: AppWidgets.fotogoCircularLoadingAnimation(),
           ),
         ],
       ),

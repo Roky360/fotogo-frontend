@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fotogo/pages/auth_checker.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'login/login.dart';
+import 'sign_in.dart';
 
 class LoginAndSetup extends StatelessWidget {
   const LoginAndSetup({Key? key}) : super(key: key);
@@ -12,7 +13,7 @@ class LoginAndSetup extends StatelessWidget {
           'PAGE 1',
           style: Theme.of(context).textTheme.headline5,
         ),
-        bodyWidget: Login(),
+        bodyWidget: const AuthChecker(),
       ),
       PageViewModel(
         titleWidget: Text(

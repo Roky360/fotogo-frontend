@@ -1,7 +1,9 @@
 import 'user.dart';
 
 class App {
-  final User _user;
+  final FUser _user;
+
+  FUser get user => _user;
 
   App(this._user);
 }
