@@ -53,8 +53,7 @@ class _AppNavigatorState extends State<AppNavigator>
     await data.navigationBarController.reverse();
     await data.createAlbumPanelController.show();
     data.createAlbumPanelController.animatePanelToPosition(1,
-        duration: const Duration(milliseconds: 700),
-        curve: Curves.easeOutExpo);
+        duration: const Duration(milliseconds: 700), curve: Curves.easeOutExpo);
   }
 
   void closeCreateAlbumPanel() async {
@@ -80,7 +79,9 @@ class _AppNavigatorState extends State<AppNavigator>
   Widget _getBody() {
     return FotogoSlidingUpPanel(
       panelController: data.createAlbumPanelController,
-      panelWidget: CreateAlbumPage(closePanelCallBack: closeCreateAlbumPanel,),
+      panelWidget: CreateAlbumPage(
+        closePanelCallBack: closeCreateAlbumPanel,
+      ),
       onPanelSlideCallback: onPanelClose,
       bodyWidget: PageTransitionSwitcher(
         duration: const Duration(milliseconds: 500),

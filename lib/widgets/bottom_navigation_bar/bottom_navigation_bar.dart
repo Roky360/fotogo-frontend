@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:fotogo/config/constants/theme_constants.dart';
 import 'package:fotogo/pages/app_navigator/app_navigator_data.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:sizer/sizer.dart';
@@ -9,7 +10,7 @@ class FotogoBottomNavigationBar extends StatelessWidget {
   final AppNavigatorData data;
   final Color foregroundColor;
 
-  final Size _barSize = Size(92.w, 60);
+  final Size _barSize = Size(/*92.w*/ 100.w - pageMargin * 2, 60);
   final Size _containerSize = Size(100.w, 130);
   late final Size _tabSize = Size(_barSize.width * .188, _barSize.height);
   late final double _borderRadius = _barSize.height * .3;

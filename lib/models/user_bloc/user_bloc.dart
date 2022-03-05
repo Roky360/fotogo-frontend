@@ -1,7 +1,7 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/providers/google_sign_in.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:meta/meta.dart';
 
 part 'user_event.dart';
 
@@ -17,7 +17,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit(UserLoading());
 
       try {
-        if (!await _googleSignInProvider.login()) {
+        if (!(await _googleSignInProvider.login())) {
           emit(UserSignedOut());
           return;
         }
@@ -26,18 +26,40 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(UserError(e.toString()));
       }
     });
+    on<UserSignInSilentlyEvent>((event, emit) async {
+      emit(UserLoading());
+
+      try {
+        if (!(await _googleSignInProvider.loginSilently())) {
+          emit(UserSignedOut());
+          return;
+        }
+        emit(UserSignedIn());
+      } catch (e) {
+        emit(UserError(e.toString()));
+      }
+    });
     on<UserSignUpEvent>((event, emit) async {
       emit(UserLoading());
     });
+    on<UserConfirmedAccountEvent>((event, emit) => emit(UserSignedIn()));
     on<UserSignOutEvent>((event, emit) async {
       emit(UserLoading());
 
       try {
         await _googleSignInProvider.logout();
+
         emit(UserSignedOut());
       } catch (e) {
         emit(UserError(e.toString()));
       }
     });
+  }
+
+  void signOut(BuildContext context) {
+    context.read<UserBloc>().add(const UserSignOutEvent());
+    if (ModalRoute.of(context)?.settings.name != '/launcher') { //TODO: change 'launcher' to checker
+      Navigator.pushReplacementNamed(context, '/auth_checker');
+    }
   }
 }

@@ -1,7 +1,8 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
+import 'package:fotogo/pages/albums/album_content_page.dart';
 import 'package:fotogo/pages/albums/widgets/album_cover.dart';
-import 'package:sizer/sizer.dart';
 
 import '../../widgets/section.dart';
 import 'album_data.dart';
@@ -42,26 +43,47 @@ class _AlbumsPageState extends State<AlbumsPage> {
             body: Column(
               children: [
                 Column(
-                  children: List.generate(
-                      4,
-                      (index) => Column(
-                        children: [
-                          AlbumCover(
-                                data: AlbumData(
-                                  title: "Amsterdam",
-                                  dates: DateTimeRange(
-                                    start: DateTime(2019, 7, 12),
-                                    end: DateTime(2020, 8, 18),
-                                  ),
-                                  isShared: true,
-                                  tags: ['Food', 'Landscape', 'People'],
-                                ),
+                  children: List.generate(4, (index) {
+                    AlbumData data = AlbumData(
+                      title: "Amsterdam",
+                      dates: DateTimeRange(
+                        start: DateTime(2019, 7, 12),
+                        end: DateTime(2020, 8, 18),
+                      ),
+                      isShared: true,
+                      tags: ['Food', 'Landscape', 'People'],
+                    );
+
+                    return Column(
+                      children: [
+                        OpenContainer(
+                          transitionType: ContainerTransitionType.fadeThrough,
+                          closedBuilder: (context, action) {
+                            return GestureDetector(
+                              onTap: action,
+                              child: AlbumCover(
+                                data: data,
                               ),
-                          const SizedBox(height: 20,),
-                        ],
-                      )),
+                            );
+                          },
+                          openBuilder: (context, action) {
+                            return AlbumContentPage(data: data);
+                          },
+                          closedShape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
+                          transitionDuration: const Duration(milliseconds: 400),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                      ],
+                    );
+                  }),
                 ),
-                const SizedBox(height: 100,)
+                const SizedBox(
+                  height: 100,
+                )
               ],
             ),
           ),

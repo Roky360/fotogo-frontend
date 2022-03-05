@@ -3,58 +3,61 @@ import 'package:fotogo/pages/auth_checker.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'sign_in.dart';
 
-class LoginAndSetup extends StatelessWidget {
-  const LoginAndSetup({Key? key}) : super(key: key);
+class OnBoardingPage extends StatelessWidget {
+  const OnBoardingPage({Key? key}) : super(key: key);
 
-  List<PageViewModel> getPages(BuildContext context) {
+  List<PageViewModel> _getPages(BuildContext context) {
+    PageDecoration pageDecoration = const PageDecoration(
+      imageAlignment: Alignment.center,
+      // fullScreen: true,
+      imageFlex: 2,
+      bodyFlex: 4,
+    );
+
     return [
+      // welcome
       PageViewModel(
-        titleWidget: Text(
-          'PAGE 1',
-          style: Theme.of(context).textTheme.headline5,
+        image: Container(
+          color: Colors.grey[200],
         ),
-        bodyWidget: const AuthChecker(),
-      ),
-      PageViewModel(
+        decoration: pageDecoration,
         titleWidget: Text(
-          'PAGE 2',
-          style: Theme.of(context).textTheme.headline5,
-        ),
-        bodyWidget: Text(
-          'body',
-          style: Theme.of(context).textTheme.headline6,
-        ),
-      ),
-      PageViewModel(
-        titleWidget: Text(
-          'PAGE 3',
+          'Welcome',
           style: Theme.of(context).textTheme.headline5,
         ),
         bodyWidget: Text(
-          'body',
-          style: Theme.of(context).textTheme.headline6,
+          'blah blah\n\n\n\n\n\n\\n\n\n\n\n\s\\d\\n\n\n\n\\n\n\n\ndsgds',
+          style: Theme.of(context).textTheme.headline5,
         ),
+        useRowInLandscape: true
       ),
+      // preferences
+      // PageViewModel(
+      //   titleWidget: Text(
+      //     'Initial Preferences',
+      //     style: Theme.of(context).textTheme.headline5,
+      //   ),
+      //   bodyWidget: Text(
+      //     'body',
+      //     style: Theme.of(context).textTheme.headline6,
+      //   ),
+      // ),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
     return IntroductionScreen(
-      pages: getPages(context),
-      // rawPages: [],
-      showNextButton: true,
-      next: Text(
-        'Next',
-        style: Theme.of(context).textTheme.subtitle1,
-      ),
-      done: Text(
-        'Finish!',
-        style: Theme.of(context).textTheme.subtitle1,
-      ),
-      onDone: () {},
+      pages: _getPages(context),
+      showBackButton: true,
+      // isProgress: false,
+      // freeze: true,
       curve: Curves.easeInOutCirc,
       // animationDuration: 500,
+      next: const Icon(Icons.arrow_forward),
+      back: const Icon(Icons.arrow_back),
+      done: Text('Continue', style: Theme.of(context).textTheme.subtitle1,),
+      onDone: () => Navigator.pushReplacementNamed(context, '/auth_checker'),
     );
   }
 }

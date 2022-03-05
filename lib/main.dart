@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:fotogo/config/themes/light_theme.dart';
+import 'package:fotogo/launcher.dart';
 import 'package:fotogo/pages/app_navigator/app_navigator.dart';
 import 'package:fotogo/pages/auth_checker.dart';
 import 'package:fotogo/pages/on_boarding_setup/on_boarding_page.dart';
@@ -34,10 +35,12 @@ class FotogoApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: "fotogo",
             theme: lightTheme,
-            initialRoute: '/setup',
+            initialRoute: '/launcher',
             routes: {
-              '/page_navigator': (context) => const AppNavigator(),
-              '/setup': (context) => const LoginAndSetup(),
+              '/launcher': (context) => FotogoLauncher(),
+              '/app_navigator': (context) => const AppNavigator(),
+
+              '/setup': (context) => const OnBoardingPage(),
               '/auth_checker': (context) => const AuthChecker(),
             },
           ),
