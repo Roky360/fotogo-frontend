@@ -20,7 +20,6 @@ class AuthChecker extends StatelessWidget {
             child: BlocConsumer<UserBloc, UserState>(
               listener: (context, state) {
                 if (state is UserSignedIn) {
-                  print('push');
                   Navigator.pushReplacementNamed(context, '/app_navigator');
                 }
               },

@@ -49,14 +49,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    GoogleSignInAccount account = context.read<UserBloc>().user!;
-
     return Center(
       child: Column(
         children: [
-          _getUserAvatar(account.photoUrl!),
+          _getUserAvatar(context.read<UserBloc>().user!.photoUrl ?? ''),
           const SizedBox(height: 15),
-          Text(account.displayName ?? '', style: Theme.of(context).textTheme.headline6,),
+          Text(context.read<UserBloc>().user!.displayName ?? '', style: Theme.of(context).textTheme.headline6,),
           // change account button
           Padding(
             padding: const EdgeInsets.only(top: 10, left: pageMargin),
