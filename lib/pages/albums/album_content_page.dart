@@ -39,7 +39,7 @@ class AlbumContentPage extends StatelessWidget {
               pinned: true,
               stretch: true,
               actions: _getActions(),
-              title: Text(data.title),
+              title: Text(data.title, overflow: TextOverflow.ellipsis),
               flexibleSpace: FlexibleSpaceBar(
                 expandedTitleScale: 1.1,
                 background: Stack(

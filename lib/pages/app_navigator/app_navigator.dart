@@ -91,6 +91,7 @@ class _AppNavigatorState extends State<AppNavigator>
           animation: primaryAnimation,
           secondaryAnimation: secondaryAnimation,
           child: child,
+          // fillColor: Colors.greenAccent,
           fillColor: Theme.of(context).colorScheme.background,
         ),
         child: data.routes[data.routeIndex].widget,

@@ -12,7 +12,7 @@ class AuthChecker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // context.read<UserBloc>().add(const UserSignInSilentlyEvent());
+    context.read<UserBloc>().add(const UserSignInSilentlyEvent());
 
     return Scaffold(
       body: SafeArea(

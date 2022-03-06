@@ -67,47 +67,41 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      bottom: false,
-      child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
-        body: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Center(
-            child: Column(
-              children: [
-                TextButton(
-                  onPressed: () async {
-                    final File? img = await pickImage();
-                    if (img == null) return;
+    return Padding(
+      padding: const EdgeInsets.all(15),
+      child: Center(
+        child: Column(
+          children: [
+            TextButton(
+              onPressed: () async {
+                final File? img = await pickImage();
+                if (img == null) return;
 
-                    final imgBytes = await readFileBytes(img.path);
-                    sendBytesToServer(imgBytes);
-                  },
-                  child: const Text("Send image to server"),
-                ),
-                const SizedBox(height: 20),
-                TextButton(
-                  onPressed: () async {
-                    if (widget.data.createAlbumPanelController.isPanelShown) {
-                      widget.data.createAlbumPanelController.close();
-                      widget.data.createAlbumPanelController.hide();
-                    } else {
-                      await widget.data.createAlbumPanelController.show();
-                      widget.data.createAlbumPanelController.open();
-                    }
-                  },
-                  child: const Text("Open Create Album panel"),
-                ),
-                TextButton(
-                  onPressed: () {
-                    widget.data.navigationBarController.forward();
-                  },
-                  child: const Text("Show BNB"),
-                ),
-              ],
+                final imgBytes = await readFileBytes(img.path);
+                sendBytesToServer(imgBytes);
+              },
+              child: const Text("Send image to server"),
             ),
-          ),
+            const SizedBox(height: 20),
+            TextButton(
+              onPressed: () async {
+                if (widget.data.createAlbumPanelController.isPanelShown) {
+                  widget.data.createAlbumPanelController.close();
+                  widget.data.createAlbumPanelController.hide();
+                } else {
+                  await widget.data.createAlbumPanelController.show();
+                  widget.data.createAlbumPanelController.open();
+                }
+              },
+              child: const Text("Open Create Album panel"),
+            ),
+            TextButton(
+              onPressed: () {
+                widget.data.navigationBarController.forward();
+              },
+              child: const Text("Show BNB"),
+            ),
+          ],
         ),
       ),
     );
