@@ -56,7 +56,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     });
   }
 
-  void signOut(BuildContext context) {
+  void signOut(BuildContext context) async {
     context.read<UserBloc>().add(const UserSignOutEvent());
     if (ModalRoute.of(context)?.settings.name != '/launcher') { //TODO: change 'launcher' to checker
       Navigator.pushReplacementNamed(context, '/auth_checker');
