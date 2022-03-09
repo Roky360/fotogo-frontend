@@ -12,6 +12,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   GoogleSignInAccount? get user => _googleSignInProvider.user;
 
+  String? get userName => user!.displayName?.split(' ')[0];
+
   UserBloc(this._googleSignInProvider) : super(UserSignedOut()) {
     on<UserSignInEvent>((event, emit) async {
       emit(UserLoading());

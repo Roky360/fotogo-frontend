@@ -80,7 +80,7 @@ class _AppNavigatorState extends State<AppNavigator>
     return FotogoSlidingUpPanel(
       panelController: data.createAlbumPanelController,
       panelWidget: CreateAlbumPage(
-        closePanelCallBack: closeCreateAlbumPanel,
+        closePanelCallback: closeCreateAlbumPanel,
       ),
       onPanelSlideCallback: onPanelClose,
       bodyWidget: PageTransitionSwitcher(

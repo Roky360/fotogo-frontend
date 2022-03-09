@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
 import 'package:fotogo/models/user_bloc/user_bloc.dart';
-import 'package:fotogo/widgets/app_widgets.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sizer/sizer.dart';
 
 class ProfilePage extends StatefulWidget {

@@ -3,6 +3,9 @@ import 'dart:io';
 
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
 class Client {
   late final String _host;
   late final int _port;
@@ -13,8 +16,6 @@ class Client {
   }) {
     _host = host;
     _port = port;
-
-
   }
 
   Future<String?> createConnection(List<int> data) async {
@@ -66,4 +67,21 @@ class Client {
   //   print("DATA SENT TO SERVER");
   //   socket.close();
   // }
+}
+
+
+class Misc {
+  Future pickImage() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image == null) return;
+
+    return File(image.path);
+
+  }
+
+  Future readFileBytes(String path) async {
+    final File file = File(path);
+    final bytes = await file.readAsBytes();
+    return bytes;
+  }
 }

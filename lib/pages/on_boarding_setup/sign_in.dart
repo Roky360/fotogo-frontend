@@ -44,11 +44,6 @@ class SignInPage extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 30),
-        ElevatedButton(
-            onPressed: () =>
-                context.read<UserBloc>().add(const UserSignOutEvent()),
-            child: const Text('Logout')),
       ],
     );
   }

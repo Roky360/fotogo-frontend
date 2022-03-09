@@ -26,7 +26,7 @@ class OnBoardingPage extends StatelessWidget {
           style: Theme.of(context).textTheme.headline5,
         ),
         bodyWidget: Text(
-          'blah blah\n\n\n\n\n\n\\n\n\n\n\n\s\\d\\n\n\n\n\\n\n\n\ndsgds',
+          'blah blah\n\n\n\n\n\n\\n\n\n\n\ns\\d\\n\n\n\n\\n\n\n\ndsgds',
           style: Theme.of(context).textTheme.headline5,
         ),
         useRowInLandscape: true
