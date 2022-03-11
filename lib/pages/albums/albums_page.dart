@@ -50,12 +50,14 @@ class _AlbumsPageState extends State<AlbumsPage> {
                     ),
                     isShared: true,
                     tags: ['Food', 'Landscape', 'People'],
+                    coverImagePath: 'assets/test_images/amsterdam.jpg'
                   );
 
                   return Column(
                     children: [
                       OpenContainer(
-                        transitionType: ContainerTransitionType.fadeThrough,
+                        transitionType: ContainerTransitionType.fade,
+                        transitionDuration: const Duration(milliseconds: 400),
                         closedBuilder: (context, action) {
                           return GestureDetector(
                             onTap: action,
@@ -70,7 +72,6 @@ class _AlbumsPageState extends State<AlbumsPage> {
                         closedShape: const RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20))),
-                        transitionDuration: const Duration(milliseconds: 400),
                       ),
                       const SizedBox(
                         height: 20,

@@ -1,8 +1,5 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
-import 'package:fotogo/pages/albums/album_content_page.dart';
 import 'package:fotogo/pages/albums/album_data.dart';
 import 'package:fotogo/utils/string_formatting.dart';
 import 'package:fotogo/widgets/popup_menu_button.dart';
@@ -24,40 +21,39 @@ class AlbumCover extends StatelessWidget {
     this.borderRadius = 20,
   }) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
       width: _size.width,
       height: _size.height,
       decoration: BoxDecoration(
-        // color: Colors.deepPurpleAccent,
         borderRadius: BorderRadius.circular(borderRadius),
       ),
       child: Stack(
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: /*Hero(
-              tag: data,
-              child:*/ Image.asset(
-                'assets/test_images/amsterdam.jpg',
-                width: _size.width,
-                height: _size.height,
-                fit: BoxFit.cover,
-              ),
-            // ),
+            child: Image.asset(
+              data.coverImagePath,
+              width: _size.width,
+              height: _size.height,
+              fit: BoxFit.cover,
+            ),
           ),
-          // information with blur effect
+          // information with black gradient
           Align(
             alignment: Alignment.bottomCenter,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(borderRadius),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(
-                  sigmaX: blurAmount,
-                  sigmaY: blurAmount,
-                ),
+            child: Container(
+              width: _size.width,
+              height: _size.height,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.transparent, Colors.black.withOpacity(.6)],
+              )),
+              child: Align(
+                alignment: Alignment.bottomCenter,
                 child: SizedBox(
                   width: _size.width,
                   height: _size.height * .4,

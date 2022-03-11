@@ -5,21 +5,19 @@ import 'package:fotogo/widgets/popup_menu_button.dart';
 import 'package:sizer/sizer.dart';
 
 class AlbumContentPage extends StatelessWidget {
+  final AlbumData data;
+
   const AlbumContentPage({
     Key? key,
     required this.data,
   }) : super(key: key);
 
-  final AlbumData data;
-
   List<Widget> _getActions() {
     return [
       // IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
-      fotogoPopupMenuButton(
-          items: [
-            MenuItem('Delete'),
-          ]
-      )
+      fotogoPopupMenuButton(items: [
+        MenuItem('Delete'),
+      ])
     ];
   }
 
@@ -34,8 +32,10 @@ class AlbumContentPage extends StatelessWidget {
           slivers: [
             SliverAppBar(
               expandedHeight: 25.h,
-              foregroundColor: Theme.of(context).colorScheme.primary,
-              backgroundColor: Theme.of(context).colorScheme.surface,
+              foregroundColor: Colors.white,
+              // foregroundColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              // backgroundColor: Theme.of(context).colorScheme.surface,
               pinned: true,
               stretch: true,
               actions: _getActions(),
@@ -44,6 +44,16 @@ class AlbumContentPage extends StatelessWidget {
                 expandedTitleScale: 1.1,
                 background: Stack(
                   children: [
+                    // background image (cover image)
+                    Image.asset(
+                      'assets/test_images/amsterdam.jpg',
+                      alignment: Alignment.center,
+                      width: 100.w,
+                      fit: BoxFit.cover,
+                    ),
+                    Container(
+                      color: Colors.black.withOpacity(.3),
+                    ),
                     Positioned(
                       height: 25.h - 50,
                       left: 50,
@@ -51,11 +61,6 @@ class AlbumContentPage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Title
-                          // Text(
-                          //   data.title,
-                          //   style: Theme.of(context).textTheme.headline6,
-                          // ),
                           const Spacer(),
                           // Dates
                           Row(
@@ -63,6 +68,7 @@ class AlbumContentPage extends StatelessWidget {
                               const Icon(
                                 Icons.calendar_month,
                                 size: 22,
+                                color: Colors.white,
                               ),
                               const SizedBox(width: 8),
                               Text(
@@ -71,7 +77,9 @@ class AlbumContentPage extends StatelessWidget {
                                     .textTheme
                                     .subtitle1
                                     ?.copyWith(
-                                        fontSize: 15, fontWeight: FontWeight.normal),
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.normal),
                               ),
                             ],
                           ),
@@ -82,6 +90,7 @@ class AlbumContentPage extends StatelessWidget {
                               const Icon(
                                 Icons.location_on_outlined,
                                 size: 22,
+                                color: Colors.white,
                               ),
                               const SizedBox(width: 8),
                               Text(
@@ -90,7 +99,9 @@ class AlbumContentPage extends StatelessWidget {
                                     .textTheme
                                     .subtitle1
                                     ?.copyWith(
-                                        fontSize: 15, fontWeight: FontWeight.normal),
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.normal),
                               ),
                             ],
                           ),
@@ -108,26 +119,39 @@ class AlbumContentPage extends StatelessWidget {
                                       children: List.generate(
                                           data.tags.length,
                                           (index) => Container(
-                                                margin: const EdgeInsets.only(right: 8, bottom: 8),
-                                                padding: const EdgeInsets.symmetric(
-                                                    vertical: 6, horizontal: 12),
+                                                margin: const EdgeInsets.only(
+                                                    right: 8, bottom: 8),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 6,
+                                                        horizontal: 12),
                                                 decoration: BoxDecoration(
-                                                  border:
-                                                      Border.all(color: Colors.red.shade800),
-                                                  borderRadius: BorderRadius.circular(20),
+                                                  border: Border.all(
+                                                      color:
+                                                          Colors.red.shade800),
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
                                                   color: Colors.red.shade200,
                                                 ),
-                                                child: Text(data.tags[index].toString(),
+                                                child: Text(
+                                                    data.tags[index].toString(),
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .subtitle1
                                                         ?.copyWith(
-                                                            fontWeight: FontWeight.normal)),
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .normal)),
                                               )),
                                     ),
                                   ),
                                 ),
-                                const VerticalDivider(thickness: 1, color: Colors.black26, endIndent: 5, width: 12,),
+                                const VerticalDivider(
+                                  thickness: 1,
+                                  color: Colors.black26,
+                                  endIndent: 5,
+                                  width: 12,
+                                ),
                                 const Icon(Icons.share),
                               ],
                             ),

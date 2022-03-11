@@ -26,6 +26,7 @@ Widget fotogoPopupMenuIconButton({
     icon: Icon(icon, color: iconColor),
     tooltip: tooltip,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    offset: const Offset(0, 50),
     itemBuilder: (context) {
       return items
           .map((e) => PopupMenuItem<String>(
@@ -67,6 +68,7 @@ Widget fotogoPopupMenuButton({
     icon: Icon(icon, color: iconColor),
     tooltip: tooltip,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    offset: const Offset(0, 50),
     itemBuilder: (context) {
       return items
           .map((e) => PopupMenuItem<String>(
