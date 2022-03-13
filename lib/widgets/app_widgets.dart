@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:lottie/lottie.dart';
 import 'package:sizer/sizer.dart';
 
 class AppWidgets {
@@ -95,6 +94,26 @@ class AppWidgets {
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  static fotogoSnackBar(BuildContext context, String content) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: BorderSide(color: const Color(0xFF0E6092).withOpacity(.8)),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(.7),
+        content: Text(
+          content,
+          style: Theme.of(context)
+              .textTheme
+              .caption
+              ?.copyWith(fontSize: 12),
         ),
       ),
     );

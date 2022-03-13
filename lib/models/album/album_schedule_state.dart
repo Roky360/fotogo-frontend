@@ -1,30 +1,25 @@
-part of 'album_schedule_bloc.dart';
+part of 'album_bloc.dart';
 
-@immutable
-abstract class AlbumScheduleState {
-  const AlbumScheduleState();
-}
+class AlbumScheduleInitial extends AlbumState {}
 
-class AlbumScheduleInitial extends AlbumScheduleState {}
-
-class AlbumScheduleCreating extends AlbumScheduleState {
+class AlbumScheduleCreating extends AlbumState {
   final AlbumScheduleData albumScheduleData;
 
   const AlbumScheduleCreating(this.albumScheduleData);
 }
 
-class AlbumScheduleCreated extends AlbumScheduleState {
+class AlbumScheduleCreated extends AlbumState {
   final String message; // change to "message"
 
   const AlbumScheduleCreated(this.message);
-  // TODO: == operator
+// TODO: == operator
 }
 
-class AlbumScheduleError extends AlbumScheduleState {
+class AlbumScheduleError extends AlbumState {
   final String message;
 
   const AlbumScheduleError(this.message);
-  // TODO: == operator
+// TODO: == operator
 }
 
 

@@ -1,12 +1,7 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
 import 'package:fotogo/pages/app_navigator/app_navigator_data.dart';
-import 'package:fotogo/widgets/app_widgets.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../models/user_bloc/user_bloc.dart';
 

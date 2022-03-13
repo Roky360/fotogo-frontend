@@ -107,11 +107,11 @@ class AlbumCover extends StatelessWidget {
           Align(
             alignment: Alignment.topRight,
             child: fotogoPopupMenuIconButton(
+              iconColor: textFGColor,
               items: [
                 IconMenuItem('Share', Icons.share),
                 IconMenuItem('Delete', Icons.delete),
               ],
-              iconColor: textFGColor,
             ),
           ),
         ],

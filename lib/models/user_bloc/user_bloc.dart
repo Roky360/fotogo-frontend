@@ -1,11 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fotogo/pages/albums/album_data.dart';
 import 'package:fotogo/providers/google_sign_in.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 part 'user_event.dart';
 
 part 'user_state.dart';
+
+class UserData {
+  late List<AlbumData> albumsData;
+
+  UserData() {
+    albumsData = [];
+  }
+
+  void reset() {
+    albumsData = [];
+  }
+}
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   final GoogleSignInProvider _googleSignInProvider;
@@ -14,7 +27,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   String? get userName => user!.displayName?.split(' ')[0];
 
+  late final UserData userData;
+
   UserBloc(this._googleSignInProvider) : super(UserSignedOut()) {
+    userData = UserData();
+
     on<UserSignInEvent>((event, emit) async {
       emit(UserLoading());
 
@@ -50,6 +67,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       try {
         await _googleSignInProvider.logout();
+        userData.reset();
 
         emit(UserSignedOut());
       } catch (e) {

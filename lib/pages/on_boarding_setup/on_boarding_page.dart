@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fotogo/pages/auth_checker.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'sign_in.dart';
+import 'sign_in_page.dart';
 
 class OnBoardingPage extends StatelessWidget {
   const OnBoardingPage({Key? key}) : super(key: key);

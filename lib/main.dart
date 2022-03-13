@@ -8,8 +8,10 @@ import 'package:fotogo/pages/app_navigator/app_navigator.dart';
 import 'package:fotogo/pages/auth_checker.dart';
 import 'package:fotogo/pages/on_boarding_setup/on_boarding_page.dart';
 import 'package:fotogo/providers/google_sign_in.dart';
+import 'package:fotogo/services/albums_service.dart';
 import 'package:sizer/sizer.dart';
 
+import 'models/album/album_bloc.dart';
 import 'models/user_bloc/user_bloc.dart';
 
 void main() async {
@@ -29,7 +31,11 @@ class FotogoApp extends StatelessWidget {
         return MultiBlocProvider(
           providers: [
             BlocProvider<UserBloc>(
-                create: (context) => UserBloc(GoogleSignInProvider())),
+              create: (context) => UserBloc(GoogleSignInProvider()),
+            ),
+            BlocProvider<AlbumBloc>(
+              create: (context) => AlbumBloc(AlbumService()),
+            ),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
@@ -39,7 +45,6 @@ class FotogoApp extends StatelessWidget {
             routes: {
               '/launcher': (context) => FotogoLauncher(),
               '/app_navigator': (context) => const AppNavigator(),
-
               '/setup': (context) => const OnBoardingPage(),
               '/auth_checker': (context) => const AuthChecker(),
             },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fotogo/bloc_events/album/album_schedule_bloc.dart';
+import 'package:fotogo/config/constants/theme_constants.dart';
+import 'package:fotogo/models/album/album_bloc.dart';
 import 'package:fotogo/services/albums_service.dart';
 
 import 'package:fotogo/pages/create_album/album_schedule_data.dart';
@@ -22,8 +23,8 @@ class CreateAlbumPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AlbumScheduleBloc(AlbumsService()),
-      child: BlocConsumer<AlbumScheduleBloc, AlbumScheduleState>(
+      create: (context) => AlbumBloc(AlbumService()),
+      child: BlocConsumer<AlbumBloc, AlbumState>(
         listener: (context, state) {
           if (state is AlbumScheduleError) {
             ScaffoldMessenger.of(context)
