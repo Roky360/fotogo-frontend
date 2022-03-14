@@ -17,20 +17,22 @@ class OnBoardingPage extends StatelessWidget {
     return [
       // welcome
       PageViewModel(
-        image: Container(
-          color: Colors.grey[200],
-        ),
-        decoration: pageDecoration,
-        titleWidget: Text(
-          'Welcome',
-          style: Theme.of(context).textTheme.headline5,
-        ),
-        bodyWidget: Text(
-          'blah blah\n\n\n\n\n\n\\n\n\n\n\ns\\d\\n\n\n\n\\n\n\n\ndsgds',
-          style: Theme.of(context).textTheme.headline5,
-        ),
-        useRowInLandscape: true
-      ),
+          image: Container(
+            color: Colors.grey[200],
+          ),
+          decoration: pageDecoration,
+          titleWidget: Text(
+            'Welcome',
+            style: Theme.of(context).textTheme.headline5,
+          ),
+          bodyWidget: Text(
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eget purus gravida, lacinia nunc quis, commodo dolor. Quisque vitae luctus nibh. Nam bibendum orci euismod tempus lacinia. Quisque a feugiat ligula, ut interdum enim. Nulla eu nibh massa. Sed vitae tempus lectus, in faucibus massa. Donec in ante a dolor fringilla lacinia. Vestibulum at mattis arcu. Ut pellentesque diam id laoreet lacinia. Phasellus ut aliquet erat. Mauris viverra, ligula at iaculis posuere, orci enim bibendum orci, et commodo justo velit vitae nisl. Mauris bibendum suscipit est. Nam velit ante, ornare sit amet gravida sed, luctus ultricies turpis.',
+            style: Theme.of(context)
+                .textTheme
+                .subtitle1
+                ?.copyWith(fontWeight: FontWeight.normal),
+          ),
+          useRowInLandscape: true),
       // preferences
       // PageViewModel(
       //   titleWidget: Text(
@@ -56,7 +58,10 @@ class OnBoardingPage extends StatelessWidget {
       // animationDuration: 500,
       next: const Icon(Icons.arrow_forward),
       back: const Icon(Icons.arrow_back),
-      done: Text('Continue', style: Theme.of(context).textTheme.subtitle1,),
+      done: Text(
+        'Continue',
+        style: Theme.of(context).textTheme.subtitle1,
+      ),
       onDone: () => Navigator.pushReplacementNamed(context, '/auth_checker'),
     );
   }

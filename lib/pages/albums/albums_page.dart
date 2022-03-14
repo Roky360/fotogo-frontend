@@ -20,14 +20,20 @@ class AlbumsPage extends StatefulWidget {
 }
 
 class _AlbumsPageState extends State<AlbumsPage> {
-  List<AlbumData> get _albumsData =>
+  final AlbumBloc _albumBloc = AlbumBloc(AlbumService());
+
+  // List<AlbumData> get _albumsData =>
+  //     context.read<UserBloc>().userData.albumsData;
+  List<AlbumData>? get _albumsData =>
       context.read<UserBloc>().userData.albumsData;
 
   @override
   void initState() {
     super.initState();
 
-    context.read<AlbumBloc>().add(const FetchAlbumsDetailsEvent());
+    // if (_albumsData == null) {
+      _albumBloc.add(const FetchAlbumsDetailsEvent());
+    // }
   }
 
   @override
@@ -58,8 +64,10 @@ class _AlbumsPageState extends State<AlbumsPage> {
           body: Column(
             children: [
               BlocConsumer<AlbumBloc, AlbumState>(
+                bloc: _albumBloc,
                 listener: (context, state) {},
                 builder: (context, state) {
+                  print('state: ' + state.toString());
                   if (state is AlbumCoverFetched) {
                     context.read<UserBloc>().userData.albumsData =
                         state.albumData;
@@ -78,13 +86,13 @@ class _AlbumsPageState extends State<AlbumsPage> {
                                       return GestureDetector(
                                         onTap: action,
                                         child: AlbumCover(
-                                          data: _albumsData[index],
+                                          data: _albumsData![index],
                                         ),
                                       );
                                     },
                                     openBuilder: (context, action) {
                                       return AlbumContentPage(
-                                          data: _albumsData[index]);
+                                          data: _albumsData![index]);
                                     },
                                     closedShape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(

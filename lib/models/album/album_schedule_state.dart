@@ -12,14 +12,32 @@ class AlbumScheduleCreated extends AlbumState {
   final String message; // change to "message"
 
   const AlbumScheduleCreated(this.message);
-// TODO: == operator
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AlbumScheduleCreated &&
+          runtimeType == other.runtimeType &&
+          message == other.message;
+
+  @override
+  int get hashCode => message.hashCode;
 }
 
 class AlbumScheduleError extends AlbumState {
   final String message;
 
   const AlbumScheduleError(this.message);
-// TODO: == operator
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AlbumScheduleError &&
+          runtimeType == other.runtimeType &&
+          message == other.message;
+
+  @override
+  int get hashCode => message.hashCode;
 }
 
 

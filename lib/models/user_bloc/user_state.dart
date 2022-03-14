@@ -15,4 +15,14 @@ class UserError extends UserState {
   final String error;
 
   UserError(this.error);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is UserError &&
+          runtimeType == other.runtimeType &&
+          error == other.error;
+
+  @override
+  int get hashCode => error.hashCode;
 }

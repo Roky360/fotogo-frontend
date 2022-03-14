@@ -1,10 +1,13 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/pages/app_navigator/app_navigator_data.dart';
 import 'package:fotogo/pages/create_album/create_album_page.dart';
 import 'package:fotogo/widgets/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:fotogo/widgets/sliding_up_panel.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+
+import '../../models/user_bloc/user_bloc.dart';
 
 class AppNavigator extends StatefulWidget {
   const AppNavigator({Key? key}) : super(key: key);

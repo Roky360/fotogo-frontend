@@ -36,6 +36,7 @@ class AlbumBloc extends Bloc<AlbumEvent, AlbumState> {
       }
     });
     on<FetchAlbumsDetailsEvent>((event, emit) async {
+      print('fetch album details');
       try {
         final response = await _albumsService.fetchAlbumsDetails();
         emit(AlbumCoverFetched(response));

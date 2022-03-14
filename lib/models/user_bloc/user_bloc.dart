@@ -81,5 +81,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     if (ModalRoute.of(context)?.settings.name != '/launcher') { //TODO: change 'launcher' to checker
       Navigator.pushReplacementNamed(context, '/auth_checker');
     }
+
   }
 }

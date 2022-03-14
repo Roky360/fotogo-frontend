@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fotogo/providers/google_sign_in.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
 
 import '../models/user_bloc/user_bloc.dart';
@@ -19,6 +20,7 @@ class AuthChecker extends StatelessWidget {
       body: SafeArea(
           child: Center(
             child: BlocConsumer<UserBloc, UserState>(
+              // bloc: UserBloc(GoogleSignInProvider()),
               listener: (context, state) {
                 if (state is UserSignedIn) {
                   Navigator.pushReplacementNamed(context, '/app_navigator');
