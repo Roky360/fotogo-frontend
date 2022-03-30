@@ -5,6 +5,7 @@ import 'package:fotogo/pages/app_navigator/app_navigator_data.dart';
 import 'package:fotogo/pages/pages.dart';
 import 'package:fotogo/pages/create_album/create_album_page.dart';
 import 'package:fotogo/widgets/bottom_navigation_bar/bottom_navigation_bar.dart';
+import 'package:fotogo/widgets/shared_axis_route.dart';
 import 'package:fotogo/widgets/sliding_up_panel.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -79,6 +80,13 @@ class _AppNavigatorState extends State<AppNavigator>
     }
   }
 
+  void navigateToCreateAlbumView() {
+    Navigator.push(
+        context,
+        sharedAxisRoute(
+            widget: CreateAlbumPage()));
+  }
+
   void openCreateAlbumPanel() async {
     await data.navigationBarController.reverse();
     await data.createAlbumPanelController.show();
@@ -107,26 +115,38 @@ class _AppNavigatorState extends State<AppNavigator>
   }
 
   Widget _getBody() {
-    return FotogoSlidingUpPanel(
-      panelController: data.createAlbumPanelController,
-      panelWidget: CreateAlbumPage(
-        closePanelCallback: closeCreateAlbumPanel,
+    return PageTransitionSwitcher(
+      duration: const Duration(milliseconds: 500),
+      transitionBuilder: (Widget child, Animation<double> primaryAnimation,
+              Animation<double> secondaryAnimation) =>
+          FadeThroughTransition(
+        animation: primaryAnimation,
+        secondaryAnimation: secondaryAnimation,
+        child: child,
+        // fillColor: Colors.greenAccent,
+        fillColor: Theme.of(context).colorScheme.background,
       ),
-      onPanelSlideCallback: onPanelClose,
-      bodyWidget: PageTransitionSwitcher(
-        duration: const Duration(milliseconds: 500),
-        transitionBuilder: (Widget child, Animation<double> primaryAnimation,
-                Animation<double> secondaryAnimation) =>
-            FadeThroughTransition(
-          animation: primaryAnimation,
-          secondaryAnimation: secondaryAnimation,
-          child: child,
-          // fillColor: Colors.greenAccent,
-          fillColor: Theme.of(context).colorScheme.background,
-        ),
-        child: data.routes[data.routeIndex].widget,
-      ),
+      child: data.routes[data.routeIndex].widget,
     );
+
+    // return FotogoSlidingUpPanel(
+    //   panelController: data.createAlbumPanelController,
+    //   panelWidget: CreateAlbumPage(),
+    //   onPanelSlideCallback: onPanelClose,
+    //   bodyWidget: PageTransitionSwitcher(
+    //     duration: const Duration(milliseconds: 500),
+    //     transitionBuilder: (Widget child, Animation<double> primaryAnimation,
+    //             Animation<double> secondaryAnimation) =>
+    //         FadeThroughTransition(
+    //       animation: primaryAnimation,
+    //       secondaryAnimation: secondaryAnimation,
+    //       child: child,
+    //       // fillColor: Colors.greenAccent,
+    //       fillColor: Theme.of(context).colorScheme.background,
+    //     ),
+    //     child: data.routes[data.routeIndex].widget,
+    //   ),
+    // );
   }
 
   Widget _getBottomNavigationBar() {
@@ -135,7 +155,7 @@ class _AppNavigatorState extends State<AppNavigator>
       controller: _navigationBarAnimation,
       foregroundColor: Theme.of(context).colorScheme.onPrimary,
       onTabTap: onRouteChange,
-      onMiddleButtonTap: openCreateAlbumPanel,
+      onMiddleButtonTap: navigateToCreateAlbumView,
     );
   }
 

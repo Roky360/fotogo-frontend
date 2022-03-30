@@ -37,7 +37,7 @@ class FotogoApp extends StatelessWidget {
               create: (context) => UserBloc(GoogleSignInProvider()),
             ),
             BlocProvider<AlbumBloc>(
-              create: (context) => AlbumBloc(AlbumService()),
+              create: (context) => AlbumBloc(AlbumService(context)),
             ),
             BlocProvider<ServerBloc>(
               create: (context) => ServerBloc(Client()),

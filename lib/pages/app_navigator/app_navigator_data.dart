@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class AppNavigatorData {
-  int routeIndex = 0;
+  int routeIndex;
 
   final AnimationController navigationBarController;
   final PanelController createAlbumPanelController;
@@ -13,7 +13,8 @@ class AppNavigatorData {
   AppNavigatorData(
       {required this.navigationBarController,
       required this.createAlbumPanelController,
-      required this.routes});
+      required this.routes,
+      this.routeIndex = 0});
 }
 
 class NavigatorRoute {

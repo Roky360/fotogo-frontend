@@ -17,6 +17,7 @@ class FotogoSection extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(
         left: pageMargin,
+        right: pageMargin,
         top: 35,
       ),
       child: Align(

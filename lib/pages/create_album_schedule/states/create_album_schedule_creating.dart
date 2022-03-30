@@ -1,10 +1,10 @@
-part of '../create_album_page.dart';
+part of '../create_album_schedule_page.dart';
 
-class CreateAlbumCreating extends StatelessWidget {
-  final AlbumCreationData data;
+class CreateAlbumScheduleCreating extends StatelessWidget {
+  final AlbumScheduleData data;
   final TextEditingController _controller = TextEditingController();
 
-  CreateAlbumCreating({Key? key, required this.data}) : super(key: key);
+  CreateAlbumScheduleCreating({Key? key, required this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

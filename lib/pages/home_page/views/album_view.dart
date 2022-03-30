@@ -2,8 +2,11 @@ part of '../home_page.dart';
 
 class AlbumView extends StatefulWidget {
   final Album album;
+  late final List<File> exportedImages;
 
-  const AlbumView(this.album, {Key? key}) : super(key: key);
+  AlbumView(this.album, {Key? key, exportedImages}) : super(key: key) {
+    this.exportedImages = exportedImages ?? List.empty(growable: true);
+  }
 
   @override
   State<StatefulWidget> createState() => _AlbumViewState();
@@ -90,17 +93,17 @@ class _AlbumViewState extends State<AlbumView> {
                   icon: const Icon(Icons.add),
                   onPressed: selectedMedia.isNotEmpty ? () {} : null,
                 ),
-                selectedMedia.length == media!.length ?
-                IconButton(
-                  icon: const Icon(Icons.deselect),
-                  tooltip: "Deselect all",
-                  onPressed: deselectAll,
-                )
-                :IconButton(
-                  icon: const Icon(Icons.select_all),
-                  tooltip: "Select all",
-                  onPressed: selectAll,
-                ),
+                selectedMedia.length == media!.length
+                    ? IconButton(
+                        icon: const Icon(Icons.deselect),
+                        tooltip: "Deselect all",
+                        onPressed: deselectAll,
+                      )
+                    : IconButton(
+                        icon: const Icon(Icons.select_all),
+                        tooltip: "Select all",
+                        onPressed: selectAll,
+                      ),
               ],
             )
           // REGULAR app bar

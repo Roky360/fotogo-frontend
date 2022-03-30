@@ -13,5 +13,13 @@ class CreateAlbumScheduleEvent extends AlbumEvent {
 
 // get details for album covers in the albums page
 class FetchAlbumsDetailsEvent extends AlbumEvent {
-  const FetchAlbumsDetailsEvent();
+  final Function callback;
+
+  const FetchAlbumsDetailsEvent({required this.callback});
+}
+
+class CreateAlbumEvent extends AlbumEvent {
+  final AlbumCreationData albumCreationData;
+
+  const CreateAlbumEvent({required this.albumCreationData});
 }

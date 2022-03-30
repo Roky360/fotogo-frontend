@@ -82,7 +82,7 @@ class FotogoSlidingUpPanel extends StatelessWidget {
       borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
       // parallaxEnabled: true,
-      snapPoint: context.getPercentageFromHeight(150) / 100,
+      // snapPoint: context.getPercentageFromHeight(150) / 100,
       minHeight: 0,
       onPanelSlide: (position) => onPanelSlide(position, context),
     );

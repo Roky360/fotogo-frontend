@@ -71,20 +71,6 @@ class Client {
       payload: responseMapped['payload'],
     );
   }
-
-// Send string
-// void sendStringToServer(String data) async {
-//   print('connecting sending string');
-//   final socket = await Socket.connect(hostname, port);
-//
-//   int payloadLength = data.length;
-//   String paddedLength = payloadLength.toString().padLeft(10);
-//
-//   socket.write(paddedLength + data);
-//   print(paddedLength + data);
-//   print("DATA SENT TO SERVER");
-//   socket.close();
-// }
 }
 
 class Misc {
@@ -94,6 +80,4 @@ class Misc {
 
     return File(image.path);
   }
-
-
 }

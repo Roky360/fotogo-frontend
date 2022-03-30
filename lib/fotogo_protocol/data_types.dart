@@ -18,6 +18,18 @@ enum RequestType {
   deleteImage
 }
 
+enum StatusCode {
+  ok_200,
+  created_201,
+
+  badRequest_400,
+  unauthorized_401,
+  forbidden_403,
+  notFound_404,
+
+  internalServerError_500,
+}
+
 class Request {
   final RequestType requestType;
   final String? idToken;
@@ -36,13 +48,13 @@ class Request {
 }
 
 class Response {
-  final int statusCode;
-  final String payload;
+  final StatusCode statusCode;
+  final dynamic payload;
 
   Response({required this.statusCode, required this.payload});
 
   @override
   String toString() {
-    return "Response(status_code: $statusCode, payload: $payload)";
+    return "Response(status_code: ${statusCode.name}, payload: $payload)";
   }
 }

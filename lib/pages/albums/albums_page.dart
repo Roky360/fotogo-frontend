@@ -22,7 +22,6 @@ class AlbumsPage extends StatefulWidget {
 }
 
 class _AlbumsPageState extends State<AlbumsPage> {
-  final AlbumBloc _albumBloc = AlbumBloc(AlbumService());
   Response? response;
 
   // List<AlbumData> get _albumsData =>
@@ -38,21 +37,21 @@ class _AlbumsPageState extends State<AlbumsPage> {
     initAsync();
 
     // if (_albumsData == null) {
-    // _albumBloc.add(const FetchAlbumsDetailsEvent());
+    //   _albumBloc.add(const FetchAlbumsDetailsEvent());
     // }
   }
 
   void initAsync() async {
-    Client().createConnection(
-      Request(
-          requestType: RequestType.getAlbumDetails,
-          idToken: await context.read<UserBloc>().idToken),
-      (response) {
-        setState(() {
-          this.response = response;
-        });
-      },
-    );
+    // Client().createConnection(
+    //   Request(
+    //       requestType: RequestType.getAlbumDetails,
+    //       idToken: await context.read<UserBloc>().idToken),
+    //   (response) {
+    //     setState(() {
+    //       this.response = response;
+    //     });
+    //   },
+    // );
   }
 
   Widget _getAlbumCovers() {
@@ -101,9 +100,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
               ),
               const Spacer(),
               IconButton(
-                onPressed: () => context
-                    .read<AlbumBloc>()
-                    .add(const FetchAlbumsDetailsEvent()),
+                onPressed: () {},
                 icon: const Icon(Icons.sort),
               )
             ],
@@ -116,8 +113,11 @@ class _AlbumsPageState extends State<AlbumsPage> {
             children: [
               response == null
                   ? Center(child: AppWidgets.fotogoCircularLoadingAnimation())
-                  : Text(response.toString(), style: Theme.of(context).textTheme.subtitle1,),
-                  // : _getAlbumCovers(),
+                  : Text(
+                      response.toString(),
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+              // : _getAlbumCovers(),
 
               // FutureBuilder(
               //   future: response,
