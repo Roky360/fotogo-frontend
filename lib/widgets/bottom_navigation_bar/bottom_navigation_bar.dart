@@ -60,7 +60,9 @@ class FotogoBottomNavigationBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              data.routes[index].icon,
+              index == data.routeIndex
+                  ? data.routes[index].icon
+                  : data.routes[index].selectedIcon,
               color: foregroundColor,
             ),
             const SizedBox(height: 2),

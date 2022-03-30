@@ -14,7 +14,7 @@ class IconMenuItem extends MenuItem {
 
   final IconData icon;
 }
-// TODO: make factory for both constructors
+// TODO: make factory for both constructors + . constructor (popupMenu.icon())
 Widget fotogoPopupMenuIconButton({
   required List<IconMenuItem> items,
   IconData icon = Icons.more_vert,
@@ -58,7 +58,6 @@ Widget fotogoPopupMenuIconButton({
 
 Widget fotogoPopupMenuButton({
   required List<MenuItem> items,
-  List<VoidCallback>? funcs,
   IconData icon = Icons.more_vert,
   Color? iconColor,
   Color? foregroundColor,

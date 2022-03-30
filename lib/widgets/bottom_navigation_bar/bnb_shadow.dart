@@ -44,7 +44,7 @@
 //           mainAxisAlignment: MainAxisAlignment.center,
 //           children: [
 //             Icon(
-//               data.routes[index].icon[index],
+//               data.views[index].icon[index],
 //               color: const Color(0xFFFFFFFF),
 //               // color: const Color(0xFFD0F9FF),
 //               // color: Theme.of(context).colorScheme.primary,

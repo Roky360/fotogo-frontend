@@ -1,60 +1,32 @@
 import 'package:flutter/material.dart';
 
-import 'package:fotogo/pages/pages.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class AppNavigatorData {
   int routeIndex = 0;
 
-  late final AnimationController navigationBarController;
+  final AnimationController navigationBarController;
+  final PanelController createAlbumPanelController;
 
-  late final PanelController createAlbumPanelController;
+  final List<NavigatorRoute> routes;
 
-  late final List<NavigatorRoute> routes;
-
-  AppNavigatorData() {
-    routes = List.generate(
-      4,
-      (index) => NavigatorRoute(
-        widget: [
-          HomePage(this),
-          AlbumsPage(),
-          PeoplePage(),
-          ProfilePage(),
-        ][index],
-        icon: [
-          Icons.home,
-          Icons.collections_bookmark_outlined,
-          Icons.people_outlined,
-          Icons.account_circle_outlined,
-        ][index],
-        title: ['Home', 'Albums', 'People', 'Profile'][index],
-      ),
-      growable: false,
-    );
-  }
-
-// List<Widget> routes = [
-//   HomePage(),
-//   AlbumsPage(),
-//   PeoplePage(),
-//   ProfilePage(),
-// ];
-//
-// static const List<IconData> tabIcons = [
-//   Icons.home,
-//   Icons.collections_bookmark_outlined,
-//   Icons.people_outlined,
-//   Icons.account_circle_outlined,
-// ];
-// static const List<String> tabTitles = ['Home', 'Albums', 'People', 'Profile'];
+  AppNavigatorData(
+      {required this.navigationBarController,
+      required this.createAlbumPanelController,
+      required this.routes});
 }
 
 class NavigatorRoute {
   final Widget widget;
   final IconData icon;
+  late final IconData selectedIcon;
   final String title;
 
   NavigatorRoute(
-      {required this.widget, required this.icon, required this.title});
+      {required this.widget,
+      required this.icon,
+      selectedIcon,
+      required this.title}) {
+    this.selectedIcon = selectedIcon ?? icon;
+  }
 }

@@ -27,6 +27,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   String? get userName => user!.displayName?.split(' ')[0];
 
+  Future<String?> get idToken => _googleSignInProvider.idToken;
+
   late final UserData userData;
 
   UserBloc(this._googleSignInProvider) : super(UserSignedOut()) {

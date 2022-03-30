@@ -9,9 +9,12 @@ import 'package:fotogo/pages/auth_checker.dart';
 import 'package:fotogo/pages/on_boarding_setup/on_boarding_page.dart';
 import 'package:fotogo/providers/google_sign_in.dart';
 import 'package:fotogo/services/albums_service.dart';
+import 'package:fotogo/widgets/photo_view.dart';
 import 'package:sizer/sizer.dart';
 
+import 'fotogo_protocol/networking_protocol.dart';
 import 'models/album/album_bloc.dart';
+import 'models/server_networking/server_bloc.dart';
 import 'models/user_bloc/user_bloc.dart';
 
 void main() async {
@@ -36,6 +39,10 @@ class FotogoApp extends StatelessWidget {
             BlocProvider<AlbumBloc>(
               create: (context) => AlbumBloc(AlbumService()),
             ),
+            BlocProvider<ServerBloc>(
+              create: (context) => ServerBloc(Client()),
+            ),
+
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,

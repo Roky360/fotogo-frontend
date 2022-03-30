@@ -66,6 +66,8 @@ class ConfirmAccountPage extends StatelessWidget {
           // user card
           AppWidgets.userCard(context, context.read<UserBloc>().user!),
           const SizedBox(height: 30),
+          Text('Stay signed in (implement)', style: Theme.of(context).textTheme.subtitle1,),
+          const SizedBox(height: 30),
           ElevatedButton(
               onPressed: () =>
                   context.read<UserBloc>().add(const UserSignOutEvent()),

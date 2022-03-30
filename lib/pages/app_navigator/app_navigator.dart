@@ -2,6 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/pages/app_navigator/app_navigator_data.dart';
+import 'package:fotogo/pages/pages.dart';
 import 'package:fotogo/pages/create_album/create_album_page.dart';
 import 'package:fotogo/widgets/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:fotogo/widgets/sliding_up_panel.dart';
@@ -26,14 +27,40 @@ class _AppNavigatorState extends State<AppNavigator>
   void initState() {
     super.initState();
 
-    data = AppNavigatorData();
-
-    data.navigationBarController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300),
-      reverseDuration: const Duration(milliseconds: 400),
-      value: 1,
-    );
+    data = AppNavigatorData(
+        navigationBarController: AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 300),
+          reverseDuration: const Duration(milliseconds: 400),
+          value: 1,
+        ),
+        createAlbumPanelController: PanelController(),
+        routes: [
+          NavigatorRoute(
+            widget: const HomePage(),
+            icon: Icons.image,
+            selectedIcon: Icons.image_outlined,
+            title: "Gallery",
+          ),
+          NavigatorRoute(
+            widget: const AlbumsPage(),
+            icon: Icons.collections_bookmark,
+            selectedIcon: Icons.collections_bookmark_outlined,
+            title: "Albums",
+          ),
+          NavigatorRoute(
+            widget: const PeoplePage(),
+            icon: Icons.people,
+            selectedIcon: Icons.people_outlined,
+            title: "People",
+          ),
+          NavigatorRoute(
+            widget: const ProfilePage(),
+            icon: Icons.account_circle,
+            selectedIcon: Icons.account_circle_outlined,
+            title: "Profile",
+          ),
+        ]);
 
     _navigationBarAnimation = CurvedAnimation(
       parent: data.navigationBarController,
@@ -42,14 +69,14 @@ class _AppNavigatorState extends State<AppNavigator>
     );
     // curve: Curves.easeOutExpo,
     // curve: Curves.easeOutBack,
-
-    data.createAlbumPanelController = PanelController();
   }
 
   void onRouteChange(int newIndex) {
-    setState(() {
-      data.routeIndex = newIndex;
-    });
+    if (data.routeIndex != newIndex) {
+      setState(() {
+        data.routeIndex = newIndex;
+      });
+    }
   }
 
   void openCreateAlbumPanel() async {
@@ -61,21 +88,21 @@ class _AppNavigatorState extends State<AppNavigator>
 
   void closeCreateAlbumPanel() async {
     // TODO: panel not closing smoothly. duration and curve have no effect.
-    data.createAlbumPanelController.animatePanelToPosition(0,
-        duration: const Duration(milliseconds: 5000),
-        curve: Curves.easeOutExpo);
+    await data.createAlbumPanelController.animatePanelToPosition(0,
+        duration: const Duration(milliseconds: 500), curve: Curves.easeOutExpo);
+    data.createAlbumPanelController.panelPosition = 0;
     await data.createAlbumPanelController.hide();
   }
 
-  void onPanelClose() {
+  void onPanelClose() async {
     double pos = .03;
 
     if (data.createAlbumPanelController.isPanelShown &&
         data.createAlbumPanelController.panelPosition <= pos) {
-      data.navigationBarController.forward();
+      await data.navigationBarController.forward();
     } else if (data.createAlbumPanelController.isPanelShown &&
         data.createAlbumPanelController.panelPosition > pos) {
-      data.navigationBarController.reverse();
+      await data.navigationBarController.reverse();
     }
   }
 

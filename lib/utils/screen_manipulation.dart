@@ -53,6 +53,6 @@ extension ProportionalInsets on BuildContext {
   }
 }
 
-Size getScreenSize() {
-  return WidgetsBinding.instance.window.physicalSize;
+Size? getScreenSize() {
+  return WidgetsBinding.instance?.window.physicalSize;
 }

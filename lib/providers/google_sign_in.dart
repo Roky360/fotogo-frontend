@@ -1,8 +1,9 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class GoogleSignInProvider extends ChangeNotifier {
+class GoogleSignInProvider {
   final GoogleSignIn _googleSignIn = GoogleSignIn(
       /*scopes: const ['https://www.googleapis.com/auth/photoslibrary.appendonly']*/);
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -10,6 +11,8 @@ class GoogleSignInProvider extends ChangeNotifier {
   GoogleSignInAccount? _user;
 
   GoogleSignInAccount? get user => _user;
+
+  Future<String?> get idToken async => await _auth.currentUser?.getIdToken();
 
   Future login({bool silent = false}) async {
     try {
@@ -20,20 +23,24 @@ class GoogleSignInProvider extends ChangeNotifier {
       if (googleUser == null) return false;
       _user = googleUser;
 
-      final googleAuth = await googleUser.authentication;
+      if (silent) return true;
 
+      final googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
       await _auth.signInWithCredential(credential);
+
+
+      final tkn = await _auth.currentUser?.getIdToken();
+      log(tkn!);
     } catch (e) {
-      print(e.toString());
+      throw e.toString();
       return false;
     }
 
-    notifyListeners();
     return true;
   }
 

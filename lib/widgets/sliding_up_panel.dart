@@ -62,10 +62,9 @@ class FotogoSlidingUpPanel extends StatelessWidget {
     SystemChannels.textInput.invokeMethod('TextInput.hide');
 
     // Destroy the panel if it is closed
-    if (position <= .0) {
+    if (position <= .0 && !panelController.isPanelShown) {
       panelController.hide();
     }
-
     if (onPanelSlideCallback != null) onPanelSlideCallback!();
   }
 
