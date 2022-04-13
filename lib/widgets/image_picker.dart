@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:fotogo/pages/create_album/album_creation_data.dart';
+import 'package:fotogo/album_creation/album_creation_data.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:photo_gallery/photo_gallery.dart';
 import 'package:transparent_image/transparent_image.dart';

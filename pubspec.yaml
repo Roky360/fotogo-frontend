@@ -61,6 +61,8 @@ dependencies:
   transparent_image: ^2.0.0
   permission_handler: ^9.2.0
   photo_view: ^0.13.0
+  exif: ^3.1.1
+  package_info_plus: ^1.4.0
 
 
 flutter_icons:
@@ -97,6 +99,7 @@ flutter:
     - assets/animations/
     - assets/logos/
     - assets/test_images/
+    - assets/fotogo_launcher_icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

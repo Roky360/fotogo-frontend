@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
-import 'package:fotogo/pages/app_navigator/app_navigator_data.dart';
+import 'package:fotogo/screens/app_navigator/app_navigator_data.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:sizer/sizer.dart';
 

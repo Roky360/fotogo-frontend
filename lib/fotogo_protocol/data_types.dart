@@ -1,11 +1,10 @@
-import 'dart:typed_data';
+import 'package:flutter/cupertino.dart';
 
 enum RequestType {
   auth,
   checkUserExists,
   createAccount,
-  deleteUserData,
-
+  deleteAccount,
   createAlbum,
   getAlbumDetails,
   getAlbumContents,
@@ -13,21 +12,24 @@ enum RequestType {
   addImagesToAlbum,
   removeImagesFromAlbum,
   deleteAlbum,
-
   uploadImage,
   deleteImage
 }
 
-enum StatusCode {
-  ok_200,
-  created_201,
+class StatusCode {
+  static int get ok => 200;
 
-  badRequest_400,
-  unauthorized_401,
-  forbidden_403,
-  notFound_404,
+  static int get created => 201;
 
-  internalServerError_500,
+  static int get badRequest => 400;
+
+  static int get unauthorized => 401;
+
+  static int get forbidden => 403;
+
+  static int get notFound => 404;
+
+  static int get internalServerError => 500;
 }
 
 class Request {
@@ -48,13 +50,32 @@ class Request {
 }
 
 class Response {
-  final StatusCode statusCode;
+  final int statusCode;
+
   final dynamic payload;
 
   Response({required this.statusCode, required this.payload});
 
   @override
   String toString() {
-    return "Response(status_code: ${statusCode.name}, payload: $payload)";
+    return "Response(status_code: $statusCode, payload: $payload)";
   }
+}
+
+class ImageData {
+  final String fileName;
+  final DateTime? timestamp;
+
+  // final Geolocation location;
+  final List<String> containingAlbums;
+  final int? tag;
+  final MemoryImage data;
+
+  ImageData(
+      {required this.fileName,
+      this.timestamp,
+      // required this.location,
+      required this.containingAlbums,
+      this.tag,
+      required this.data});
 }

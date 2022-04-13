@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fotogo/auth/user/user_provider.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sizer/sizer.dart';
@@ -58,7 +59,9 @@ class AppWidgets {
         });
   }
 
-  static Widget userCard(BuildContext context, GoogleSignInAccount account) {
+  static Widget userCard(BuildContext context) {
+    final UserProvider userProvider = UserProvider();
+
     return SizedBox(
       width: 80.w,
       child: Card(
@@ -70,7 +73,7 @@ class AppWidgets {
               child: CircleAvatar(
                 radius: 25,
                 backgroundColor: Theme.of(context).colorScheme.secondary,
-                backgroundImage: NetworkImage(account.photoUrl!),
+                backgroundImage: NetworkImage(userProvider.photoUrl!),
               ),
             ),
             const SizedBox(width: 5),
@@ -80,12 +83,12 @@ class AppWidgets {
                 // Name
                 // TODO: change text direction according to the language (+ detect language)
                 Text(
-                  account.displayName ?? '',
+                  userProvider.displayName ?? '',
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 // Email
                 Text(
-                  account.email,
+                  userProvider.email,
                   style: Theme.of(context)
                       .textTheme
                       .subtitle1
@@ -110,10 +113,7 @@ class AppWidgets {
         backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(.7),
         content: Text(
           content,
-          style: Theme.of(context)
-              .textTheme
-              .caption
-              ?.copyWith(fontSize: 12),
+          style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12),
         ),
       ),
     );

@@ -1,7 +1,7 @@
 // import 'dart:ui';
 //
 // import 'package:flutter/material.dart';
-// import 'package:fotogo/pages/app_navigator/app_navigator_data.dart';
+// import 'package:fotogo/screens/app_navigator/app_navigator_data.dart';
 // import 'package:fotogo/widgets/app_widgets.dart';
 // import 'package:sizer/sizer.dart';
 // import 'package:widget_mask/widget_mask.dart';
@@ -101,7 +101,7 @@
 //                   ),
 //                 ),
 //                 // ),
-//                 // Center circle - new album button
+//                 // Center circle - new album_bloc button
 //                 Center(
 //                   child: SizedBox(
 //                     width: barSize.height + 7,
@@ -233,7 +233,7 @@
 //     //                   ),
 //     //                 // ),
 //     //               ),
-//     //               // Center circle - new album button
+//     //               // Center circle - new album_bloc button
 //     //               Center(
 //     //                 child: SizedBox(
 //     //                   width: size.height + 7,

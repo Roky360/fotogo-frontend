@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fotogo/pages/auth_checker.dart';
-import 'package:fotogo/pages/on_boarding_setup/on_boarding_page.dart';
+import 'package:fotogo/screens/auth_checker.dart';
+import 'package:fotogo/screens/on_boarding_setup/on_boarding_page.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,7 +21,7 @@ class FotogoLauncher extends StatelessWidget {
       future: isFirstLaunch(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return snapshot.data! ? const OnBoardingPage() : const AuthChecker();
+          return snapshot.data! ? const OnBoardingPage() : AuthChecker();
         } else {
           return Center(child: AppWidgets.fotogoCircularLoadingAnimation());
         }

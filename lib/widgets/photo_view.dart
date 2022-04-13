@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
+import 'package:fotogo/widgets/dialogs.dart';
 import 'package:fotogo/widgets/popup_menu_button.dart';
 import 'package:photo_gallery/photo_gallery.dart';
 import 'package:photo_view/photo_view.dart';
@@ -21,9 +22,10 @@ class PhotoView extends StatefulWidget {
 }
 
 class _PhotoViewState extends State<PhotoView> {
-  late Future<List<File>> media;
+  late List<Medium> media;
   late PhotoViewController controller;
   late PageController pageController;
+  late int currPageIndex;
 
   @override
   void initState() {
@@ -34,21 +36,22 @@ class _PhotoViewState extends State<PhotoView> {
 
     controller = PhotoViewController();
     pageController = PageController(initialPage: widget.index);
+    currPageIndex = widget.index;
 
-    media = getFiles(widget.index);
+    media = widget.media;
   }
 
-  Future<List<File>> getFiles(int index) async {
-    List<File> files = List.empty(growable: true);
-
-    for (int i = max(0, index - 1);
-        i < min(index + 2, widget.media.length);
-        i++) {
-      files.add(await widget.media[i].getFile());
-    }
-
-    return files;
-  }
+  // Future<List<File>> getFiles(int index) async {
+  //   List<File> files = List.empty(growable: true);
+  //
+  //   for (int i = max(0, index - 1);
+  //       i < min(index + 2, widget.media.length);
+  //       i++) {
+  //     files.add(await widget.media[i].getFile());
+  //   }
+  //
+  //   return files;
+  // }
 
   @override
   void dispose() {
@@ -84,7 +87,7 @@ class _PhotoViewState extends State<PhotoView> {
         actions: [
           fotogoPopupMenuButton(
             items: [
-              MenuItem('Add to...'),
+              MenuItem('Add to...', onTap: () async => FotogoDialogs.showAddToDialog(context, [await media[currPageIndex].getFile()])),
             ],
           ),
         ],
@@ -92,12 +95,13 @@ class _PhotoViewState extends State<PhotoView> {
       body: PhotoViewGallery.builder(
         pageController: pageController,
         scrollPhysics: const BouncingScrollPhysics(),
-        itemCount: widget.media.length,
+        itemCount: media.length,
+        onPageChanged: (index) => currPageIndex = index,
         builder: (context, index) {
           return PhotoViewGalleryPageOptions.customChild(
             controller: controller,
             child: Image(
-              image: PhotoProvider(mediumId: widget.media[index].id),
+              image: PhotoProvider(mediumId: media[index].id),
             ),
             minScale: PhotoViewComputedScale.contained,
             maxScale: PhotoViewComputedScale.contained * 3,
