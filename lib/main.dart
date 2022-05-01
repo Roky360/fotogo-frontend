@@ -37,12 +37,6 @@ class FotogoApp extends StatelessWidget {
             BlocProvider<AlbumCreationBloc>(
               create: (context) => AlbumCreationBloc(),
             ),
-            BlocProvider<AlbumDetailsBloc>(
-              create: (context) => AlbumDetailsBloc(),
-            ),
-            BlocProvider<SingleAlbumBloc>(
-              create: (context) => SingleAlbumBloc(),
-            ),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,

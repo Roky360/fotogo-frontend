@@ -10,19 +10,11 @@ class AuthRegisterDataStreamEvent extends AuthEvent {
 }
 
 class SignInEvent extends AuthEvent {
-  final bool silent;
+  const SignInEvent();
+}
 
-  const SignInEvent({this.silent=false});
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is SignInEvent &&
-          runtimeType == other.runtimeType &&
-          silent == other.silent;
-
-  @override
-  int get hashCode => silent.hashCode;
+class SignInSilentlyEvent extends AuthEvent {
+  const SignInSilentlyEvent();
 }
 
 class SignUpEvent extends AuthEvent {

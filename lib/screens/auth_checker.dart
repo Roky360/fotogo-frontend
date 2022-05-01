@@ -17,7 +17,7 @@ class AuthChecker extends StatelessWidget {
   Widget build(BuildContext context) {
     // sign in silently
     if (!_userProvider.isSignedIn) {
-      context.read<AuthBloc>().add(const SignInEvent(silent: true));
+      context.read<AuthBloc>().add(const SignInSilentlyEvent());
     }
 
     return Scaffold(

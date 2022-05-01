@@ -1,14 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:fotogo/album_details/album_details_data.dart';
-import 'package:fotogo/album_details/album_details_repository.dart';
+import 'package:fotogo/album_details/album_data.dart';
 import 'package:fotogo/auth/user/user_provider.dart';
 import 'package:fotogo/fotogo_protocol/client_service.dart';
 import 'package:fotogo/fotogo_protocol/data_types.dart';
 import 'package:fotogo/fotogo_protocol/sender.dart';
+import 'package:fotogo/single_album/single_album_service.dart';
+
+import '../single_album/single_album_data.dart';
 
 class AlbumDetailsService {
-  final AlbumDetailsRepository _albumDetailsRepository =
-      AlbumDetailsRepository();
+  final SingleAlbumService _singleAlbumService = SingleAlbumService();
   final UserProvider _userProvider = UserProvider();
   final ClientService _clientService = ClientService();
 
@@ -19,10 +22,10 @@ class AlbumDetailsService {
 
   factory AlbumDetailsService() => _albumDetailsService;
 
-  List<AlbumDetailsData> get albumsDetailsData =>
-      _albumDetailsRepository.albumsDetailsData;
+  void deleteAlbum(String albumId) => _singleAlbumService.albumsData
+      .removeWhere((element) => element.data.id == albumId);
 
-  void clear() => _albumDetailsRepository.clear();
+  void clear() => _singleAlbumService.clear();
 
   /// The requested albums to check if they're up-to-date
   /// [{'single_album id': 'last modified datetime object'}]
@@ -40,59 +43,65 @@ class AlbumDetailsService {
 
   void updateAlbumDetailsByResponse(Response response) {
     // parse payload to List<AlbumDetailsData>
-    final List<AlbumDetailsData> newAlbumDetails = [];
+    final List<AlbumData> newAlbumDetails = [];
     for (final curr in response.payload) {
       // remove deleted albums from repo
       if (curr['owner_id'] == '') {
-        _albumDetailsRepository.albumsDetailsData
-            .removeWhere((element) => element.id == curr['album_id']);
+        _singleAlbumService.albumsData
+            .removeWhere((element) => element.data.id == curr['album_id']);
         continue;
       }
 
-      newAlbumDetails.add(AlbumDetailsData(
+      newAlbumDetails.add(AlbumData(
           id: curr['album_id'],
           title: curr['name'],
           dates: DateTimeRange(
               start: DateTime.parse(curr['date_range'][0]),
               end: DateTime.parse(curr['date_range'][1])),
-          permittedUsers: curr['permitted_users'],
-          coverImage: curr['cover_image'],
+          permittedUsers: curr['permitted_users'].cast<String>(),
+          coverImage: base64Decode(curr['cover_image']),
+          // coverImage: curr['cover_image'],
           lastModified: DateTime.parse(curr['last_modified'])));
     }
 
     // replace all "outdated" albums with new ones
     for (final curr in newAlbumDetails) {
-      final replaceIndex = _albumDetailsRepository.albumsDetailsData
-          .indexWhere((element) => element.id == curr.id);
+      final replaceIndex = _singleAlbumService.albumsData
+          .indexWhere((element) => element.data.id == curr.id);
 
       if (replaceIndex == -1) {
         // if not found, it is a new single_album - add it to the repo
-        _albumDetailsRepository.albumsDetailsData.add(curr);
+        _singleAlbumService.albumsData.add(SingleAlbumData(data: curr));
       } else {
         // if exists, replace the old outdated one with new updated one
-        _albumDetailsRepository.albumsDetailsData.removeAt(replaceIndex);
-        _albumDetailsRepository.albumsDetailsData.insert(replaceIndex, curr);
+        _singleAlbumService.albumsData.removeAt(replaceIndex);
+        _singleAlbumService.albumsData
+            .insert(replaceIndex, SingleAlbumData(data: curr));
+        // _albumDetailsRepository.albumsDetailsData.removeAt(replaceIndex);
+        // _albumDetailsRepository.albumsDetailsData.insert(replaceIndex, curr);
       }
     }
   }
 
   /// Sorts the [AlbumDetailsRepository] by the start date of each single_album.
   void sortByDates() {
-    _albumDetailsRepository.albumsDetailsData.sort(
-      (a, b) => a.dates.start.compareTo(b.dates.start),
+    _singleAlbumService.albumsData.sort(
+      (a, b) => a.data.dates.start.compareTo(b.data.dates.start),
     );
   }
 
   /// Sorts the [AlbumDetailsRepository] by the title of each single_album.
   void sortByName() {
-    _albumDetailsRepository.albumsDetailsData
-        .sort((a, b) => a.title.compareTo(b.title));
+    _singleAlbumService.albumsData.sort(
+      (a, b) => a.data.title.compareTo(b.data.title),
+    );
   }
 
   /// Sorts the [AlbumDetailsRepository] by the [lastModified] property of each
   /// single_album.
   void sortByLastModified() {
-    _albumDetailsRepository.albumsDetailsData
-        .sort((a, b) => a.lastModified.compareTo(b.lastModified));
+    _singleAlbumService.albumsData.sort(
+      (a, b) => a.data.lastModified.compareTo(b.data.lastModified),
+    );
   }
 }

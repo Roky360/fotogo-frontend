@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:fotogo/album_details/album_details_service.dart';
 import 'package:fotogo/fotogo_protocol/client_service.dart';
 import 'package:fotogo/fotogo_protocol/data_types.dart';
 import 'package:fotogo/fotogo_protocol/sender.dart';
@@ -13,15 +15,18 @@ part 'single_album_state.dart';
 
 class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
   final SingleAlbumService _singleAlbumService = SingleAlbumService();
+  final AlbumDetailsService _albumDetailsService = AlbumDetailsService();
   final ClientService _clientService = ClientService();
 
   bool registeredDataListener = false;
+  late final StreamSubscription dataStreamSubscription;
 
   SingleAlbumBloc() : super(const SingleAlbumInitial()) {
     on<SingleAlbumRegisterDataStreamEvent>((event, emit) {
       if (registeredDataListener) return;
 
-      _clientService.registerToDataStreamController((event) {
+      dataStreamSubscription =
+          _clientService.registerToDataStreamController((event) {
         if (event is! AlbumSender) return;
 
         switch (event.requestType) {
@@ -38,7 +43,8 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
             add(RemovedImagesFromAlbumEvent(event.response));
             break;
           case RequestType.deleteAlbum:
-            add(DeletedAlbumEvent(event.response));
+            add(DeletedAlbumEvent(
+                event.response, event.request.args['album_id'].toString()));
             break;
           default:
             break;
@@ -65,7 +71,24 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
     on<RemoveImagesFromAlbumEvent>((event, emit) => null);
     on<RemovedImagesFromAlbumEvent>((event, emit) => null);
 
-    on<DeleteAlbumEvent>((event, emit) => null);
-    on<DeletedAlbumEvent>((event, emit) => null);
+    on<DeleteAlbumEvent>((event, emit) {
+      _singleAlbumService.deleteAlbum(event.albumId);
+    });
+    on<DeletedAlbumEvent>((event, emit) {
+      if (event.response.statusCode == StatusCode.ok) {
+        _albumDetailsService.deleteAlbum(event.deletedAlbumId);
+
+        emit(const SingleAlbumDeleted());
+      } else {
+        emit(SingleAlbumError(event.response.payload));
+      }
+    });
+  }
+
+  @override
+  Future<void> close() {
+    dataStreamSubscription.cancel();
+
+    return super.close();
   }
 }

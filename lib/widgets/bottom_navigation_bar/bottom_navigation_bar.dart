@@ -10,7 +10,7 @@ class FotogoBottomNavigationBar extends StatelessWidget {
   final AppNavigatorData data;
   final Color foregroundColor;
 
-  final Size _barSize = Size(/*92.w*/ 100.w - pageMargin * 2, 60);
+  final Size _barSize = Size(100.w - pageMargin * 2, 60);
   final Size _containerSize = Size(100.w, 130);
   late final Size _tabSize = Size(_barSize.width * .188, _barSize.height);
   late final double _borderRadius = _barSize.height * .3;
@@ -29,7 +29,6 @@ class FotogoBottomNavigationBar extends StatelessWidget {
     required this.onTabTap,
     required this.onMiddleButtonTap,
     required this.controller,
-    // required this.animationController,
   }) : super(key: key);
 
   double _calculatePosition(int index) {
@@ -147,7 +146,7 @@ class FotogoBottomNavigationBar extends StatelessWidget {
           builder: (BuildContext context, Widget? staticChild) {
             return Positioned(
               left: _gapBetweenContainerToEdge,
-              bottom: controller.value * 70 - 60,
+              bottom: controller.value * 70 - 55,
               child: staticChild!,
             );
           },

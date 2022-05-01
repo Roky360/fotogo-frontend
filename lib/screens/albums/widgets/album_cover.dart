@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
+import 'package:fotogo/single_album/bloc/single_album_bloc.dart';
 import 'package:fotogo/utils/string_formatting.dart';
 import 'package:fotogo/widgets/popup_menu_button.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../../album_details/album_details_data.dart';
+import '../../../album_details/album_data.dart';
 
 class AlbumCover extends StatelessWidget {
-  final AlbumDetailsData data;
+  final AlbumData data;
   final double borderRadius;
 
   final Size _size = Size(100.w - pageMargin * 2, 150);
@@ -35,9 +37,11 @@ class AlbumCover extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: Image(
-              image: NetworkImage(data.coverImage),
+              image: MemoryImage(data.coverImage),
+              // image: NetworkImage(data.coverImage),
               fit: BoxFit.cover,
               width: _size.width,
+              height: _size.height,
             ),
           ),
           // information with black gradient
@@ -118,7 +122,10 @@ class AlbumCover extends StatelessWidget {
               iconColor: textFGColor,
               items: [
                 IconMenuItem('Share', Icons.share),
-                IconMenuItem('Delete', Icons.delete),
+                IconMenuItem('Delete', Icons.delete,
+                    onTap: () => context
+                        .read<SingleAlbumBloc>()
+                        .add(DeleteAlbumEvent(data.id))),
               ],
             ),
           ),

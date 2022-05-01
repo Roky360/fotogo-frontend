@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:fotogo/album_creation/album_creation_data.dart';
 import 'package:fotogo/album_creation/album_creation_service.dart';
@@ -15,17 +17,19 @@ class AlbumCreationBloc extends Bloc<AlbumCreationEvent, AlbumCreationState> {
   final ClientService _clientService = ClientService();
 
   bool registeredDataListener = false;
+  late final StreamSubscription dataStreamSubscription;
 
   AlbumCreationBloc() : super(const AlbumCreationInitial()) {
     on<AlbumCreationRegisterDataStreamEvent>((event, emit) {
       if (registeredDataListener) return;
 
-      _clientService.registerToDataStreamController((event) {
+      dataStreamSubscription =
+          _clientService.registerToDataStreamController((event) {
         if (event is! AlbumCreationSender) return;
 
         switch (event.requestType) {
           case RequestType.createAlbum:
-            add(CreatedAlbumEvent(event.response));
+            add(CreatedAlbumEvent(event.response, event.request));
             break;
           default:
             break;
@@ -48,10 +52,19 @@ class AlbumCreationBloc extends Bloc<AlbumCreationEvent, AlbumCreationState> {
     on<CreatedAlbumEvent>((event, emit) {
       if (event.response.statusCode == StatusCode.created) {
         // TODO: add new single_album to single_album repo
+        _albumCreationService.addCreatedAlbumToRepository(
+            event.request, event.response);
         emit(const AlbumCreated());
       } else {
         emit(AlbumCreationError(event.response.payload));
       }
     });
+  }
+
+  @override
+  Future<void> close() {
+    dataStreamSubscription.cancel();
+
+    return super.close();
   }
 }

@@ -27,8 +27,9 @@ class CreateAlbumEvent extends AlbumCreationEvent {
 
 class CreatedAlbumEvent extends AlbumCreationEvent {
   final Response response;
+  final Request request; // for adding the new album to the AlbumRepository
 
-  const CreatedAlbumEvent(this.response);
+  const CreatedAlbumEvent(this.response, this.request);
 
   @override
   bool operator ==(Object other) =>

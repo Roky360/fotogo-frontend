@@ -1,12 +1,13 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:fotogo/album_details/album_details_service.dart';
 import 'package:fotogo/fotogo_protocol/client_service.dart';
 import 'package:fotogo/fotogo_protocol/data_types.dart';
 import 'package:fotogo/fotogo_protocol/sender.dart';
+import 'package:fotogo/single_album/single_album_service.dart';
 import 'package:meta/meta.dart';
-
-import '../album_details_data.dart';
 
 part 'album_details_event.dart';
 
@@ -14,15 +15,18 @@ part 'album_details_state.dart';
 
 class AlbumDetailsBloc extends Bloc<AlbumDetailsEvent, AlbumDetailsState> {
   final AlbumDetailsService _albumDetailsService = AlbumDetailsService();
+  final SingleAlbumService _singleAlbumService = SingleAlbumService();
   final ClientService _clientService = ClientService();
 
   bool registeredDataListener = false;
+  late final StreamSubscription dataStreamSubscription;
 
   AlbumDetailsBloc() : super(const AlbumDetailsInitial()) {
     on<AlbumDetailsRegisterDataStreamEvent>((event, emit) {
       if (registeredDataListener) return;
 
-      _clientService.registerToDataStreamController((event) {
+      dataStreamSubscription =
+          _clientService.registerToDataStreamController((event) {
         if (event is! AlbumDetailsSender) return;
 
         switch (event.requestType) {
@@ -41,8 +45,8 @@ class AlbumDetailsBloc extends Bloc<AlbumDetailsEvent, AlbumDetailsState> {
     on<GetAlbumsDetailsEvent>((event, emit) {
       try {
         _albumDetailsService.getAlbumsDetails({
-          for (var element in _albumDetailsService.albumsDetailsData)
-            element.id: element.lastModified.toString()
+          for (var element in _singleAlbumService.albumsData)
+            element.data.id: element.data.lastModified.toString()
         });
       } catch (e) {
         emit(AlbumDetailsError(e.toString()));
@@ -52,10 +56,18 @@ class AlbumDetailsBloc extends Bloc<AlbumDetailsEvent, AlbumDetailsState> {
       if (event.response.statusCode == StatusCode.ok) {
         _albumDetailsService.updateAlbumDetailsByResponse(event.response);
 
+        emit(const AlbumDetailsInitial());
         emit(const AlbumDetailsFetched());
       } else {
         emit(AlbumDetailsError(event.response.payload));
       }
     });
+  }
+
+  @override
+  Future<void> close() {
+    dataStreamSubscription.cancel();
+
+    return super.close();
   }
 }

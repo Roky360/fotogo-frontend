@@ -42,7 +42,6 @@ dependencies:
   flutter_bloc: ^8.0.1
 
   sliding_up_panel: ^2.0.0+1
-  widget_mask: ^1.0.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -56,19 +55,12 @@ dependencies:
   firebase_auth: ^3.3.11
   google_sign_in: ^5.2.4
 
-  flutter_launcher_icons: "^0.9.2"
   photo_gallery: ^1.1.1
   transparent_image: ^2.0.0
   permission_handler: ^9.2.0
   photo_view: ^0.13.0
   exif: ^3.1.1
   package_info_plus: ^1.4.0
-
-
-flutter_icons:
-  image_path: "assets/fotogo_launcher_icon.png"
-  android: true
-  ios: true
 
 
 dev_dependencies:

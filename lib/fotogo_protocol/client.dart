@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
@@ -21,16 +22,22 @@ class Client {
 
   void sendRequest(Sender sender) async {
     final Socket socket = await Socket.connect(host, port);
+    List<int> events = Uint8List(0);
 
     socket.listen(
       (event) {
-        final Response res = _parseBytesToResponse(event);
-        dataStreamController.add(sender..response = res);
+        events += event.toList();
+
+        // final Response res = _parseBytesToResponse(event);
+        // dataStreamController.add(sender..response = res);
       },
       onError: (error) {
         throw error;
       },
       onDone: () {
+        final Response res = _parseBytesToResponse(Uint8List.fromList(events));
+        dataStreamController.add(sender..response = res);
+
         socket.destroy();
       },
     );
@@ -113,13 +120,16 @@ class Client {
       'payload': request.payload
     };
 
+    // log(requestMap.toString());
     String requestJson = json.encode(requestMap);
+    List<int> requestBytes = utf8.encode(requestJson);
 
-    int requestLength = requestJson.length;
+    int requestLength = requestBytes.length;
     Uint8List requestLengthBytes = Uint8List(4)
       ..buffer.asByteData().setInt32(0, requestLength, Endian.big);
 
-    final List<int> data = requestLengthBytes + utf8.encode(requestJson);
+    final List<int> data = requestLengthBytes + requestBytes;
+    // log(requestJson);
     sock.add(data);
   }
 

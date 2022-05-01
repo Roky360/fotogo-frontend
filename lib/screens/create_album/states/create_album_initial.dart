@@ -79,6 +79,7 @@ class _CreateAlbumInitialState extends State<CreateAlbumInitial> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -95,7 +96,7 @@ class _CreateAlbumInitialState extends State<CreateAlbumInitial> {
             children: [
               // Panel title
               Text(
-                'Create single_album',
+                'Create album',
                 style: Theme.of(context).textTheme.headline6,
               ),
               const Spacer(flex: 1),
@@ -133,7 +134,7 @@ class _CreateAlbumInitialState extends State<CreateAlbumInitial> {
                 title: 'People',
                 body: TextButton(
                     onPressed: () {},
-                    child: const Text('Add people to your single_album'),
+                    child: const Text('Add people to your album'),
                     style: Theme.of(context).textButtonTheme.style),
               ),
               const Spacer(flex: 1),
@@ -169,7 +170,7 @@ class _CreateAlbumInitialState extends State<CreateAlbumInitial> {
               ElevatedButton(
                 onPressed: onSubmit,
                 // onPressed: onSubmit,
-                child: const Text('Create single_album'),
+                child: const Text('Create album'),
                 style: Theme.of(context).elevatedButtonTheme.style,
               ),
               const Spacer(flex: 4),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fotogo/fotogo_protocol/sender.dart';
 
 import 'client.dart';
@@ -11,7 +13,8 @@ class ClientService {
 
   factory ClientService() => _clientService;
 
-  void registerToDataStreamController(void Function(dynamic event)? onData) =>
+  StreamSubscription registerToDataStreamController(
+          void Function(dynamic event)? onData) =>
       _client.dataStreamController.stream.listen(onData);
 
   void sendRequest(Sender sender) => _client.sendRequest(sender);

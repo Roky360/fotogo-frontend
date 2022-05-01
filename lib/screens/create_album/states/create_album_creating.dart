@@ -22,7 +22,7 @@ class CreateAlbumCreating extends StatelessWidget {
           children: [
             // Panel title
             Text(
-              'Create single_album',
+              'Create album',
               style: Theme.of(context).textTheme.headline6,
             ),
             const Spacer(flex: 1),
@@ -49,7 +49,7 @@ class CreateAlbumCreating extends StatelessWidget {
               title: 'People',
               body: TextButton(
                   onPressed: null,
-                  child: const Text('Add people to your single_album'),
+                  child: const Text('Add people to your album'),
                   style: Theme.of(context).textButtonTheme.style),
             ),
             const Spacer(flex: 1),
