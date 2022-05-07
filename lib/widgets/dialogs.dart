@@ -1,6 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fotogo/auth/bloc/auth_bloc.dart';
+import 'package:fotogo/auth/user/user_provider.dart';
 import 'package:fotogo/screens/create_album/create_album_page.dart';
 import 'package:fotogo/widgets/section.dart';
 import 'package:fotogo/widgets/shared_axis_route.dart';
@@ -57,8 +60,39 @@ class FotogoDialogs {
 
   static void showAppDialog(BuildContext context) {
     showAboutDialog(
-
       context: context,
     );
+  }
+
+  static void showDeleteAccountDialog(BuildContext context) {
+    final UserProvider userProvider = UserProvider();
+
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              backgroundColor: Theme.of(context).colorScheme.background,
+              title: const Text('Delete Account'),
+              content: Text("""This action will delete all the data related to this user: ${userProvider.email}.
+              This action """, style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                fontWeight: FontWeight.normal,
+                fontSize: 14
+              ),),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                    context.read<AuthBloc>().add(const DeleteAccountEvent());
+                  },
+                  child: const Text("Delete account"),
+                  style: Theme.of(context).textButtonTheme.style?.copyWith(
+                        foregroundColor:
+                            MaterialStateProperty.all(Colors.redAccent),
+                      ),
+                )
+              ],
+            ));
   }
 }

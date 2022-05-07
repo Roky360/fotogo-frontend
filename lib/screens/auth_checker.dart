@@ -23,56 +23,32 @@ class AuthChecker extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Center(
-          child: BlocConsumer<AuthBloc, AuthState>(
-            listener: (context, state) {
-              // if (state is UserSignedIn) {
-              //   Navigator.pushReplacementNamed(context, '/app_navigator');
-              // }
-            },
+          child: BlocBuilder<AuthBloc, AuthState>(
             builder: (BuildContext context, AuthState state) {
-              if (state is SignedIn) {
-                return const AppNavigator();
-              } else if (state is SignedOut || state is ConfirmingAccount || state is AuthLoading) {
-                return PageTransitionSwitcher(
-                    transitionBuilder:
-                        (child, primaryAnimation, secondaryAnimation) {
-                      return SharedAxisTransition(
-                        animation: primaryAnimation,
-                        secondaryAnimation: secondaryAnimation,
-                        transitionType: SharedAxisTransitionType.horizontal,
-                        child: child,
-                      );
-                    },
-                    reverse: state is SignedOut,
-                    child: state is AuthLoading
-                        ? Center(
-                            child: AppWidgets.fotogoCircularLoadingAnimation())
-                        : state is SignedOut
-                            ? const SignInPage()
-                            : const ConfirmAccountPage()
-
-                    // state is SignedOut
-                    //     ? const SignInPage()
-                    //     : const ConfirmAccountPage(),
-                    );
-              }
-              /*else if (state is SignedOut) {
-                return const SignInPage();
-              } else if (state is ConfirmingAccount) {
-                return const ConfirmAccountPage();
-              }
-              else if (state is AuthLoading) {
-                return Center(
-                    child: AppWidgets.fotogoCircularLoadingAnimation());
-              }*/ else {
-                // state is AuthError
-                // TODO: move to listener ^
-                // TODO: better UI implementations to errors
-                return Text(
-                  (state as AuthError).message,
-                  style: Theme.of(context).textTheme.subtitle1,
-                );
-              }
+              return AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: state is SignedIn
+                    ? const AppNavigator()
+                    : PageTransitionSwitcher(
+                        transitionBuilder:
+                            (child, primaryAnimation, secondaryAnimation) {
+                          return SharedAxisTransition(
+                            animation: primaryAnimation,
+                            secondaryAnimation: secondaryAnimation,
+                            transitionType: SharedAxisTransitionType.horizontal,
+                            child: child,
+                          );
+                        },
+                        reverse: state is SignedOut,
+                        child: state is AuthLoading
+                            ? Center(
+                                child:
+                                    AppWidgets.fotogoCircularLoadingAnimation())
+                            : state is SignedOut
+                                ? SignInPage()
+                                : CreateAccountPage(),
+                      ),
+              );
             },
           ),
         ),

@@ -4,8 +4,11 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter/services.dart';
 import 'package:fotogo/fotogo_protocol/sender.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'data_types.dart';
 
@@ -13,23 +16,37 @@ class Client {
   late final String host;
   late final int port;
   final StreamController dataStreamController = StreamController.broadcast();
+  late final SecurityContext _securityContext;
 
   Client(
       {required this.host,
       // String host = "192.168.1.162",
       // String host = "192.168.92.114",
-      required this.port});
+      required this.port}) {
+    initializeCert();
+  }
+
+  void initializeCert() async {
+    Directory directory = await getApplicationDocumentsDirectory();
+    var dbPath = join(directory.path, "cert.pem");
+    ByteData data = await rootBundle.load("assets/server2.pem");
+    List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    await File(dbPath).writeAsBytes(bytes);
+    // log(String.fromCharCodes(bytes));
+
+    _securityContext = SecurityContext.defaultContext
+      ..useCertificateChain(dbPath);
+  }
 
   void sendRequest(Sender sender) async {
+    // final SecureSocket socket =
+    //     await SecureSocket.connect(host, port, context: _securityContext);
     final Socket socket = await Socket.connect(host, port);
     List<int> events = Uint8List(0);
 
     socket.listen(
       (event) {
         events += event.toList();
-
-        // final Response res = _parseBytesToResponse(event);
-        // dataStreamController.add(sender..response = res);
       },
       onError: (error) {
         throw error;
@@ -44,73 +61,6 @@ class Client {
 
     _sendRequest(socket, sender.request);
   }
-
-  // Response sendRequest(Request request) {
-  //   final RawSynchronousSocket socket =
-  //       RawSynchronousSocket.connectSync(host, port);
-  //
-  //   _sendRequest(socket, request);
-  //
-  //   // get data length
-  //   final dataLengthBytes = socket.readSync(4);
-  //   final dataLength =
-  //       Uint8List.fromList(dataLengthBytes!).buffer.asByteData().getInt32(0);
-  //
-  //   // receiving loop
-  //   int bytesLeft = dataLength;
-  //   List<int> dataBytes = List<int>.empty(growable: true);
-  //   while (bytesLeft > 0) {
-  //     final readAmount =
-  //         bytesLeft.clamp(0, 16384); // max bytes to read per receive
-  //     final readData = socket.readSync(readAmount)!;
-  //     dataBytes += readData;
-  //     bytesLeft -= readData.length;
-  //   }
-  //
-  //   return _parseBytesToResponse(Uint8List.fromList(dataBytes));
-  // }
-
-  // void createConnection(Request request, Bloc networkingBloc,
-  //     Function(Response) onDoneEvent) async {
-  //   final Socket socket = await Socket.connect(_host, _port);
-  //   socket.listen(
-  //     (event) {
-  //       final Response res = _parseBytesToResponse(event);
-  //       print(res);
-  //       networkingBloc.add(GotResponseEvent(onDoneEvent(res)));
-  //     },
-  //     onError: (error) {
-  //       throw error;
-  //     },
-  //     onDone: () {
-  //       // print('terminating...');
-  //       socket.destroy();
-  //     },
-  //   );
-  //
-  //   _sendRequest(socket, request);
-  // }
-
-  // void createConnection(Request request, Function(Response) responseCallback) async {
-  //   final Socket socket = await Socket.connect(_host, _port);
-  //   socket.listen(
-  //     (event) {
-  //       final Response res = _parseBytesToResponse(event);
-  //       print(res);
-  //       responseCallback(res);
-  //       // context.read<ServerBloc>().add(FetchedDataEvent(res));
-  //     },
-  //     onError: (error) {
-  //       throw error;
-  //     },
-  //     onDone: () {
-  //       // print('terminating...');
-  //       socket.destroy();
-  //     },
-  //   );
-  //
-  //   _sendRequest(socket, request);
-  // }
 
   void _sendRequest(Socket sock, Request request) {
     Map<String, Object> requestMap = {

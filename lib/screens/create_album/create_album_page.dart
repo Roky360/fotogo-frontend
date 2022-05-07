@@ -37,18 +37,6 @@ class CreateAlbumPage extends StatelessWidget {
       builder: (context, state) {
         if (state is AlbumCreating) {
           return CreateAlbumCreating(data: state.albumCreationData);
-          // context.read<UserBloc>().userData.albumsData.add(AlbumData(
-          //     id: state.albumId,
-          //     title: state.albumData.title,
-          //     dates: state.albumData.dateRange,
-          //     isShared: state.albumData.sharedPeople.isNotEmpty,
-          //     images: state.albumData.imagesFiles
-          //         .map((e) => ImageData(
-          //             data: MemoryImage(e.readAsBytesSync()),
-          //             fileName: '',
-          //             containingAlbums: []))
-          //         .toList(),
-          //     tags: []));
         } else if (state is AlbumCreationError) {
           return Scaffold(
             body: Center(

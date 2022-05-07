@@ -79,7 +79,6 @@ class _AlbumViewState extends State<AlbumView> {
 
   @override
   Widget build(BuildContext context) {
-    // print(selectedMedia);
     return Scaffold(
       appBar: selectionMode
           // selection mode ENABLED
@@ -139,8 +138,8 @@ class _AlbumViewState extends State<AlbumView> {
             ),
       body: GridView.count(
         crossAxisCount: 3,
-        mainAxisSpacing: 1.0,
-        crossAxisSpacing: 1.0,
+        mainAxisSpacing: 2,
+        crossAxisSpacing: 2,
         shrinkWrap: true,
         physics: const BouncingScrollPhysics(),
         children: <Widget>[

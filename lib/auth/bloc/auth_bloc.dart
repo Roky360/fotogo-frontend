@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:fotogo/album_details/album_details_service.dart';
+import 'package:fotogo/auth/auth_service.dart';
 import 'package:fotogo/auth/providers/google_sign_in.dart';
 import 'package:fotogo/auth/user/user_provider.dart';
 import 'package:fotogo/fotogo_protocol/client_service.dart';
@@ -17,6 +18,7 @@ part 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final GoogleSignInProvider _googleSignInProvider = GoogleSignInProvider();
   final UserProvider _userProvider = UserProvider();
+  final AuthService _authService = AuthService();
   final ClientService _clientService = ClientService();
   final AlbumDetailsService _albumDetailsService = AlbumDetailsService();
   final SingleAlbumService _singleAlbumService = SingleAlbumService();
@@ -33,8 +35,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         if (event is! AuthSender) return;
 
         switch (event.requestType) {
+          case RequestType.checkUserExists:
+            add(CheckedUserExistsEvent(event.response));
+            break;
           case RequestType.createAccount:
             add(CreatedAccountEvent(event.response));
+            break;
+          case RequestType.deleteAccount:
+            add(DeletedAccountEvent(event.response));
             break;
           default:
             break;
@@ -56,7 +64,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
         // signed in
         _userProvider.signIn(_googleSignInProvider.user!);
-        emit(const ConfirmingAccount());
+        add(CheckUserExistsEvent(_userProvider.id));
       } catch (e) {
         emit(AuthError(e.toString()));
       }
@@ -77,10 +85,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    // TODO: implement signup event
-    on<SignUpEvent>((event, emit) => null);
-
-    on<AccountConfirmedEvent>((event, emit) => emit(const SignedIn()));
+    on<CheckUserExistsEvent>((event, emit) {
+      _authService.checkUserExists(event.userId);
+    });
+    on<CheckedUserExistsEvent>((event, emit) {
+      if (event.response.statusCode == StatusCode.ok) {
+        if (event.response.payload as bool) {
+          emit(const SignedIn());
+        } else {
+          emit(const ConfirmingAccount());
+        }
+      } else {
+        emit(AuthError(event.response.payload));
+      }
+    });
 
     on<SignOutEvent>((event, emit) async {
       emit(const AuthLoading());
@@ -91,19 +109,45 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         _albumDetailsService.clear();
         _singleAlbumService.clear();
-
         emit(const SignedOut());
       } catch (e) {
         emit(AuthError(e.toString()));
       }
     });
 
-    // TODO: delete SignUpEvent or CreateAccountEvent
-    on<CreateAccountEvent>((event, emit) => null);
-    on<CreatedAccountEvent>((event, emit) => null);
+    on<CreateAccountEvent>((event, emit) {
+      emit(const AuthLoading());
 
-    on<DeleteAccountEvent>((event, emit) => null);
-    on<DeletedAccountEvent>((event, emit) => null);
+      try {
+        _authService.createAccount();
+      } catch (e) {
+        emit(AuthError(e.toString()));
+      }
+    });
+    on<CreatedAccountEvent>((event, emit) {
+      if (event.response.statusCode == StatusCode.ok) {
+        emit(const SignedIn());
+      } else {
+        emit(AuthError(event.response.payload));
+      }
+    });
+
+    on<DeleteAccountEvent>((event, emit) {
+      emit(const AuthLoading());
+
+      try {
+        _authService.deleteAccount();
+      } catch (e) {
+        emit(AuthError(e.toString()));
+      }
+    });
+    on<DeletedAccountEvent>((event, emit) {
+      if (event.response.statusCode == StatusCode.ok) {
+        add(const SignOutEvent());
+      } else {
+        emit(AuthError(event.response.payload));
+      }
+    });
   }
 
   @override

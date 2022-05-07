@@ -17,32 +17,24 @@ class SignInSilentlyEvent extends AuthEvent {
   const SignInSilentlyEvent();
 }
 
-class SignUpEvent extends AuthEvent {
-  const SignUpEvent();
-}
-
-class AccountConfirmedEvent extends AuthEvent {
-  const AccountConfirmedEvent();
-}
-
 class SignOutEvent extends AuthEvent {
   const SignOutEvent();
 }
 
-class CreateAccountEvent extends AuthEvent {
+class CheckUserExistsEvent extends AuthEvent {
   final String userId;
 
-  const CreateAccountEvent(this.userId);
+  const CheckUserExistsEvent(this.userId);
+}
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is CreateAccountEvent &&
-          runtimeType == other.runtimeType &&
-          userId == other.userId;
+class CheckedUserExistsEvent extends AuthEvent {
+  final Response response;
 
-  @override
-  int get hashCode => userId.hashCode;
+  const CheckedUserExistsEvent(this.response);
+}
+
+class CreateAccountEvent extends AuthEvent {
+  const CreateAccountEvent();
 }
 
 class CreatedAccountEvent extends AuthEvent {
@@ -52,19 +44,7 @@ class CreatedAccountEvent extends AuthEvent {
 }
 
 class DeleteAccountEvent extends AuthEvent {
-  final String userId;
-
-  const DeleteAccountEvent(this.userId);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is DeleteAccountEvent &&
-          runtimeType == other.runtimeType &&
-          userId == other.userId;
-
-  @override
-  int get hashCode => userId.hashCode;
+  const DeleteAccountEvent();
 }
 
 class DeletedAccountEvent extends AuthEvent {

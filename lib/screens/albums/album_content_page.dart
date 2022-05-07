@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/fotogo_protocol/client.dart';
@@ -10,15 +12,16 @@ import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:fotogo/widgets/popup_menu_button.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../album_details/album_data.dart';
 import '../../single_album/bloc/single_album_bloc.dart';
+import '../../widgets/image_picker.dart';
+import '../../widgets/shared_axis_route.dart';
 
 class AlbumContentPage extends StatefulWidget {
-  final SingleAlbumData singleAlbumData;
+  final String albumId;
 
   const AlbumContentPage({
     Key? key,
-    required this.singleAlbumData,
+    required this.albumId,
   }) : super(key: key);
 
   @override
@@ -26,68 +29,79 @@ class AlbumContentPage extends StatefulWidget {
 }
 
 class _AlbumContentPageState extends State<AlbumContentPage> {
-  late final SingleAlbumBloc _singleAlbumBloc;
-
-  late final SingleAlbumData singleAlbumData;
   final SingleAlbumService _singleAlbumService = SingleAlbumService();
+
+  SingleAlbumData get albumData =>
+      _singleAlbumService.albumsData.firstWhere((element) =>
+      element.data.id ==
+          widget.albumId);
+
+  late bool firstBuild;
 
   @override
   void initState() {
     super.initState();
-    _singleAlbumBloc = SingleAlbumBloc();
 
-    singleAlbumData = widget.singleAlbumData;
-
-    // TODO: THIS IS CALLING BEFORE BLOC PROVIDER IS BUILT
-    context
-        .read<SingleAlbumBloc>()
-        .add(GetAlbumContentsEvent(singleAlbumData.data.id));
+    firstBuild = true;
   }
 
-  List<Widget> _getActions() {
+  List<Widget> _getActions(BuildContext context) {
     return [
+      IconButton(onPressed: addImagesToAlbum, icon: const Icon(Icons.add)),
       fotogoPopupMenuButton(items: [
+        MenuItem('Select'),
+        MenuItem('Add images', onTap: addImagesToAlbum),
         MenuItem('Delete'),
-      ])
+      ]),
     ];
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-
-    _singleAlbumBloc.close();
+  void addImagesToAlbum() async {
+    final res = await Navigator.push(
+        context, sharedAxisRoute(widget: const FotogoImagePicker()));
+    print('mmm');
+    print(res);
+    // context
+    //     .read<SingleAlbumBloc>()
+    //     .add(AddImagesToAlbumEvent(singleAlbumData.data.id, res));
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<SingleAlbumBloc>.value(
-      value: _singleAlbumBloc,
+    return BlocProvider<SingleAlbumBloc>(
+      create: (context) => SingleAlbumBloc(),
       child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme
+            .of(context)
+            .colorScheme
+            .background,
         body: SafeArea(
           child: CustomScrollView(
-            // physics: const BouncingScrollPhysics(),
-            controller: ScrollController(),
+            physics: const BouncingScrollPhysics(),
             slivers: [
               SliverAppBar(
                 expandedHeight: 25.h,
                 foregroundColor: Colors.white,
-                // foregroundColor: Theme.of(context).colorScheme.primary,
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                // backgroundColor: Theme.of(context).colorScheme.surface,
+                backgroundColor: Theme
+                    .of(context)
+                    .colorScheme
+                    .primary,
                 pinned: true,
                 stretch: true,
-                actions: _getActions(),
-                title: Text(singleAlbumData.data.title,
+                actions: _getActions(context),
+                title: Text(albumData.data.title,
                     overflow: TextOverflow.ellipsis),
                 flexibleSpace: FlexibleSpaceBar(
                   expandedTitleScale: 1.1,
+                  stretchModes: const [
+                    StretchMode.zoomBackground,
+                    StretchMode.blurBackground,
+                  ],
                   background: Stack(
                     children: [
                       // background image (cover image)
                       Image(
-                        image: MemoryImage(singleAlbumData.data.coverImage),
+                        image: MemoryImage(albumData.data.coverImage),
                         // image: NetworkImage(data.coverImage),
                         alignment: Alignment.center,
                         width: 100.w,
@@ -114,42 +128,22 @@ class _AlbumContentPageState extends State<AlbumContentPage> {
                                 const SizedBox(width: 8),
                                 Text(
                                   formatDateRangeToString(
-                                      singleAlbumData.data.dates),
-                                  style: Theme.of(context)
+                                      albumData.data.dates),
+                                  style: Theme
+                                      .of(context)
                                       .textTheme
                                       .subtitle1
                                       ?.copyWith(
-                                          color: Colors.white,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.normal),
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.normal),
                                 ),
                               ],
                             ),
                             const SizedBox(height: 10),
-                            // Location
-                            // Row(
-                            //   children: [
-                            //     const Icon(
-                            //       Icons.location_on_outlined,
-                            //       size: 22,
-                            //       color: Colors.white,
-                            //     ),
-                            //     const SizedBox(width: 8),
-                            //     Text(
-                            //       'Amsterdam, Netherlands',
-                            //       style: Theme.of(context)
-                            //           .textTheme
-                            //           .subtitle1
-                            //           ?.copyWith(
-                            //               color: Colors.white,
-                            //               fontSize: 15,
-                            //               fontWeight: FontWeight.normal),
-                            //     ),
-                            //   ],
-                            // ),
                             const Spacer(),
                             // shared people
-                            singleAlbumData.data.permittedUsers.isNotEmpty
+                            albumData.data.permittedUsers.isNotEmpty
                                 ? const Icon(Icons.groups)
                                 : const SizedBox(),
                             // // Tags & shared people
@@ -208,41 +202,52 @@ class _AlbumContentPageState extends State<AlbumContentPage> {
                       ),
                     ],
                   ),
-                  stretchModes: const [
-                    // StretchMode.zoomBackground,
-                    // StretchMode.blurBackground,
-                  ],
                 ),
               ),
               // Images
               SliverToBoxAdapter(
-                  child: BlocConsumer<SingleAlbumBloc, SingleAlbumState>(
-                listener: (context, state) {},
-                builder: (context, state) {
-                  if (state is SingleAlbumFetched) {
-                    return GridView.count(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 1.0,
-                      crossAxisSpacing: 1.0,
-                      shrinkWrap: true,
-                      children: _singleAlbumService.albumsData
-                          .firstWhere((element) =>
-                              element.data.id == singleAlbumData.data.id)
-                          .imagesData!
-                          .asMap()
-                          .entries
-                          .map((entry) => Image(
-                                image: entry.value.data,
-                                fit: BoxFit.cover,
-                              ))
-                          .toList(),
-                    );
-                  } else {
-                    // SingleAlbumError state
-                    return Text((state as SingleAlbumError).message);
-                  }
-                },
-              ))
+                child: BlocConsumer<SingleAlbumBloc, SingleAlbumState>(
+                  listener: (context, state) {
+                    // TODO: implement listener
+                  },
+                  builder: (context, state) {
+                    if (state is SingleAlbumInitial) {
+                      if (firstBuild) {
+                        firstBuild = false;
+                        print('getting album images');
+                        context
+                            .read<SingleAlbumBloc>()
+                            .add(GetAlbumContentsEvent(albumData.data
+                            .id));
+                      }
+                      return Center(
+                        child: AppWidgets.fotogoCircularLoadingAnimation(),
+                      );
+                    } else if (state is SingleAlbumFetched) {
+                      return GridView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 2,
+                          crossAxisSpacing: 2,
+                        ),
+                        itemCount: albumData.imagesData?.length,
+                        itemBuilder: (context, index) {
+                          return Image(
+                            image: albumData.imagesData![index].data,
+                            // image: entry.value.data,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      );
+                    } else {
+                      // SingleAlbumError state
+                      return Text((state as SingleAlbumError).message);
+                    }
+                  },
+                ),
+              )
             ],
           ),
         ),

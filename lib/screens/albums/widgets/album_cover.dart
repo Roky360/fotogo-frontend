@@ -65,6 +65,7 @@ class AlbumCover extends StatelessWidget {
                     padding: EdgeInsets.only(
                       top: 8,
                       left: margin,
+                      right: margin,
                     ),
                     child: Row(
                       children: [
@@ -73,9 +74,14 @@ class AlbumCover extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // Title
-                            Text(
-                              data.title,
-                              style: Theme.of(context).textTheme.headline4,
+                            ConstrainedBox(
+                              constraints: BoxConstraints(
+                                  maxWidth: _size.width - margin * 2),
+                              child: Text(
+                                data.title,
+                                style: Theme.of(context).textTheme.headline4,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                             const SizedBox(height: 3),
                             // Dates

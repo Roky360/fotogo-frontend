@@ -17,8 +17,9 @@ class GetAlbumContentsEvent extends SingleAlbumEvent {
 
 class GotAlbumContentsEvent extends SingleAlbumEvent {
   final Response response;
+  final String albumId;
 
-  const GotAlbumContentsEvent(this.response);
+  const GotAlbumContentsEvent(this.response, this.albumId);
 }
 
 class UpdateAlbumEvent extends SingleAlbumEvent {

@@ -11,7 +11,6 @@ class FotogoLauncher extends StatelessWidget {
 
   Future<bool> isFirstLaunch() async {
     final SharedPreferences prefs = await _prefs;
-    prefs.setBool('first_launch', false);
     return prefs.getBool('first_launch') ?? true;
   }
 

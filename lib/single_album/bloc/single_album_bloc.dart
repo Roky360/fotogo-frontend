@@ -31,7 +31,8 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
 
         switch (event.requestType) {
           case RequestType.getAlbumContents:
-            add(GotAlbumContentsEvent(event.response));
+            add(GotAlbumContentsEvent(
+                event.response, event.request.args['album_id'].toString()));
             break;
           case RequestType.updateAlbum:
             add(UpdatedAlbumEvent(event.response));
@@ -56,17 +57,30 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
     add(const SingleAlbumRegisterDataStreamEvent());
 
     on<GetAlbumContentsEvent>((event, emit) {
-      _singleAlbumService.getAlbumDetails();
+      _singleAlbumService.getAlbumContents(event.albumId);
     });
     on<GotAlbumContentsEvent>((event, emit) {
-      return null;
+      if (event.response.statusCode == StatusCode.ok) {
+        _singleAlbumService.updateAlbumImagesToRepository(
+            event.albumId, event.response.payload);
+        emit(const SingleAlbumFetched());
+      } else {
+        emit(SingleAlbumError(event.response.payload));
+      }
     });
 
     on<UpdateAlbumEvent>((event, emit) => null);
     on<UpdatedAlbumEvent>((event, emit) => null);
 
-    on<AddImagesToAlbumEvent>((event, emit) => null);
-    on<AddedImagesToAlbumEvent>((event, emit) => null);
+    on<AddImagesToAlbumEvent>((event, emit) {
+      emit(const AlbumUpdated());
+      // _singleAlbumService.addImagesToAlbum(event.albumId, event.imagesToAdd);
+    });
+    on<AddedImagesToAlbumEvent>((event, emit) {
+      if (event.response.statusCode == StatusCode.ok) {
+        // emit()
+      }
+    });
 
     on<RemoveImagesFromAlbumEvent>((event, emit) => null);
     on<RemovedImagesFromAlbumEvent>((event, emit) => null);
@@ -76,9 +90,9 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
     });
     on<DeletedAlbumEvent>((event, emit) {
       if (event.response.statusCode == StatusCode.ok) {
-        _albumDetailsService.deleteAlbum(event.deletedAlbumId);
+        final index = _albumDetailsService.deleteAlbum(event.deletedAlbumId);
 
-        emit(const SingleAlbumDeleted());
+        emit(SingleAlbumDeleted(index));
       } else {
         emit(SingleAlbumError(event.response.payload));
       }

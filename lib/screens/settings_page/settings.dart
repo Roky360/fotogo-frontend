@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fotogo/auth/user/user_provider.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
+import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:fotogo/widgets/dialogs.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -32,6 +33,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       body: ListView(
         children: [
+          // Delete account
           ExpansionTile(
             expandedAlignment: Alignment.topLeft,
             childrenPadding: const EdgeInsets.symmetric(
@@ -49,7 +51,7 @@ class _SettingsPageState extends State<SettingsPage> {
               // AppWidgets.userCard(context, userProvider.),
               const SizedBox(height: 10),
               TextButton(
-                onPressed: () {},
+                onPressed: () => FotogoDialogs.showDeleteAccountDialog(context),
                 child: const Text('Delete account'),
                 style: Theme.of(context).textButtonTheme.style?.copyWith(
                       foregroundColor:
@@ -58,6 +60,7 @@ class _SettingsPageState extends State<SettingsPage> {
               )
             ],
           ),
+          // About
           ExpansionTile(
             expandedAlignment: Alignment.topLeft,
             childrenPadding: const EdgeInsets.symmetric(

@@ -13,8 +13,14 @@ class SingleAlbumFetched extends SingleAlbumState {
   const SingleAlbumFetched();
 }
 
+class AlbumUpdated extends SingleAlbumState {
+  const AlbumUpdated();
+}
+
 class SingleAlbumDeleted extends SingleAlbumState {
-  const SingleAlbumDeleted();
+  final int deletedIndex;
+
+  const SingleAlbumDeleted(this.deletedIndex);
 }
 
 class SingleAlbumError extends SingleAlbumState {
