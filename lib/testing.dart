@@ -37,7 +37,7 @@ class Testing extends StatelessWidget {
                   } else if (state is AlbumCreated) {
                     return Text('created!',
                         style: Theme.of(context).textTheme.subtitle1);
-                  } else if (state is AlbumCreationError) {
+                  } else if (state is AlbumCreationMessage) {
                     return Text(state.message,
                         style: Theme.of(context).textTheme.subtitle1);
                   } else {

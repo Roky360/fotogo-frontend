@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           Text(
             'Welcome back, ${_userProvider.displayName!.split(' ').first}',
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.headline4,
           ),
           const Spacer(),
           CircleAvatar(

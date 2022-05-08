@@ -19,15 +19,16 @@ class AlbumCreated extends AlbumCreationState {
   const AlbumCreated();
 }
 
-class AlbumCreationError extends AlbumCreationState {
+class AlbumCreationMessage extends AlbumCreationState {
   final String message;
+  final FotogoSnackBarIcon icon;
 
-  const AlbumCreationError(this.message);
+  const AlbumCreationMessage(this.message, this.icon);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AlbumCreationError &&
+      other is AlbumCreationMessage &&
           runtimeType == other.runtimeType &&
           message == other.message;
 

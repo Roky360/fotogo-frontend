@@ -68,7 +68,7 @@ class DeleteAlbumEvent extends SingleAlbumEvent {
 
 class DeletedAlbumEvent extends SingleAlbumEvent {
   final Response response;
-  final String deletedAlbumId;
+  final Request request;
 
-  const DeletedAlbumEvent(this.response, this.deletedAlbumId);
+  const DeletedAlbumEvent(this.response, this.request);
 }

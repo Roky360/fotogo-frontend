@@ -19,18 +19,22 @@ class SignedIn extends AuthState {
 }
 
 class AuthLoading extends AuthState {
-  const AuthLoading();
+  final String loadingMessage;
+  final bool showLoadingAnimation;
+
+  const AuthLoading(this.loadingMessage, {this.showLoadingAnimation = false});
 }
 
-class AuthError extends AuthState {
+class AuthMessage extends AuthState {
   final String message;
+  final FotogoSnackBarIcon icon;
 
-  const AuthError(this.message);
+  const AuthMessage(this.message, this.icon);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AuthError &&
+      other is AuthMessage &&
           runtimeType == other.runtimeType &&
           message == other.message;
 

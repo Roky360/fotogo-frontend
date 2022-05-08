@@ -9,6 +9,7 @@ import 'package:fotogo/fotogo_protocol/client_service.dart';
 import 'package:fotogo/fotogo_protocol/data_types.dart';
 import 'package:fotogo/fotogo_protocol/sender.dart';
 import 'package:fotogo/single_album/single_album_service.dart';
+import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:meta/meta.dart';
 
 part 'auth_event.dart';
@@ -26,7 +27,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   bool registeredDataListener = false;
   late final StreamSubscription dataStreamSubscription;
 
-  AuthBloc() : super(const AuthLoading()) {
+  AuthBloc() : super(const AuthLoading("")) {
     on<AuthRegisterDataStreamEvent>((event, emit) {
       if (registeredDataListener) return;
 
@@ -54,7 +55,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     add(const AuthRegisterDataStreamEvent());
 
     on<SignInEvent>((event, emit) async {
-      emit(const AuthLoading());
+      emit(const AuthLoading("Signing in"));
 
       try {
         if (!(await (_googleSignInProvider.login()))) {
@@ -66,21 +67,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _userProvider.signIn(_googleSignInProvider.user!);
         add(CheckUserExistsEvent(_userProvider.id));
       } catch (e) {
-        emit(AuthError(e.toString()));
+        emit(AuthMessage(e.toString(), FotogoSnackBarIcon.error));
       }
     });
 
     on<SignInSilentlyEvent>((event, emit) async {
-      emit(const AuthLoading());
+      emit(const AuthLoading("", showLoadingAnimation: true));
 
       try {
         if (!(await _googleSignInProvider.loginSilently())) {
+          // signed out
           emit(const SignedOut());
           return;
         }
         _userProvider.signIn(_googleSignInProvider.user!);
-        emit(const SignedIn());
+        add(CheckUserExistsEvent(_userProvider.id));
+        // emit(const SignedIn());
       } catch (e) {
+        emit(AuthMessage(e.toString(), FotogoSnackBarIcon.error));
         emit(const SignedOut());
       }
     });
@@ -96,12 +100,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(const ConfirmingAccount());
         }
       } else {
-        emit(AuthError(event.response.payload));
+        emit(AuthMessage(event.response.payload, FotogoSnackBarIcon.error));
       }
     });
 
     on<SignOutEvent>((event, emit) async {
-      emit(const AuthLoading());
+      emit(const AuthLoading("Loading"));
 
       try {
         await _googleSignInProvider.logout();
@@ -111,41 +115,45 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _singleAlbumService.clear();
         emit(const SignedOut());
       } catch (e) {
-        emit(AuthError(e.toString()));
+        emit(AuthMessage(e.toString(), FotogoSnackBarIcon.error));
       }
     });
 
     on<CreateAccountEvent>((event, emit) {
-      emit(const AuthLoading());
+      emit(const AuthLoading("Creating account"));
 
       try {
         _authService.createAccount();
       } catch (e) {
-        emit(AuthError(e.toString()));
+        emit(AuthMessage(e.toString(), FotogoSnackBarIcon.error));
       }
     });
     on<CreatedAccountEvent>((event, emit) {
       if (event.response.statusCode == StatusCode.ok) {
+        emit(const AuthMessage("Account Created", FotogoSnackBarIcon.success));
+        emit(
+            const AuthMessage("Welcome to fotogo!", FotogoSnackBarIcon.fotogo));
         emit(const SignedIn());
       } else {
-        emit(AuthError(event.response.payload));
+        emit(AuthMessage(event.response.payload, FotogoSnackBarIcon.error));
       }
     });
 
     on<DeleteAccountEvent>((event, emit) {
-      emit(const AuthLoading());
+      emit(const AuthLoading("Loading"));
 
       try {
         _authService.deleteAccount();
       } catch (e) {
-        emit(AuthError(e.toString()));
+        emit(AuthMessage(e.toString(), FotogoSnackBarIcon.error));
       }
     });
     on<DeletedAccountEvent>((event, emit) {
       if (event.response.statusCode == StatusCode.ok) {
+        emit(const AuthMessage("Account Deleted", FotogoSnackBarIcon.info));
         add(const SignOutEvent());
       } else {
-        emit(AuthError(event.response.payload));
+        emit(AuthMessage(event.response.payload, FotogoSnackBarIcon.error));
       }
     });
   }

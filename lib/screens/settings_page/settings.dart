@@ -5,7 +5,6 @@ import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:fotogo/widgets/dialogs.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
@@ -48,15 +47,16 @@ class _SettingsPageState extends State<SettingsPage> {
                   ?.copyWith(fontWeight: FontWeight.normal),
             ),
             children: [
-              // AppWidgets.userCard(context, userProvider.),
+              Center(child: AppWidgets.userCard(context)),
               const SizedBox(height: 10),
               TextButton(
                 onPressed: () => FotogoDialogs.showDeleteAccountDialog(context),
                 child: const Text('Delete account'),
                 style: Theme.of(context).textButtonTheme.style?.copyWith(
-                      foregroundColor:
-                          MaterialStateProperty.all(Colors.redAccent),
-                    ),
+                    foregroundColor:
+                        MaterialStateProperty.all(Colors.red.shade700),
+                    backgroundColor: MaterialStateProperty.all(
+                        Colors.red.shade200.withOpacity(.4))),
               )
             ],
           ),

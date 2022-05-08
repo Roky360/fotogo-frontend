@@ -42,6 +42,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: CircleAvatar(
                 radius: circleAvatarRadius,
                 backgroundImage: NetworkImage(photoUrl),
+                backgroundColor: Colors.grey,
               ),
             ),
           ],
@@ -59,7 +60,7 @@ class _ProfilePageState extends State<ProfilePage> {
           const SizedBox(height: 15),
           Text(
             _userProvider.displayName ?? '',
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.headline4,
           ),
           // change account button
           Padding(

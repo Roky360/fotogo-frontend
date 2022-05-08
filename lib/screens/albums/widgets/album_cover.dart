@@ -63,7 +63,7 @@ class AlbumCover extends StatelessWidget {
                   height: _size.height * .4,
                   child: Padding(
                     padding: EdgeInsets.only(
-                      top: 8,
+                      top: 0,
                       left: margin,
                       right: margin,
                     ),
@@ -79,7 +79,11 @@ class AlbumCover extends StatelessWidget {
                                   maxWidth: _size.width - margin * 2),
                               child: Text(
                                 data.title,
-                                style: Theme.of(context).textTheme.headline4,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline4
+                                    ?.copyWith(
+                                        color: Colors.white, fontSize: 20),
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),

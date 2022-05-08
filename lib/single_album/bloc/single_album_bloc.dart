@@ -7,6 +7,7 @@ import 'package:fotogo/fotogo_protocol/client_service.dart';
 import 'package:fotogo/fotogo_protocol/data_types.dart';
 import 'package:fotogo/fotogo_protocol/sender.dart';
 import 'package:fotogo/single_album/single_album_service.dart';
+import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:meta/meta.dart';
 
 part 'single_album_event.dart';
@@ -44,8 +45,7 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
             add(RemovedImagesFromAlbumEvent(event.response));
             break;
           case RequestType.deleteAlbum:
-            add(DeletedAlbumEvent(
-                event.response, event.request.args['album_id'].toString()));
+            add(DeletedAlbumEvent(event.response, event.request));
             break;
           default:
             break;
@@ -63,9 +63,11 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
       if (event.response.statusCode == StatusCode.ok) {
         _singleAlbumService.updateAlbumImagesToRepository(
             event.albumId, event.response.payload);
+
         emit(const SingleAlbumFetched());
       } else {
-        emit(SingleAlbumError(event.response.payload));
+        emit(SingleAlbumMessage(
+            event.response.payload, FotogoSnackBarIcon.error));
       }
     });
 
@@ -90,11 +92,15 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
     });
     on<DeletedAlbumEvent>((event, emit) {
       if (event.response.statusCode == StatusCode.ok) {
-        final index = _albumDetailsService.deleteAlbum(event.deletedAlbumId);
+        final index = _albumDetailsService
+            .deleteAlbum(event.request.args['album_id'].toString());
 
+        emit(
+            const SingleAlbumMessage('Album deleted', FotogoSnackBarIcon.info));
         emit(SingleAlbumDeleted(index));
       } else {
-        emit(SingleAlbumError(event.response.payload));
+        emit(SingleAlbumMessage(
+            event.response.payload, FotogoSnackBarIcon.error));
       }
     });
   }

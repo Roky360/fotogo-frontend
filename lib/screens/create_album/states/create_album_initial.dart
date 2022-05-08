@@ -63,17 +63,32 @@ class _CreateAlbumInitialState extends State<CreateAlbumInitial> {
   }
 
   void onSubmit() async {
-    if (_formKey.currentState!.validate()) {
-      context.read<AlbumCreationBloc>().add(CreateAlbumEvent(AlbumCreationData(
-            title: titleController.text,
-            dateRange: await calculateDateRange(),
-            creationTime: DateTime.now(),
-            imagesFiles: images,
-            sharedPeople: [],
-          )));
-    } else {
-      AppWidgets.fotogoSnackBar(context, "Please provide a title.");
+    // Check if title is not empty
+    if (!_formKey.currentState!.validate()) {
+      AppWidgets.fotogoSnackBar(
+        context,
+        content: "Please provide a title",
+        icon: FotogoSnackBarIcon.error,
+      );
+      return;
     }
+    // Check that album has at least one image
+    if (images.isEmpty) {
+      AppWidgets.fotogoSnackBar(
+        context,
+        content: "Please add at least one image",
+        icon: FotogoSnackBarIcon.error,
+      );
+      return;
+    }
+
+    context.read<AlbumCreationBloc>().add(CreateAlbumEvent(AlbumCreationData(
+          title: titleController.text,
+          dateRange: await calculateDateRange(),
+          creationTime: DateTime.now(),
+          imagesFiles: images,
+          sharedPeople: [],
+        )));
   }
 
   @override
@@ -83,11 +98,7 @@ class _CreateAlbumInitialState extends State<CreateAlbumInitial> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.close),
-          color: Theme.of(context).colorScheme.primary,
-        ),
+        leading: CloseButton(color: Theme.of(context).colorScheme.primary),
       ),
       body: SafeArea(
         child: Form(
@@ -97,7 +108,7 @@ class _CreateAlbumInitialState extends State<CreateAlbumInitial> {
               // Panel title
               Text(
                 'Create album',
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.headline4,
               ),
               const Spacer(flex: 1),
               // Title text field
@@ -165,17 +176,24 @@ class _CreateAlbumInitialState extends State<CreateAlbumInitial> {
                       ),
               ),
               // SizedBox(height: 25.h),
-              const Spacer(flex: 3),
-              // Submit button
-              ElevatedButton(
-                onPressed: onSubmit,
-                // onPressed: onSubmit,
-                child: const Text('Create album'),
-                style: Theme.of(context).elevatedButtonTheme.style,
-              ),
-              const Spacer(flex: 4),
+              const Spacer(flex: 10),
             ],
           ),
+        ),
+      ),
+      // Submit button
+      bottomSheet: Padding(
+        padding: const EdgeInsets.only(bottom: pageMargin * 2.5, top: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: onSubmit,
+              // onPressed: onSubmit,
+              child: const Text('Create album'),
+              style: Theme.of(context).elevatedButtonTheme.style,
+            ),
+          ],
         ),
       ),
     );

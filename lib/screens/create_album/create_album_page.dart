@@ -30,14 +30,18 @@ class CreateAlbumPage extends StatelessWidget {
       listener: (context, state) {
         if (state is AlbumCreated) {
           Navigator.pop(context);
-        } else if (state is AlbumCreationError) {
-          AppWidgets.fotogoSnackBar(context, state.message);
+        } else if (state is AlbumCreationMessage) {
+          AppWidgets.fotogoSnackBar(
+            context,
+            content: state.message,
+            icon: state.icon,
+          );
         }
       },
       builder: (context, state) {
         if (state is AlbumCreating) {
           return CreateAlbumCreating(data: state.albumCreationData);
-        } else if (state is AlbumCreationError) {
+        } else if (state is AlbumCreationMessage) {
           return Scaffold(
             body: Center(
               child: Text(state.message,

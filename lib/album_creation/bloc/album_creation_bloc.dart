@@ -6,6 +6,7 @@ import 'package:fotogo/album_creation/album_creation_service.dart';
 import 'package:fotogo/fotogo_protocol/client_service.dart';
 import 'package:fotogo/fotogo_protocol/data_types.dart';
 import 'package:fotogo/fotogo_protocol/sender.dart';
+import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:meta/meta.dart';
 
 part 'album_creation_event.dart';
@@ -46,7 +47,7 @@ class AlbumCreationBloc extends Bloc<AlbumCreationEvent, AlbumCreationState> {
       try {
         _albumCreationService.createAlbum(event._albumCreationData);
       } catch (e) {
-        emit(AlbumCreationError(e.toString()));
+        emit(AlbumCreationMessage(e.toString(), FotogoSnackBarIcon.error));
       }
     });
     on<CreatedAlbumEvent>((event, emit) {
@@ -54,9 +55,14 @@ class AlbumCreationBloc extends Bloc<AlbumCreationEvent, AlbumCreationState> {
         // TODO: add new single_album to single_album repo
         _albumCreationService.addCreatedAlbumToRepository(
             event.request, event.response);
+
+        emit(AlbumCreationMessage(
+            'Album "${(event.request.args['album_data'] as Map)['name']}" created',
+            FotogoSnackBarIcon.success));
         emit(const AlbumCreated());
       } else {
-        emit(AlbumCreationError(event.response.payload));
+        emit(AlbumCreationMessage(
+            event.response.payload, FotogoSnackBarIcon.error));
       }
     });
   }

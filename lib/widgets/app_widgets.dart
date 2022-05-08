@@ -73,7 +73,7 @@ class AppWidgets {
               child: CircleAvatar(
                 radius: 25,
                 backgroundColor: Theme.of(context).colorScheme.secondary,
-                backgroundImage: NetworkImage(userProvider.photoUrl!),
+                backgroundImage: NetworkImage(userProvider.photoUrl ?? ''),
               ),
             ),
             const SizedBox(width: 5),
@@ -102,20 +102,44 @@ class AppWidgets {
     );
   }
 
-  static fotogoSnackBar(BuildContext context, String content) {
+  static fotogoSnackBar(BuildContext context,
+      {required String content,
+      FotogoSnackBarIcon icon = FotogoSnackBarIcon.fotogo}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-          side: BorderSide(color: const Color(0xFF0E6092).withOpacity(.8)),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(.7),
-        content: Text(
-          content,
-          style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12),
+        content: Row(
+          children: [
+            _getIcon(icon, Theme.of(context).colorScheme.onPrimary),
+            const SizedBox(width: 10),
+            Text(
+              content,
+              style:
+                  Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
+            ),
+          ],
         ),
       ),
     );
   }
+
+  static Widget _getIcon(FotogoSnackBarIcon icon, Color color) {
+    switch (icon) {
+      case FotogoSnackBarIcon.info:
+        return Icon(Icons.info_outlined, color: color);
+      case FotogoSnackBarIcon.warning:
+        return Icon(Icons.warning_amber_outlined, color: color);
+      case FotogoSnackBarIcon.error:
+        return Icon(Icons.error_outline, color: color);
+      case FotogoSnackBarIcon.success:
+        return Icon(Icons.done, color: color);
+      case FotogoSnackBarIcon.fotogo:
+        return SvgPicture.asset(
+          'assets/logos/fotogo_logo_circle.svg',
+          color: Colors.white,
+          width: 22,
+        );
+    }
+  }
 }
+
+enum FotogoSnackBarIcon { info, warning, error, success, fotogo }

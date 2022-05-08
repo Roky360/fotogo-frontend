@@ -243,7 +243,7 @@ class _AlbumContentPageState extends State<AlbumContentPage> {
                       );
                     } else {
                       // SingleAlbumError state
-                      return Text((state as SingleAlbumError).message);
+                      return Text((state as SingleAlbumMessage).message);
                     }
                   },
                 ),
