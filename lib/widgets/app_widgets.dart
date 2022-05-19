@@ -77,6 +77,7 @@ class AppWidgets {
               ),
             ),
             const SizedBox(width: 5),
+
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -32,8 +32,8 @@ class SingleAlbumService {
   }
 
   void updateAlbumImagesToRepository(String albumId, List payload) {
-    final album = _singleAlbumService.albumsData[_singleAlbumService.albumsData
-        .indexWhere((element) => element.data.id == albumId)];
+    final album = albumsData[
+        albumsData.indexWhere((element) => element.data.id == albumId)];
     album.imagesData = List.generate(
         payload.length,
         (index) => ImageData(
@@ -45,11 +45,52 @@ class SingleAlbumService {
             data: MemoryImage(base64Decode(payload[index]['data']))));
   }
 
-  void updateAlbum() {}
+  void updateAlbum(SingleAlbumData albumData) async {
+    _clientService.sendRequest(AlbumSender.updateAlbum(Request(
+        requestType: RequestType.updateAlbum,
+        idToken: await _userProvider.idToken,
+        args: {
+          'album_data': {
+            'album_id': albumData.data.id,
+            'name': albumData.data.title,
+            'data_range': [
+              albumData.data.dates.start.toString().split(' ')[0],
+              albumData.data.dates.end.toString().split(' ')[0],
+            ],
+            'last_modified': DateTime.now(),
+            'permitted_users': albumData.data.permittedUsers
+          }
+        })));
+  }
 
-  void addImagesToAlbum(String albumId, List<File> imagesToAdd) {}
+  void addImagesToAlbum(String albumId, List<File> imagesToAdd) async {
+    final images = [];
+    for (final i in imagesToAdd) {
+      images.add({
+        'file_name': i.uri.pathSegments.last,
+        'timestamp': '',
+        'location': null,
+        'tag': null,
+        'data': base64Encode(await i.readAsBytes())
+      });
+    }
 
-  void removeImagesFromAlbum() {}
+    _clientService.sendRequest(AlbumSender.addImagesToAlbum(Request(
+      requestType: RequestType.addImagesToAlbum,
+      idToken: await _userProvider.idToken,
+      args: {'album_id': albumId},
+      payload: images,
+    )));
+  }
+
+  void removeImagesFromAlbum(String albumId, List<String> imagesIds) async {
+    _clientService.sendRequest(AlbumSender.removeImagesFromAlbum(Request(
+      requestType: RequestType.removeImagesFromAlbum,
+      idToken: await _userProvider.idToken,
+      args: {'album_id': albumId},
+      payload: imagesIds,
+    )));
+  }
 
   void deleteAlbum(String albumId) async {
     _clientService.sendRequest(AlbumSender.deleteAlbum(Request(

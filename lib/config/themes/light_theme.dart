@@ -16,7 +16,11 @@ final ThemeData lightTheme = ThemeData.light().copyWith(
       onSurface: Color(0xFF2A7279),
       // onSurface: Color(0xFF56B1B7),
       shadow: Color(0xFFC4E0FF),
+      error: Color(0xFFEEC8C8),
+      errorContainer: Color(0xFFD25555),
+      // errorContainer: Color(0xFFC66161),
     ),
+
 
     // Appbar
     appBarTheme: const AppBarTheme(

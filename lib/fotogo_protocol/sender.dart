@@ -27,8 +27,8 @@ class AlbumCreationSender extends Sender {
 }
 
 class AlbumDetailsSender extends Sender {
-  AlbumDetailsSender.getAlbumDetails(Request request)
-      : super(RequestType.getAlbumDetails, request);
+  AlbumDetailsSender.syncAlbumDetails(Request request)
+      : super(RequestType.syncAlbumDetails, request);
 }
 
 class AlbumSender extends Sender {
@@ -47,43 +47,3 @@ class AlbumSender extends Sender {
   AlbumSender.deleteAlbum(Request request)
       : super(RequestType.deleteAlbum, request);
 }
-
-// enum Sender {
-//   auth,
-//   albumCreation,
-//   albumDetails,
-//   single_album,
-// }
-//
-// extension SubSender on Sender {
-//   // auth
-//   int get auth => 0;
-//
-//   int get checkUserExists => 1;
-//
-//   int get createAccount => 2;
-//
-//   int get deleteAccount => 3;
-//
-//   // albumCreation
-//   int get createAlbum => 4;
-//
-//   // albumDetails
-//   int get getAlbumContents => 6;
-//
-//   // single_album
-//   int get getAlbumDetails => 5;
-//
-//   int get updateAlbum => 7;
-//
-//   int get addImagesToAlbum => 8;
-//
-//   int get removeImagesFromAlbum => 9;
-//
-//   int get deleteAlbum => 10;
-//
-//   //
-//   int get uploadImage => 11;
-//
-//   int get deleteImage => 12;
-// }

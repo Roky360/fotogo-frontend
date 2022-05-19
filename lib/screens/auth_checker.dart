@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/auth/bloc/auth_bloc.dart';
 import 'package:fotogo/auth/user/user_provider.dart';
+import 'package:fotogo/screens/admin/admin_main_page.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:fotogo/widgets/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +24,11 @@ class _AuthCheckerState extends State<AuthChecker> {
   Future<bool> _getStaySignedIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getBool('stay_signed_in') ?? false;
+  }
+
+  void _setStaySignedIn(bool value) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('stay_signed_in', value);
   }
 
   @override
@@ -51,34 +57,41 @@ class _AuthCheckerState extends State<AuthChecker> {
                   content: state.message,
                   icon: state.icon,
                 );
+              } else if (state is AdminSignedIn) {
+                // For security purposes, if admin has signed - set
+                // stay_signed_in to false.
+                _setStaySignedIn(false);
               }
             },
             builder: (BuildContext context, AuthState state) {
               return AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
-                child: state is SignedIn
-                    ? const AppNavigator()
-                    : PageTransitionSwitcher(
-                        transitionBuilder:
-                            (child, primaryAnimation, secondaryAnimation) {
-                          return SharedAxisTransition(
-                            animation: primaryAnimation,
-                            secondaryAnimation: secondaryAnimation,
-                            transitionType: SharedAxisTransitionType.horizontal,
-                            child: child,
-                          );
-                        },
-                        reverse: state is SignedOut,
-                        child: state is AuthLoading
-                            ? FotogoSplashScreen(
-                                message: state.loadingMessage,
-                                showLoadingAnimation:
-                                    state.showLoadingAnimation,
-                              )
-                            : state is SignedOut
-                                ? const SignInPage()
-                                : const CreateAccountPage(),
-                      ),
+                child: state is AdminSignedIn
+                    ? const AdminPage()
+                    : state is SignedIn
+                        ? const AppNavigator()
+                        : PageTransitionSwitcher(
+                            transitionBuilder:
+                                (child, primaryAnimation, secondaryAnimation) {
+                              return SharedAxisTransition(
+                                animation: primaryAnimation,
+                                secondaryAnimation: secondaryAnimation,
+                                transitionType:
+                                    SharedAxisTransitionType.horizontal,
+                                child: child,
+                              );
+                            },
+                            reverse: state is SignedOut,
+                            child: state is AuthLoading
+                                ? FotogoSplashScreen(
+                                    message: state.loadingMessage,
+                                    showLoadingAnimation:
+                                        state.showLoadingAnimation,
+                                  )
+                                : state is SignedOut
+                                    ? const SignInPage()
+                                    : const CreateAccountPage(),
+                          ),
               );
             },
           ),

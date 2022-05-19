@@ -39,8 +39,7 @@ class _HomePageState extends State<HomePage> {
           const Spacer(),
           CircleAvatar(
             radius: 18,
-            backgroundImage:
-                NetworkImage(_userProvider.photoUrl ?? ''),
+            backgroundImage: NetworkImage(_userProvider.photoUrl ?? ''),
           ),
         ],
       ),
@@ -50,11 +49,12 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
+      child: ListView(
+        physics: const BouncingScrollPhysics(),
         children: [
           getTopBar(),
-          const Expanded(child: GalleryView()),
-          const SizedBox(height: 60),
+          const GalleryView(),
+          const SizedBox(height: 70),
         ],
       ),
     );

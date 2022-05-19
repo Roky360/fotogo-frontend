@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
-import 'package:sizer/sizer.dart';
 
 class FotogoSection extends StatelessWidget {
   final String title;

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fotogo/album_details/album_details_service.dart';
 import 'package:fotogo/album_details/bloc/album_details_bloc.dart';
 import 'package:fotogo/screens/albums/album_content_page.dart';
 import 'package:fotogo/screens/albums/widgets/album_cover.dart';
@@ -30,7 +29,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
   void initState() {
     super.initState();
 
-    context.read<AlbumDetailsBloc>().add(const GetAlbumsDetailsEvent());
+    context.read<AlbumDetailsBloc>().add(const SyncAlbumsDetailsEvent());
   }
 
   Widget _getAlbumCovers() {
@@ -127,7 +126,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () async {
-        context.read<AlbumDetailsBloc>().add(const GetAlbumsDetailsEvent());
+        context.read<AlbumDetailsBloc>().add(const SyncAlbumsDetailsEvent());
         await Future.delayed(const Duration(milliseconds: 1000));
       },
       child: SingleChildScrollView(

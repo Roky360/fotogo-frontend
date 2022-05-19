@@ -30,8 +30,8 @@ class AlbumDetailsBloc extends Bloc<AlbumDetailsEvent, AlbumDetailsState> {
         if (event is! AlbumDetailsSender) return;
 
         switch (event.requestType) {
-          case RequestType.getAlbumDetails:
-            add(GotAlbumsDetailsEvent(event.response));
+          case RequestType.syncAlbumDetails:
+            add(SyncedAlbumsDetailsEvent(event.response));
             break;
           default:
             break;
@@ -42,9 +42,9 @@ class AlbumDetailsBloc extends Bloc<AlbumDetailsEvent, AlbumDetailsState> {
     });
     add(const AlbumDetailsRegisterDataStreamEvent());
 
-    on<GetAlbumsDetailsEvent>((event, emit) {
+    on<SyncAlbumsDetailsEvent>((event, emit) {
       try {
-        _albumDetailsService.getAlbumsDetails({
+        _albumDetailsService.syncAlbumsDetails({
           for (var element in _singleAlbumService.albumsData)
             element.data.id: element.data.lastModified.toString()
         });
@@ -52,7 +52,7 @@ class AlbumDetailsBloc extends Bloc<AlbumDetailsEvent, AlbumDetailsState> {
         emit(AlbumDetailsError(e.toString()));
       }
     });
-    on<GotAlbumsDetailsEvent>((event, emit) {
+    on<SyncedAlbumsDetailsEvent>((event, emit) {
       if (event.response.statusCode == StatusCode.ok) {
         _albumDetailsService.updateAlbumDetailsByResponse(event.response);
 

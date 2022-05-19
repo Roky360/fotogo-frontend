@@ -94,10 +94,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
     on<CheckedUserExistsEvent>((event, emit) {
       if (event.response.statusCode == StatusCode.ok) {
-        if (event.response.payload as bool) {
-          emit(const SignedIn());
-        } else {
-          emit(const ConfirmingAccount());
+        // false is returned
+        if (event.response is bool && !event.response.payload) {
+          emit(const CreatingAccount());
+        } else if (event.response.payload is int) {
+          // account exists; decide what is the privilege level
+          switch (event.response.payload) {
+            case PrivilegeLevel.admin:
+              emit(const AdminSignedIn());
+              break;
+            case PrivilegeLevel.user:
+              emit(const SignedIn());
+              break;
+            default:
+              // TODO: emit error or something..
+              break;
+          }
         }
       } else {
         emit(AuthMessage(event.response.payload, FotogoSnackBarIcon.error));

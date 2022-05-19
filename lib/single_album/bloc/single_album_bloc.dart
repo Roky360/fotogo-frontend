@@ -2,13 +2,16 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:fotogo/album_details/album_details_service.dart';
 import 'package:fotogo/fotogo_protocol/client_service.dart';
 import 'package:fotogo/fotogo_protocol/data_types.dart';
 import 'package:fotogo/fotogo_protocol/sender.dart';
+import 'package:fotogo/single_album/single_album_data.dart';
 import 'package:fotogo/single_album/single_album_service.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
-import 'package:meta/meta.dart';
+
+import '../../album_details/album_data.dart';
 
 part 'single_album_event.dart';
 
@@ -36,7 +39,7 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
                 event.response, event.request.args['album_id'].toString()));
             break;
           case RequestType.updateAlbum:
-            add(UpdatedAlbumEvent(event.response));
+            add(UpdatedAlbumEvent(event.response, event.request));
             break;
           case RequestType.addImagesToAlbum:
             add(AddedImagesToAlbumEvent(event.response));
@@ -71,8 +74,29 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
       }
     });
 
-    on<UpdateAlbumEvent>((event, emit) => null);
-    on<UpdatedAlbumEvent>((event, emit) => null);
+    on<UpdateAlbumEvent>((event, emit) {
+      _singleAlbumService.updateAlbum(event.albumData);
+    });
+    on<UpdatedAlbumEvent>((event, emit) {
+      if (event.response.statusCode == StatusCode.ok) {
+        final newAlbum = event.request.args['album_data'] as Map;
+        final originalAlbumData = _singleAlbumService.albumsData
+            .firstWhere((element) => element.data.id == newAlbum['album_id'])
+            .data;
+
+        originalAlbumData.title = newAlbum['name'];
+        originalAlbumData.dates = DateTimeRange(
+            start: DateTime.tryParse(newAlbum['date_range'][0]) ??
+                originalAlbumData.dates.start,
+            end: DateTime.tryParse(newAlbum['date_range'][1]) ??
+                originalAlbumData.dates.end);
+        originalAlbumData.lastModified =
+            DateTime.parse(newAlbum['last_modified']);
+      } else {
+        emit(const SingleAlbumMessage(
+            "Error updating album.", FotogoSnackBarIcon.error));
+      }
+    });
 
     on<AddImagesToAlbumEvent>((event, emit) {
       emit(const AlbumUpdated());
@@ -84,7 +108,10 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
       }
     });
 
-    on<RemoveImagesFromAlbumEvent>((event, emit) => null);
+    on<RemoveImagesFromAlbumEvent>((event, emit) {
+      _singleAlbumService.removeImagesFromAlbum(
+          event.albumId, event.imagesFileNamesToRemove);
+    });
     on<RemovedImagesFromAlbumEvent>((event, emit) => null);
 
     on<DeleteAlbumEvent>((event, emit) {

@@ -4,13 +4,13 @@ import 'package:flutter/material.dart' show DateTimeRange;
 
 class AlbumData {
   final String id;
-  final String title;
-  final DateTimeRange dates;
-  final List<String> permittedUsers;
+  String title;
+  DateTimeRange dates;
+  List<String> permittedUsers;
 
   // TODO: url or whole image file?
   final Uint8List coverImage;
-  final DateTime lastModified;
+  DateTime lastModified;
 
   AlbumData(
       {required this.id,

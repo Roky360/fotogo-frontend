@@ -6,7 +6,7 @@ enum RequestType {
   createAccount,
   deleteAccount,
   createAlbum,
-  getAlbumDetails,
+  syncAlbumDetails,
   getAlbumContents,
   updateAlbum,
   addImagesToAlbum,
@@ -17,19 +17,24 @@ enum RequestType {
 }
 
 class StatusCode {
-  static int get ok => 200;
+  static const int ok = 200;
 
-  static int get created => 201;
+  static const int created = 201;
 
-  static int get badRequest => 400;
+  static const int badRequest = 400;
 
-  static int get unauthorized => 401;
+  static const int unauthorized = 401;
 
-  static int get forbidden => 403;
+  static const int forbidden = 403;
 
-  static int get notFound => 404;
+  static const int notFound = 404;
 
-  static int get internalServerError => 500;
+  static const int internalServerError = 500;
+}
+
+class PrivilegeLevel {
+  static const int admin = 0;
+  static const int user = 1;
 }
 
 class Request {

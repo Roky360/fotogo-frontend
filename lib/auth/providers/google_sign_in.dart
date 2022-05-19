@@ -6,10 +6,9 @@ class GoogleSignInProvider {
   late final FirebaseAuth _auth;
   GoogleSignInAccount? _user;
 
-
   GoogleSignInProvider() {
     _googleSignIn = GoogleSignIn(scopes: const [
-      /*'https://www.googleapis.com/auth/photoslibrary.appendonly'*/
+      // 'https://www.googleapis.com/auth/photoslibrary.appendonly'
     ]);
     _auth = FirebaseAuth.instance;
   }
@@ -44,6 +43,7 @@ class GoogleSignInProvider {
   }
 
   Future login() async => await _login(silent: false);
+
   Future loginSilently() async => await _login(silent: true);
 
   Future logout() async {

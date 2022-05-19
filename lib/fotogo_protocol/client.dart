@@ -4,11 +4,9 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:flutter/services.dart';
 import 'package:fotogo/fotogo_protocol/sender.dart';
+import 'package:fotogo/functions/file_handling.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'data_types.dart';
 
@@ -27,21 +25,18 @@ class Client {
   }
 
   void initializeCert() async {
-    Directory directory = await getApplicationDocumentsDirectory();
-    var dbPath = join(directory.path, "cert.pem");
-    ByteData data = await rootBundle.load("assets/server2.pem");
-    List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-    await File(dbPath).writeAsBytes(bytes);
-    // log(String.fromCharCodes(bytes));
+    List<int> certBytes = await readAssetBytes("assets/cert.pem");
+    List<int> privateKeyBytes = await readAssetBytes("assets/privkey.pem");
 
-    _securityContext = SecurityContext.defaultContext
-      ..useCertificateChain(dbPath);
+    _securityContext = SecurityContext.defaultContext;
+    _securityContext.useCertificateChainBytes(certBytes);
+    _securityContext.usePrivateKeyBytes(privateKeyBytes);
   }
 
   void sendRequest(Sender sender) async {
-    // final SecureSocket socket =
-    //     await SecureSocket.connect(host, port, context: _securityContext);
-    final Socket socket = await Socket.connect(host, port);
+    final SecureSocket socket =
+        await SecureSocket.connect(host, port, context: _securityContext);
+    // final Socket socket = await Socket.connect(host, port);
     List<int> events = Uint8List(0);
 
     socket.listen(
@@ -70,7 +65,6 @@ class Client {
       'payload': request.payload
     };
 
-    // log(requestMap.toString());
     String requestJson = json.encode(requestMap);
     List<int> requestBytes = utf8.encode(requestJson);
 
@@ -79,7 +73,7 @@ class Client {
       ..buffer.asByteData().setInt32(0, requestLength, Endian.big);
 
     final List<int> data = requestLengthBytes + requestBytes;
-    // log(requestJson);
+
     sock.add(data);
   }
 

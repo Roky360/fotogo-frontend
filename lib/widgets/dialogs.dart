@@ -17,7 +17,7 @@ import '../single_album/bloc/single_album_bloc.dart';
 class FotogoDialogs {
   static void showAddToDialog(BuildContext context, List<File> images) {
     final List<SingleAlbumData> albumsData = SingleAlbumService().albumsData;
-    final double thumbnailSize = 40;
+    const double thumbnailSize = 40;
 
     showDialog(
       context: context,

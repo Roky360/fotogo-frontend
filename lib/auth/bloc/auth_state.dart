@@ -10,12 +10,16 @@ class SignedOut extends AuthState {
   const SignedOut();
 }
 
-class ConfirmingAccount extends AuthState {
-  const ConfirmingAccount();
+class CreatingAccount extends AuthState {
+  const CreatingAccount();
 }
 
 class SignedIn extends AuthState {
   const SignedIn();
+}
+
+class AdminSignedIn extends AuthState {
+  const AdminSignedIn();
 }
 
 class AuthLoading extends AuthState {

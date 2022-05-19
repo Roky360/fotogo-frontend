@@ -23,15 +23,16 @@ class GotAlbumContentsEvent extends SingleAlbumEvent {
 }
 
 class UpdateAlbumEvent extends SingleAlbumEvent {
-  final String albumId;
+  final SingleAlbumData albumData;
 
-  const UpdateAlbumEvent(this.albumId);
+  const UpdateAlbumEvent(this.albumData);
 }
 
 class UpdatedAlbumEvent extends SingleAlbumEvent {
   final Response response;
+  final Request request;
 
-  const UpdatedAlbumEvent(this.response);
+  const UpdatedAlbumEvent(this.response, this.request);
 }
 
 class AddImagesToAlbumEvent extends SingleAlbumEvent {

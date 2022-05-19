@@ -20,7 +20,7 @@ class FotogoLauncher extends StatelessWidget {
       future: isFirstLaunch(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return snapshot.data! ? const OnBoardingPage() : AuthChecker();
+          return snapshot.data! ? const OnBoardingPage() : const AuthChecker();
         } else {
           return const FotogoSplashScreen(
             message: "",

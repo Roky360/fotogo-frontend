@@ -64,6 +64,8 @@ dependencies:
   path_provider: ^2.0.9
   path: ^1.8.0
   flutter_switch: ^0.3.2
+  badges: ^2.0.2
+  tab_indicator_styler: ^2.0.0
 
 
 dev_dependencies:

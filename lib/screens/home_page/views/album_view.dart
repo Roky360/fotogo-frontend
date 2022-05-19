@@ -83,11 +83,7 @@ class _AlbumViewState extends State<AlbumView> {
       appBar: selectionMode
           // selection mode ENABLED
           ? AppBar(
-              title: Text(selectedMedia.isEmpty
-                  ? "Select items"
-                  : selectedMedia.length == 1
-                      ? "1 item selected"
-                      : "${selectedMedia.length} items selected"),
+              title: Text(selectedMedia.length.toString()),
               // cancel selection mode
               leading: IconButton(
                 icon: const Icon(Icons.close),
@@ -151,7 +147,8 @@ class _AlbumViewState extends State<AlbumView> {
                   onTap: selectionMode
                       ? () => toggleSelection(entry.key)
                       : () => Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => PhotoView(entry.key, media!))),
+                          builder: (context) =>
+                              PhotoView(entry.key, media: media!))),
                   onLongPress: selectionMode
                       ? null
                       : () {

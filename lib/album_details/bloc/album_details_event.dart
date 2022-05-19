@@ -9,12 +9,12 @@ class AlbumDetailsRegisterDataStreamEvent extends AlbumDetailsEvent {
   const AlbumDetailsRegisterDataStreamEvent();
 }
 
-class GetAlbumsDetailsEvent extends AlbumDetailsEvent {
-  const GetAlbumsDetailsEvent();
+class SyncAlbumsDetailsEvent extends AlbumDetailsEvent {
+  const SyncAlbumsDetailsEvent();
 }
 
-class GotAlbumsDetailsEvent extends AlbumDetailsEvent {
+class SyncedAlbumsDetailsEvent extends AlbumDetailsEvent {
   final Response response;
 
-  const GotAlbumsDetailsEvent(this.response);
+  const SyncedAlbumsDetailsEvent(this.response);
 }

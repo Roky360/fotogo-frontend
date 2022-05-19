@@ -5,10 +5,11 @@ import 'package:fotogo/album_details/bloc/album_details_bloc.dart';
 import 'package:fotogo/screens/app_navigator/app_navigator_data.dart';
 import 'package:fotogo/screens/app_navigator_screens.dart';
 import 'package:fotogo/screens/create_album/create_album_page.dart';
-import 'package:fotogo/single_album/bloc/single_album_bloc.dart';
 import 'package:fotogo/widgets/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:fotogo/widgets/shared_axis_route.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+
+import '../../single_album/bloc/single_album_bloc.dart';
 
 class AppNavigator extends StatefulWidget {
   const AppNavigator({Key? key}) : super(key: key);
@@ -163,6 +164,7 @@ class _AppNavigatorState extends State<AppNavigator>
         BlocProvider<SingleAlbumBloc>(create: (context) => SingleAlbumBloc()),
       ],
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         body: SafeArea(
           child: Stack(
             children: [
