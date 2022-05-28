@@ -45,12 +45,6 @@ class _AdminPageState extends State<AdminPage> with TickerProviderStateMixin {
               child: Column(
                 children: [
                   Badge(
-                    child: CircleAvatar(
-                      radius: 20,
-                      backgroundImage:
-                          NetworkImage(_userProvider.photoUrl ?? ''),
-                      backgroundColor: Colors.grey.shade200,
-                    ),
                     badgeContent: Text(
                       'Admin',
                       style: Theme.of(context).textTheme.caption?.copyWith(
@@ -61,6 +55,12 @@ class _AdminPageState extends State<AdminPage> with TickerProviderStateMixin {
                     shape: BadgeShape.square,
                     badgeColor: Theme.of(context).colorScheme.errorContainer,
                     borderRadius: BorderRadius.circular(10),
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundImage:
+                          NetworkImage(_userProvider.photoUrl ?? ''),
+                      backgroundColor: Colors.grey.shade200,
+                    ),
                   ),
                   Expanded(
                     child: Text(
@@ -135,8 +135,6 @@ class _AdminPageState extends State<AdminPage> with TickerProviderStateMixin {
           child: PageView(
             controller: _tabsPageController,
             children: _tabs,
-            scrollBehavior: const ScrollBehavior(
-                androidOverscrollIndicator: AndroidOverscrollIndicator.stretch),
             onPageChanged: (index) => _tabController.animateTo(index),
           ),
           // child: PageTransitionSwitcher(

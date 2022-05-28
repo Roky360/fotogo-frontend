@@ -77,6 +77,17 @@ class _AlbumViewState extends State<AlbumView> {
     FotogoDialogs.showAddToDialog(context, imgFiles);
   }
 
+  void exifTest() async {
+    if (media != null) {
+      List<File> files = [];
+      for (final i in media!) {
+        files.add(await i.getFile());
+      }
+
+      print(await calculateDateRangeFromImages(files));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,9 +133,13 @@ class _AlbumViewState extends State<AlbumView> {
                 onPressed: () => Navigator.of(context).pop(),
               ),
               actions: [
+                IconButton(
+                  icon: const Icon(Icons.ac_unit),
+                  onPressed: exifTest,
+                ),
                 fotogoPopupMenuButton(
                   items: [
-                    MenuItem(
+                    FotogoMenuItem(
                       'Select',
                       onTap: initiateSelectionMode,
                     ),
@@ -148,7 +163,7 @@ class _AlbumViewState extends State<AlbumView> {
                       ? () => toggleSelection(entry.key)
                       : () => Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) =>
-                              PhotoView(entry.key, media: media!))),
+                              GalleryPhotoView(entry.key, media: media!))),
                   onLongPress: selectionMode
                       ? null
                       : () {

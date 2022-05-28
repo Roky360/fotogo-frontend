@@ -7,7 +7,7 @@ import 'package:fotogo/config/themes/light_theme.dart';
 import 'package:fotogo/launcher.dart';
 import 'package:fotogo/screens/app_navigator/app_navigator.dart';
 import 'package:fotogo/screens/auth_checker.dart';
-import 'package:fotogo/screens/on_boarding_setup/on_boarding_page.dart';
+import 'package:fotogo/screens/on_boarding_setup/welcome_page.dart';
 import 'package:fotogo/testing.dart';
 import 'package:sizer/sizer.dart';
 
@@ -40,13 +40,14 @@ class FotogoApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: "fotogo",
             theme: lightTheme,
+            // scrollBehavior: const ScrollBehavior(
+            //     androidOverscrollIndicator: AndroidOverscrollIndicator.stretch),
             initialRoute: '/launcher',
             routes: {
               '/launcher': (context) => FotogoLauncher(),
               '/app_navigator': (context) => const AppNavigator(),
-              '/setup': (context) => const OnBoardingPage(),
-              '/auth_checker': (context) => AuthChecker(),
-
+              '/setup': (context) => WelcomePage(),
+              '/auth_checker': (context) => const AuthChecker(),
               '/testing': (context) => const Testing(),
             },
           ),

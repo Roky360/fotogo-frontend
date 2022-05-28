@@ -20,7 +20,7 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance?.addPostFrameCallback(
+    WidgetsBinding.instance.addPostFrameCallback(
         (timeStamp) async => packageInfo = await PackageInfo.fromPlatform());
   }
 

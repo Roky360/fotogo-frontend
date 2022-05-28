@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:typed_data';
 
 enum RequestType {
   auth,
@@ -33,6 +33,7 @@ class StatusCode {
 }
 
 class PrivilegeLevel {
+  static const int unregistered = -1;
   static const int admin = 0;
   static const int user = 1;
 }
@@ -74,7 +75,7 @@ class ImageData {
   // final Geolocation location;
   final List<String> containingAlbums;
   final int? tag;
-  final MemoryImage data;
+  final Uint8List data;
 
   ImageData(
       {required this.fileName,

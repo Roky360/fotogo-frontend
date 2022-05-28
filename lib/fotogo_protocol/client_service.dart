@@ -5,7 +5,7 @@ import 'package:fotogo/fotogo_protocol/sender.dart';
 import 'client.dart';
 
 class ClientService {
-  final Client _client = Client(host: /*"157.90.143.126"*/"vm128.hisham.ru", port: 20200);
+  final Client _client = Client(host: "vm128.hisham.ru", port: 20200);
 
   static final ClientService _clientService = ClientService._();
 

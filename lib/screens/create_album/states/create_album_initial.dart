@@ -38,28 +38,16 @@ class _CreateAlbumInitialState extends State<CreateAlbumInitial> {
     _images = widget.images;
   }
 
-  Future<DateTimeRange> calculateDateRange() async {
-    for (final img in images) {
-      final data = await readExifFromFile(img);
-
-      // print(data.isEmpty);
-
-      for (final entry in data.entries) {
-        print("${entry.key}: ${entry.value}");
-      }
-    }
-
-    return DateTimeRange(start: DateTime.now(), end: DateTime.now());
-  }
-
   void openGalleryPicker() async {
     // TODO: can add same image multiple times, fix this
     final res = await Navigator.push(
         context, sharedAxisRoute(widget: const FotogoImagePicker()));
 
-    setState(() {
-      images += res;
-    });
+    if (res != null) {
+      setState(() {
+        images += res;
+      });
+    }
   }
 
   void onSubmit() async {
@@ -84,7 +72,7 @@ class _CreateAlbumInitialState extends State<CreateAlbumInitial> {
 
     context.read<AlbumCreationBloc>().add(CreateAlbumEvent(AlbumCreationData(
           title: titleController.text,
-          dateRange: await calculateDateRange(),
+          dateRange: await calculateDateRangeFromImages(images),
           creationTime: DateTime.now(),
           imagesFiles: images,
           sharedPeople: [],
@@ -169,7 +157,7 @@ class _CreateAlbumInitialState extends State<CreateAlbumInitial> {
                           children: List.generate(
                               images.length,
                               (index) => Image(
-                                    image: FileImage(images[index]),
+                                    image: FileImage(images[index], scale: .1),
                                     fit: BoxFit.cover,
                                   )),
                         ),

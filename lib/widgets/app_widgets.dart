@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fotogo/auth/user/user_provider.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sizer/sizer.dart';
 
 class AppWidgets {
@@ -112,10 +111,14 @@ class AppWidgets {
           children: [
             _getIcon(icon, Theme.of(context).colorScheme.onPrimary),
             const SizedBox(width: 10),
-            Text(
-              content,
-              style:
-                  Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
+            Expanded(
+              child: Text(
+                content,
+                style:
+                    Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),

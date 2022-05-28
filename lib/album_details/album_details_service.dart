@@ -23,7 +23,8 @@ class AlbumDetailsService {
   factory AlbumDetailsService() => _albumDetailsService;
 
   int deleteAlbum(String albumId) {
-    int index = _singleAlbumService.albumsData.indexWhere((element) => element.data.id == albumId);
+    int index = _singleAlbumService.albumsData
+        .indexWhere((element) => element.data.id == albumId);
     _singleAlbumService.albumsData.removeAt(index);
     return index;
     // _singleAlbumService.albumsData
@@ -86,8 +87,6 @@ class AlbumDetailsService {
         // _albumDetailsRepository.albumsDetailsData.insert(replaceIndex, curr);
       }
     }
-
-    for (final i in _singleAlbumService.albumsData) print('id w                        '+i.data.id);
   }
 
   /// Sorts the [AlbumDetailsRepository] by the start date of each single_album.

@@ -35,7 +35,7 @@ class _AuthCheckerState extends State<AuthChecker> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       if (await _getStaySignedIn() && !_userProvider.isSignedIn) {
         context.read<AuthBloc>().add(const SignInSilentlyEvent());
       } else {

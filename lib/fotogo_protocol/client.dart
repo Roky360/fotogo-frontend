@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
@@ -16,15 +15,15 @@ class Client {
   final StreamController dataStreamController = StreamController.broadcast();
   late final SecurityContext _securityContext;
 
-  Client(
-      {required this.host,
-      // String host = "192.168.1.162",
-      // String host = "192.168.92.114",
-      required this.port}) {
-    initializeCert();
+  Client({required this.host, required this.port}) {
+    _initializeCert();
   }
 
-  void initializeCert() async {
+  /// Initializes the [SecurityContext] with the server's certificate and
+  /// private key.
+  ///
+  /// The [SecurityContext] is used by the [SecureSocket].
+  void _initializeCert() async {
     List<int> certBytes = await readAssetBytes("assets/cert.pem");
     List<int> privateKeyBytes = await readAssetBytes("assets/privkey.pem");
 
@@ -33,10 +32,19 @@ class Client {
     _securityContext.usePrivateKeyBytes(privateKeyBytes);
   }
 
+  /// Sends a request to the server in a JSON string form.
+  ///
+  /// Accepts a [Sender] object, which contains the [RequestType] of the
+  /// request and a [Request] object pre defined.
+  ///
+  /// The method converts the [Request] to a JSON string, encodes it and sends
+  /// it over the [SecureSocket].
+  ///
+  /// When receiving data, parse it to [Response] object, adds it to the same
+  /// [Sender] object and adds it to the [dataStreamController].
   void sendRequest(Sender sender) async {
     final SecureSocket socket =
         await SecureSocket.connect(host, port, context: _securityContext);
-    // final Socket socket = await Socket.connect(host, port);
     List<int> events = Uint8List(0);
 
     socket.listen(
@@ -57,7 +65,11 @@ class Client {
     _sendRequest(socket, sender.request);
   }
 
-  void _sendRequest(Socket sock, Request request) {
+  /// Converting [request] to JSON string, then sends it to [sock] encoded.
+  ///
+  /// Converting [request] to JSON string, encodes it with [utf8], adding the
+  /// length of the JSON string before it as bytes, then adds all to [sock].
+  void _sendRequest(SecureSocket sock, Request request) {
     Map<String, Object> requestMap = {
       'request_id': request.requestType.index,
       'id_token': request.idToken!,
@@ -77,6 +89,10 @@ class Client {
     sock.add(data);
   }
 
+  /// Parses raw [data], containing response as JSON string to [Request] object.
+  ///
+  /// Decodes [data] and coverts it to [Map]. Then returning [Response] and
+  /// filling its status_code and payload fields from the [Map].
   Response _parseBytesToResponse(Uint8List data) {
     final responseDecoded = String.fromCharCodes(data);
     final Map responseMapped = jsonDecode(responseDecoded);

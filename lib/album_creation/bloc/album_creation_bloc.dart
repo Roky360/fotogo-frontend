@@ -1,13 +1,14 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/album_creation/album_creation_data.dart';
 import 'package:fotogo/album_creation/album_creation_service.dart';
 import 'package:fotogo/fotogo_protocol/client_service.dart';
 import 'package:fotogo/fotogo_protocol/data_types.dart';
 import 'package:fotogo/fotogo_protocol/sender.dart';
+import 'package:fotogo/single_album/single_album_service.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
-import 'package:meta/meta.dart';
 
 part 'album_creation_event.dart';
 
@@ -15,6 +16,7 @@ part 'album_creation_state.dart';
 
 class AlbumCreationBloc extends Bloc<AlbumCreationEvent, AlbumCreationState> {
   final AlbumCreationService _albumCreationService = AlbumCreationService();
+  final SingleAlbumService _singleAlbumService = SingleAlbumService();
   final ClientService _clientService = ClientService();
 
   bool registeredDataListener = false;
@@ -52,9 +54,9 @@ class AlbumCreationBloc extends Bloc<AlbumCreationEvent, AlbumCreationState> {
     });
     on<CreatedAlbumEvent>((event, emit) {
       if (event.response.statusCode == StatusCode.created) {
-        // TODO: add new single_album to single_album repo
         _albumCreationService.addCreatedAlbumToRepository(
             event.request, event.response);
+        _singleAlbumService.deleteDuplicates();
 
         emit(AlbumCreationMessage(
             'Album "${(event.request.args['album_data'] as Map)['name']}" created',

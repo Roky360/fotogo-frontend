@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fotogo/album_creation/bloc/album_creation_bloc.dart';
 import 'package:fotogo/album_details/bloc/album_details_bloc.dart';
 import 'package:fotogo/screens/app_navigator/app_navigator_data.dart';
 import 'package:fotogo/screens/app_navigator_screens.dart';
@@ -162,6 +163,8 @@ class _AppNavigatorState extends State<AppNavigator>
       providers: [
         BlocProvider<AlbumDetailsBloc>(create: (context) => AlbumDetailsBloc()),
         BlocProvider<SingleAlbumBloc>(create: (context) => SingleAlbumBloc()),
+        BlocProvider<AlbumCreationBloc>(
+            create: (context) => AlbumCreationBloc()),
       ],
       child: Scaffold(
         resizeToAvoidBottomInset: true,
@@ -179,7 +182,8 @@ class _AppNavigatorState extends State<AppNavigator>
 
   @override
   void dispose() {
-    data.navigationBarController.dispose();
     super.dispose();
+
+    data.navigationBarController.dispose();
   }
 }

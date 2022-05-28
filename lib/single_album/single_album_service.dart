@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:fotogo/auth/user/user_provider.dart';
 import 'package:fotogo/fotogo_protocol/client_service.dart';
 import 'package:fotogo/fotogo_protocol/data_types.dart';
@@ -24,6 +23,21 @@ class SingleAlbumService {
 
   void clear() => _singleAlbumRepository.clear();
 
+  void deleteDuplicates() {
+    final Set albumInstances = {};
+    List toDelete = [];
+
+    for (final i in albumsData) {
+      if (albumInstances.contains(i.data.id)) {
+        toDelete.add(i);
+        continue;
+      }
+      albumInstances.add(i.data.id);
+    }
+
+    albumsData.removeWhere((element) => toDelete.contains(element));
+  }
+
   void getAlbumContents(String albumId) async {
     _clientService.sendRequest(AlbumSender.getAlbumContents(Request(
         requestType: RequestType.getAlbumContents,
@@ -42,7 +56,7 @@ class SingleAlbumService {
             containingAlbums:
                 payload[index]['containing_albums'].cast<String>(),
             tag: payload[index]['tag'],
-            data: MemoryImage(base64Decode(payload[index]['data']))));
+            data: base64Decode(payload[index]['data'])));
   }
 
   void updateAlbum(SingleAlbumData albumData) async {

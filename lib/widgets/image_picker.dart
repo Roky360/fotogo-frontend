@@ -28,7 +28,7 @@ class _FotogoImagePickerState extends State<FotogoImagePicker> {
 
     animationDuration = const Duration(milliseconds: 200);
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) => loadImages());
+    WidgetsBinding.instance.addPostFrameCallback((_) => loadImages());
   }
 
   void loadImages() async {

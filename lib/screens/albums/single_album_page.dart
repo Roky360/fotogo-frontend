@@ -2,40 +2,36 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fotogo/fotogo_protocol/client.dart';
 import 'package:fotogo/functions/file_handling.dart';
-import 'package:fotogo/screens/albums/album_data.dart';
-import 'package:fotogo/single_album/album_service.dart';
+import 'package:fotogo/screens/albums/widgets/album_photo_view.dart';
 import 'package:fotogo/single_album/single_album_data.dart';
 import 'package:fotogo/single_album/single_album_service.dart';
 import 'package:fotogo/utils/string_formatting.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:fotogo/widgets/popup_menu_button.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:photo_gallery/photo_gallery.dart';
 import 'package:sizer/sizer.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../../single_album/bloc/single_album_bloc.dart';
 import '../../widgets/dialogs.dart';
 import '../../widgets/image_picker.dart';
-import '../../widgets/photo_view.dart';
 import '../../widgets/shared_axis_route.dart';
 
-class AlbumContentPage extends StatefulWidget {
+class SingleAlbumPage extends StatefulWidget {
   final String albumId;
 
-  const AlbumContentPage({
+  const SingleAlbumPage({
     Key? key,
     required this.albumId,
   }) : super(key: key);
 
   @override
-  State<AlbumContentPage> createState() => _AlbumContentPageState();
+  State<SingleAlbumPage> createState() => _SingleAlbumPageState();
 }
 
-class _AlbumContentPageState extends State<AlbumContentPage> {
+class _SingleAlbumPageState extends State<SingleAlbumPage> {
   final SingleAlbumService _singleAlbumService = SingleAlbumService();
+  final GlobalKey _scaffoldKey = GlobalKey();
   late final GlobalKey<FormFieldState> _formKey;
   late final TextEditingController _titleController;
 
@@ -45,9 +41,7 @@ class _AlbumContentPageState extends State<AlbumContentPage> {
   late bool firstBuild;
   late bool titleEditingMode;
   late bool selectionMode;
-
   late List<int> selectedMedia;
-
   late Duration animationDuration;
 
   @override
@@ -100,11 +94,26 @@ class _AlbumContentPageState extends State<AlbumContentPage> {
     final List<File> imgFiles = [];
     for (final i in selectedMedia) {
       final img = albumData.imagesData![i];
-      imgFiles
-          .add(await writeFileToTempDirectory(img.data.bytes, img.fileName));
+      imgFiles.add(await writeFileToTempDirectory(img.data, img.fileName));
     }
 
+    if (!mounted) return;
     FotogoDialogs.showAddToDialog(context, imgFiles);
+  }
+
+  void pushPhotoViewRoute(int index, BuildContext context) async {
+    final imagesData = albumData.imagesData;
+
+    if (imagesData != null) {
+      final List<File> imageFiles = [];
+      for (final i in imagesData) {
+        imageFiles.add(await writeFileToTempDirectory(i.data, i.fileName));
+      }
+
+      if (!mounted) return;
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => AlbumPhotoView(index, fileImages: imageFiles)));
+    }
   }
 
   Widget _getTitle(BuildContext context) {
@@ -184,8 +193,8 @@ class _AlbumContentPageState extends State<AlbumContentPage> {
       return [
         IconButton(onPressed: addImagesToAlbum, icon: const Icon(Icons.add)),
         fotogoPopupMenuButton(items: [
-          MenuItem('Select', onTap: initiateSelectionMode),
-          MenuItem('Delete',
+          FotogoMenuItem('Select', onTap: initiateSelectionMode),
+          FotogoMenuItem('Delete',
               onTap: () => context
                   .read<SingleAlbumBloc>()
                   .add(DeleteAlbumEvent(albumData.data.id))),
@@ -197,6 +206,8 @@ class _AlbumContentPageState extends State<AlbumContentPage> {
   void addImagesToAlbum() async {
     final res = await Navigator.push(
         context, sharedAxisRoute(widget: const FotogoImagePicker()));
+
+    if (!mounted) return;
     if (res != null) {
       context
           .read<SingleAlbumBloc>()
@@ -218,6 +229,7 @@ class _AlbumContentPageState extends State<AlbumContentPage> {
     return BlocProvider<SingleAlbumBloc>(
       create: (context) => SingleAlbumBloc(),
       child: Scaffold(
+        key: _scaffoldKey,
         backgroundColor: Theme.of(context).colorScheme.background,
         body: SafeArea(
           child: CustomScrollView(
@@ -357,7 +369,6 @@ class _AlbumContentPageState extends State<AlbumContentPage> {
                     if (state is SingleAlbumInitial) {
                       if (firstBuild) {
                         firstBuild = false;
-                        print('getting album images');
                         context
                             .read<SingleAlbumBloc>()
                             .add(GetAlbumContentsEvent(albumData.data.id));
@@ -381,20 +392,8 @@ class _AlbumContentPageState extends State<AlbumContentPage> {
                           return GestureDetector(
                             onTap: selectionMode
                                 ? () => toggleSelection(index)
-                                : () => Navigator.of(context)
-                                    .push(MaterialPageRoute(
-                                        builder: (context) => PhotoView(
-                                              index,
-                                              fileImages: [] /*List.generate(
-                                                  albumData.imagesData!.length,
-                                                  (index) async {
-                                                return await writeFileToTempDirectory(
-                                                    albumData.imagesData![index]
-                                                        .data.bytes,
-                                                    albumData.imagesData![index]
-                                                        .fileName);
-                                              })*/,
-                                            ))),
+                                : () => pushPhotoViewRoute(
+                                    index, _scaffoldKey.currentContext!),
                             onLongPress: selectionMode
                                 ? null
                                 : () {
@@ -424,8 +423,8 @@ class _AlbumContentPageState extends State<AlbumContentPage> {
                                             const Duration(milliseconds: 100),
                                         placeholder:
                                             MemoryImage(kTransparentImage),
-                                        image:
-                                            albumData.imagesData![index].data,
+                                        image: MemoryImage(
+                                            albumData.imagesData![index].data),
                                       ),
                                     ),
                                   ),

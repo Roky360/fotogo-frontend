@@ -1,8 +1,13 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/theme_constants.dart';
 
+part 'page_transitions.dart';
+
 final ThemeData lightTheme = ThemeData.light().copyWith(
+    useMaterial3: true,
+
     // TODO: what to do with multiple (accent) colors?
     colorScheme: const ColorScheme.light(
       primary: Color(0xFF013250),
@@ -21,12 +26,17 @@ final ThemeData lightTheme = ThemeData.light().copyWith(
       // errorContainer: Color(0xFFC66161),
     ),
 
-
     // Appbar
     appBarTheme: const AppBarTheme(
       shadowColor: Colors.white,
       color: Color(0xFF013250),
       // color: Color(0xFF4C76A7),
+    ),
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: <TargetPlatform, PageTransitionsBuilder>{
+        TargetPlatform.android: ZoomPageTransitionsBuilder(),
+        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+      },
     ),
 
     // Buttons

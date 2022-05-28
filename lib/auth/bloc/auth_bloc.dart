@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/album_details/album_details_service.dart';
 import 'package:fotogo/auth/auth_service.dart';
 import 'package:fotogo/auth/providers/google_sign_in.dart';
@@ -10,7 +11,6 @@ import 'package:fotogo/fotogo_protocol/data_types.dart';
 import 'package:fotogo/fotogo_protocol/sender.dart';
 import 'package:fotogo/single_album/single_album_service.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
-import 'package:meta/meta.dart';
 
 part 'auth_event.dart';
 
@@ -94,25 +94,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
     on<CheckedUserExistsEvent>((event, emit) {
       if (event.response.statusCode == StatusCode.ok) {
-        // false is returned
-        if (event.response is bool && !event.response.payload) {
-          emit(const CreatingAccount());
-        } else if (event.response.payload is int) {
-          // account exists; decide what is the privilege level
-          switch (event.response.payload) {
-            case PrivilegeLevel.admin:
-              emit(const AdminSignedIn());
-              break;
-            case PrivilegeLevel.user:
-              emit(const SignedIn());
-              break;
-            default:
-              // TODO: emit error or something..
-              break;
-          }
+        switch (event.response.payload) {
+          case PrivilegeLevel.unregistered:
+            emit(const CreatingAccount());
+            break;
+          case PrivilegeLevel.admin:
+            emit(const AdminSignedIn());
+            break;
+          case PrivilegeLevel.user:
+            emit(const SignedIn());
+            break;
+          default:
+            emit(const AuthMessage(
+                "An error occurred while signing in. Please try again later.",
+                FotogoSnackBarIcon.error));
+            add(const SignOutEvent());
+            break;
         }
       } else {
         emit(AuthMessage(event.response.payload, FotogoSnackBarIcon.error));
+        add(const SignOutEvent());
       }
     });
 
@@ -128,6 +129,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(const SignedOut());
       } catch (e) {
         emit(AuthMessage(e.toString(), FotogoSnackBarIcon.error));
+        add(const SignOutEvent());
       }
     });
 
@@ -148,6 +150,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(const SignedIn());
       } else {
         emit(AuthMessage(event.response.payload, FotogoSnackBarIcon.error));
+        add(const SignOutEvent());
       }
     });
 
@@ -166,6 +169,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         add(const SignOutEvent());
       } else {
         emit(AuthMessage(event.response.payload, FotogoSnackBarIcon.error));
+        add(const SignOutEvent());
       }
     });
   }

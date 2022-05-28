@@ -17,7 +17,7 @@ class _GalleryViewState extends State<GalleryView> {
 
     _loading = true;
 
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       if (await _promptPermissionSetting()) {
         List<Album> albums =
             await PhotoGallery.listAlbums(mediumType: MediumType.image);

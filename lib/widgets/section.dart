@@ -36,9 +36,7 @@ class FotogoSection extends StatelessWidget {
                   action
                 ],
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               body
             ],
           ),

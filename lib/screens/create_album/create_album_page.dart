@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:exif/exif.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/album_creation/bloc/album_creation_bloc.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
 
 import 'package:fotogo/album_creation/album_creation_data.dart';
+import 'package:fotogo/functions/file_handling.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:fotogo/widgets/image_picker.dart';
 import 'package:fotogo/widgets/shared_axis_route.dart';

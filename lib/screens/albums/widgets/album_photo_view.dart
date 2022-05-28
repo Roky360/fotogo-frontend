@@ -1,53 +1,34 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:fotogo/widgets/dialogs.dart';
 import 'package:fotogo/widgets/popup_menu_button.dart';
-import 'package:photo_gallery/photo_gallery.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:transparent_image/transparent_image.dart';
 
-class PhotoView extends StatefulWidget {
+class AlbumPhotoView extends StatefulWidget {
   final int index;
-  final List<Medium>? media;
-  final List<File>? fileImages;
+  final List<File> fileImages;
 
-  const PhotoView(this.index, {Key? key, this.media, this.fileImages})
+  const AlbumPhotoView(this.index, {Key? key, required this.fileImages})
       : super(key: key);
 
   @override
-  State<PhotoView> createState() => _PhotoViewState();
+  State<AlbumPhotoView> createState() => _AlbumPhotoViewState();
 }
 
-class _PhotoViewState extends State<PhotoView> {
-  late List<Medium>? media;
-  late List<File>? fileImages;
-  late PhotoViewController controller;
-  late PageController pageController;
+class _AlbumPhotoViewState extends State<AlbumPhotoView> {
+  late final List<File> media;
   late int currPageIndex;
 
-  late final bool usingMediums;
+  late PhotoViewController controller;
+  late PageController pageController;
 
   @override
   void initState() {
     super.initState();
 
-    assert(widget.media != null || widget.fileImages != null,
-        "Must provide media. Either a list of mediums or list of files.");
-
-    // enter full screen mode
-    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-
-    if (widget.media == null) {
-      fileImages = widget.fileImages;
-    } else {
-      media = widget.media;
-    }
-    usingMediums = media == null;
+    media = widget.fileImages;
 
     controller = PhotoViewController();
     pageController = PageController(initialPage: widget.index);
@@ -88,12 +69,11 @@ class _PhotoViewState extends State<PhotoView> {
         actions: [
           fotogoPopupMenuButton(
             items: [
-              MenuItem('Add to...',
-                  onTap: () async => FotogoDialogs.showAddToDialog(
-                      context,
-                      usingMediums
-                          ? [await media![currPageIndex].getFile()]
-                          : [fileImages![currPageIndex]])),
+              FotogoMenuItem(
+                'Add to...',
+                onTap: () => FotogoDialogs.showAddToDialog(
+                    context, [media[currPageIndex]]),
+              )
             ],
           ),
         ],
@@ -101,16 +81,12 @@ class _PhotoViewState extends State<PhotoView> {
       body: PhotoViewGallery.builder(
         pageController: pageController,
         scrollPhysics: const BouncingScrollPhysics(),
-        itemCount: usingMediums ? media!.length : fileImages!.length,
+        itemCount: media.length,
         onPageChanged: (index) => currPageIndex = index,
         builder: (context, index) {
           return PhotoViewGalleryPageOptions.customChild(
             controller: controller,
-            child: Image(
-              image: usingMediums
-                  ? PhotoProvider(mediumId: media![index].id)
-                  : FileImage(fileImages![index]) as ImageProvider,
-            ),
+            child: Image(image: FileImage(media[index])),
             minScale: PhotoViewComputedScale.contained,
             maxScale: PhotoViewComputedScale.contained * 3,
           );

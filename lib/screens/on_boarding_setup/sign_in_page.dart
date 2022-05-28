@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:fotogo/auth/bloc/auth_bloc.dart';
-import 'package:fotogo/auth/user/user_provider.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -69,37 +68,6 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return FotogoBasePage(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // title
-          Text(
-            'Login or sign up',
-            style: Theme.of(context).textTheme.headline4,
-          ),
-          const SizedBox(height: 50),
-          // google button
-          SizedBox(
-            width: 60.w,
-            child: OutlinedButton(
-              onPressed: () =>
-                  context.read<AuthBloc>().add(const SignInEvent()),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    'assets/logos/Google__G__Logo.svg',
-                    height: 20,
-                  ),
-                  const SizedBox(width: 12),
-                  const Text('Sign in with Google'),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-      // stay signed in
       bottomSheet: Padding(
         padding: const EdgeInsets.only(bottom: 50),
         child: Row(
@@ -141,6 +109,36 @@ class _SignInPageState extends State<SignInPage> {
           ],
         ),
       ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // title
+          Text(
+            'Login or sign up',
+            style: Theme.of(context).textTheme.headline4,
+          ),
+          const SizedBox(height: 50),
+          // google button
+          SizedBox(
+            width: 60.w,
+            child: OutlinedButton(
+              onPressed: () =>
+                  context.read<AuthBloc>().add(const SignInEvent()),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    'assets/logos/Google__G__Logo.svg',
+                    height: 20,
+                  ),
+                  const SizedBox(width: 12),
+                  const Text('Sign in with Google'),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -151,19 +149,6 @@ class CreateAccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FotogoBasePage(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            'Create a new fotogo account',
-            style: Theme.of(context).textTheme.headline4,
-          ),
-          const SizedBox(height: 30),
-          // user card
-          AppWidgets.userCard(context),
-        ],
-      ),
       bottomSheet: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -188,6 +173,19 @@ class CreateAccountPage extends StatelessWidget {
                   child: const Text('Accept and create')),
             ],
           ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            'Create a new fotogo account',
+            style: Theme.of(context).textTheme.headline4,
+          ),
+          const SizedBox(height: 30),
+          // user card
+          AppWidgets.userCard(context),
         ],
       ),
     );

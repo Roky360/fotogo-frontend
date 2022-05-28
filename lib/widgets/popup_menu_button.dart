@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 void _f() {}
 
-class MenuItem {
-  MenuItem(this.name, {this.onTap = _f});
+class FotogoMenuItem {
+  FotogoMenuItem(this.name, {this.onTap = _f});
 
   final String name;
   final VoidCallback onTap;
 }
 
-class IconMenuItem extends MenuItem {
+class IconMenuItem extends FotogoMenuItem {
   IconMenuItem(name, this.icon, {onTap = _f}) : super(name, onTap: onTap);
 
   final IconData icon;
@@ -57,7 +57,7 @@ Widget fotogoPopupMenuIconButton({
 }
 
 Widget fotogoPopupMenuButton({
-  required List<MenuItem> items,
+  required List<FotogoMenuItem> items,
   IconData icon = Icons.more_vert,
   Color? iconColor,
   Color? foregroundColor,

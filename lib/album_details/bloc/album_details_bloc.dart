@@ -1,13 +1,12 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/album_details/album_details_service.dart';
 import 'package:fotogo/fotogo_protocol/client_service.dart';
 import 'package:fotogo/fotogo_protocol/data_types.dart';
 import 'package:fotogo/fotogo_protocol/sender.dart';
 import 'package:fotogo/single_album/single_album_service.dart';
-import 'package:meta/meta.dart';
 
 part 'album_details_event.dart';
 
@@ -55,6 +54,7 @@ class AlbumDetailsBloc extends Bloc<AlbumDetailsEvent, AlbumDetailsState> {
     on<SyncedAlbumsDetailsEvent>((event, emit) {
       if (event.response.statusCode == StatusCode.ok) {
         _albumDetailsService.updateAlbumDetailsByResponse(event.response);
+        _singleAlbumService.deleteDuplicates();
 
         emit(const AlbumDetailsInitial());
         emit(const AlbumDetailsFetched());
