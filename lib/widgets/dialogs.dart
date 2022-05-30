@@ -14,6 +14,7 @@ import 'package:sizer/sizer.dart';
 
 import '../single_album/bloc/single_album_bloc.dart';
 
+/// Custom application dialogs.
 class FotogoDialogs {
   static void showAddToDialog(BuildContext context, List<File> images) {
     final List<SingleAlbumData> albumsData = SingleAlbumService().albumsData;

@@ -14,10 +14,12 @@ class CreatingAccount extends AuthState {
   const CreatingAccount();
 }
 
-class SignedIn extends AuthState {
-  const SignedIn();
+/// Indicates that a user is signed in.
+class UserSignedIn extends AuthState {
+  const UserSignedIn();
 }
 
+/// Indicates that an admin is signed in.
 class AdminSignedIn extends AuthState {
   const AdminSignedIn();
 }

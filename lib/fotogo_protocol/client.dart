@@ -5,10 +5,11 @@ import 'dart:typed_data';
 
 import 'package:fotogo/fotogo_protocol/sender.dart';
 import 'package:fotogo/functions/file_handling.dart';
-import 'package:image_picker/image_picker.dart';
 
 import 'data_types.dart';
 
+/// A socket client that sends request to the server with a secure connection
+/// via [SecureSocket].
 class Client {
   late final String host;
   late final int port;
@@ -101,14 +102,5 @@ class Client {
       statusCode: responseMapped['status_code'],
       payload: responseMapped['payload'],
     );
-  }
-}
-
-class Misc {
-  Future pickImage() async {
-    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (image == null) return;
-
-    return File(image.path);
   }
 }

@@ -4,6 +4,11 @@ import 'package:fotogo/screens/on_boarding_setup/welcome_page.dart';
 import 'package:fotogo/widgets/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Launches fotogo app.
+///
+/// This is the first widget that the [MaterialApp] calls. It decided what to
+/// launch first, based on whether this is the first launch
+/// (shows [WelcomePage]) or not (gives control to [AuthChecker]).
 class FotogoLauncher extends StatelessWidget {
   FotogoLauncher({Key? key}) : super(key: key);
 

@@ -1,5 +1,9 @@
 import 'data_types.dart';
 
+/// Holds a record of the request process to the server.
+///
+/// Holds both the [Request] that the client has built and the [Response] that
+/// came from the server, as well as the [RequestType].
 abstract class Sender {
   final RequestType requestType;
   final Request request;
@@ -8,6 +12,9 @@ abstract class Sender {
   Sender(this.requestType, this.request);
 }
 
+/// A [Sender] that related to auth requests.
+///
+/// Used by [AuthBloc].
 class AuthSender extends Sender {
   AuthSender.auth(Request request) : super(RequestType.auth, request);
 
@@ -21,6 +28,9 @@ class AuthSender extends Sender {
       : super(RequestType.deleteAccount, request);
 }
 
+/// A [Sender] that related to album creation requests.
+///
+/// Used by [AlbumCreationBloc] and [AlbumDetailsBloc].
 class AlbumCreationSender extends Sender {
   AlbumCreationSender.createAlbum(Request request)
       : super(RequestType.createAlbum, request);
@@ -31,6 +41,9 @@ class AlbumDetailsSender extends Sender {
       : super(RequestType.syncAlbumDetails, request);
 }
 
+/// A [Sender] that related to album requests.
+///
+/// Used by [SingleAlbumBloc].
 class AlbumSender extends Sender {
   AlbumSender.getAlbumContents(Request request)
       : super(RequestType.getAlbumContents, request);

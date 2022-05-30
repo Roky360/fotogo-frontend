@@ -5,10 +5,14 @@ abstract class SingleAlbumEvent {
   const SingleAlbumEvent();
 }
 
+/// Register to the [dataStreamController] of [Client].
+///
+/// This event is called only once - when the bloc is created.
 class SingleAlbumRegisterDataStreamEvent extends SingleAlbumEvent {
   const SingleAlbumRegisterDataStreamEvent();
 }
 
+/// Get all the images of an [albumId].
 class GetAlbumContentsEvent extends SingleAlbumEvent {
   final String albumId;
 
@@ -22,6 +26,7 @@ class GotAlbumContentsEvent extends SingleAlbumEvent {
   const GotAlbumContentsEvent(this.response, this.albumId);
 }
 
+/// Update album details, with a new [SingleAlbumData] object.
 class UpdateAlbumEvent extends SingleAlbumEvent {
   final SingleAlbumData albumData;
 
@@ -35,6 +40,7 @@ class UpdatedAlbumEvent extends SingleAlbumEvent {
   const UpdatedAlbumEvent(this.response, this.request);
 }
 
+/// Add [imagesToAdd] to an [albumId].
 class AddImagesToAlbumEvent extends SingleAlbumEvent {
   final String albumId;
   final List<File> imagesToAdd;
@@ -48,6 +54,7 @@ class AddedImagesToAlbumEvent extends SingleAlbumEvent {
   const AddedImagesToAlbumEvent(this.response);
 }
 
+/// Remove [imagesFileNamesToRemove] from [albumId].
 class RemoveImagesFromAlbumEvent extends SingleAlbumEvent {
   final String albumId;
   final List<String> imagesFileNamesToRemove;
@@ -61,6 +68,7 @@ class RemovedImagesFromAlbumEvent extends SingleAlbumEvent {
   const RemovedImagesFromAlbumEvent(this.response);
 }
 
+/// Delete an album with the given [albumId].
 class DeleteAlbumEvent extends SingleAlbumEvent {
   final String albumId;
 

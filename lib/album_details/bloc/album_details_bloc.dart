@@ -12,6 +12,9 @@ part 'album_details_event.dart';
 
 part 'album_details_state.dart';
 
+/// Handles [AlbumsPage].
+///
+/// Album details are the list of albums shown in [AlbumsPage].
 class AlbumDetailsBloc extends Bloc<AlbumDetailsEvent, AlbumDetailsState> {
   final AlbumDetailsService _albumDetailsService = AlbumDetailsService();
   final SingleAlbumService _singleAlbumService = SingleAlbumService();

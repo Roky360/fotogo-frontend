@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
 
+/// A splash screen shown in different loading states.
+///
+/// Typically used by [AuthChecker].
 class FotogoSplashScreen extends StatelessWidget {
   final String message;
   final bool showLoadingAnimation;
@@ -19,7 +22,7 @@ class FotogoSplashScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               AppWidgets.fotogoLogoFull(height: 50),
-              const SizedBox(height: 40),
+              const SizedBox(height: 50),
               showLoadingAnimation
                   ? AppWidgets.fotogoCircularLoadingAnimation()
                   : const SizedBox(),

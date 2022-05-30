@@ -5,6 +5,7 @@ import 'package:exif/exif.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:image_picker/image_picker.dart';
 
 Future<Uint8List> readFileBytes(String path) async {
   final File file = File(path);
@@ -26,6 +27,10 @@ Future<File> writeFileToTempDirectory(Uint8List data, String fileName) async {
   return writeToFile(data, "$tempPath/$fileName");
 }
 
+/// Calculates the date range of a list of [File]s (typically images).
+///
+/// Using [readExifFromFile] to read its [DateTime] timestamp, if exists. If
+/// none of the images has metadata, returns the date of today.
 Future<DateTimeRange> calculateDateRangeFromImages(List<File> images) async {
   final List<DateTime> imagesDates = [];
   // generate a list of all the timestamps of the images, if exists.
@@ -53,4 +58,12 @@ Future<DateTimeRange> calculateDateRangeFromImages(List<File> images) async {
   }
 
   return DateTimeRange(start: lowerBound, end: upperBound);
+}
+
+/// Opens an interactive native image picker.
+Future pickImage() async {
+  final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+  if (image == null) return;
+
+  return File(image.path);
 }

@@ -11,6 +11,9 @@ import 'package:fotogo/single_album/single_album_service.dart';
 import '../album_details/album_data.dart';
 import 'album_creation_data.dart';
 
+/// A service for album creation.
+///
+/// Used by [AlbumCreationBloc].
 class AlbumCreationService {
   final UserProvider _userProvider = UserProvider();
   final ClientService _clientService = ClientService();

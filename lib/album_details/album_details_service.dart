@@ -10,6 +10,7 @@ import 'package:fotogo/single_album/single_album_service.dart';
 
 import '../single_album/single_album_data.dart';
 
+/// A service responsible for [AlbumsPage].
 class AlbumDetailsService {
   final SingleAlbumService _singleAlbumService = SingleAlbumService();
   final UserProvider _userProvider = UserProvider();
@@ -83,28 +84,26 @@ class AlbumDetailsService {
         _singleAlbumService.albumsData.removeAt(replaceIndex);
         _singleAlbumService.albumsData
             .insert(replaceIndex, SingleAlbumData(data: curr));
-        // _albumDetailsRepository.albumsDetailsData.removeAt(replaceIndex);
-        // _albumDetailsRepository.albumsDetailsData.insert(replaceIndex, curr);
       }
     }
   }
 
-  /// Sorts the [AlbumDetailsRepository] by the start date of each single_album.
+  /// Sorts the [SingleAlbumRepository] by the start date of each album.
   void sortByDates() {
     _singleAlbumService.albumsData.sort(
       (a, b) => a.data.dates.start.compareTo(b.data.dates.start),
     );
   }
 
-  /// Sorts the [AlbumDetailsRepository] by the title of each single_album.
+  /// Sorts the [SingleAlbumRepository] by the title of each album.
   void sortByName() {
     _singleAlbumService.albumsData.sort(
       (a, b) => a.data.title.compareTo(b.data.title),
     );
   }
 
-  /// Sorts the [AlbumDetailsRepository] by the [lastModified] property of each
-  /// single_album.
+  /// Sorts the [SingleAlbumRepository] by the [lastModified] property of each
+  /// album.
   void sortByLastModified() {
     _singleAlbumService.albumsData.sort(
       (a, b) => a.data.lastModified.compareTo(b.data.lastModified),

@@ -8,6 +8,8 @@ import 'package:fotogo/fotogo_protocol/sender.dart';
 import 'package:fotogo/single_album/albums_repository.dart';
 import 'package:fotogo/single_album/single_album_data.dart';
 
+/// A service that sends requests related to single albums; manages
+/// [AlbumsRepository].
 class SingleAlbumService {
   final AlbumsRepository _singleAlbumRepository = AlbumsRepository();
   final UserProvider _userProvider = UserProvider();

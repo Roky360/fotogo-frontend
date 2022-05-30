@@ -5,6 +5,7 @@ import '../constants/theme_constants.dart';
 
 part 'page_transitions.dart';
 
+/// The light [ThemeData] of the application.
 final ThemeData lightTheme = ThemeData.light().copyWith(
     useMaterial3: true,
 

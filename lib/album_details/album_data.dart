@@ -2,6 +2,10 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart' show DateTimeRange;
 
+/// Holds information about an album.
+///
+/// Contains its id, title, date range, permitted users, cover image and
+/// last-modified timestamp.
 class AlbumData {
   final String id;
   String title;

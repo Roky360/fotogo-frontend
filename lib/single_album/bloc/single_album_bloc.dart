@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/album_details/album_details_service.dart';
 import 'package:fotogo/fotogo_protocol/client_service.dart';
 import 'package:fotogo/fotogo_protocol/data_types.dart';
@@ -11,12 +11,11 @@ import 'package:fotogo/single_album/single_album_data.dart';
 import 'package:fotogo/single_album/single_album_service.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
 
-import '../../album_details/album_data.dart';
-
 part 'single_album_event.dart';
 
 part 'single_album_state.dart';
 
+/// Handles a single album, as well as [SingleAlbumPage].
 class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
   final SingleAlbumService _singleAlbumService = SingleAlbumService();
   final AlbumDetailsService _albumDetailsService = AlbumDetailsService();

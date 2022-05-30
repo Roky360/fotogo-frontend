@@ -6,6 +6,7 @@ import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:photo_gallery/photo_gallery.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+/// A custom interactive image picker.
 class FotogoImagePicker extends StatefulWidget {
   const FotogoImagePicker({Key? key}) : super(key: key);
 

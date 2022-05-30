@@ -16,6 +16,7 @@ part 'auth_event.dart';
 
 part 'auth_state.dart';
 
+/// Handles authentication, privilege levels and accounts.
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final GoogleSignInProvider _googleSignInProvider = GoogleSignInProvider();
   final UserProvider _userProvider = UserProvider();
@@ -102,7 +103,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             emit(const AdminSignedIn());
             break;
           case PrivilegeLevel.user:
-            emit(const SignedIn());
+            emit(const UserSignedIn());
             break;
           default:
             emit(const AuthMessage(
@@ -147,7 +148,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(const AuthMessage("Account Created", FotogoSnackBarIcon.success));
         emit(
             const AuthMessage("Welcome to fotogo!", FotogoSnackBarIcon.fotogo));
-        emit(const SignedIn());
+        emit(const UserSignedIn());
       } else {
         emit(AuthMessage(event.response.payload, FotogoSnackBarIcon.error));
         add(const SignOutEvent());

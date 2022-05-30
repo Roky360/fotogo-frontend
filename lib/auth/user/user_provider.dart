@@ -1,6 +1,7 @@
 import 'package:fotogo/auth/user/user_repository.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+/// Provides information about the currently logged in user.
 class UserProvider {
   final UserRepository _userRepository = UserRepository(null);
 

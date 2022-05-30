@@ -4,6 +4,7 @@ import 'package:fotogo/auth/user/user_provider.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
 import 'package:sizer/sizer.dart';
 
+/// General widgets of the application.
 class AppWidgets {
   // TODO: make factory for both constructors
   static Widget fotogoLogoFull({double? height = 30}) {

@@ -14,6 +14,7 @@ part 'album_creation_event.dart';
 
 part 'album_creation_state.dart';
 
+/// Handles the [CreateAlbumPage].
 class AlbumCreationBloc extends Bloc<AlbumCreationEvent, AlbumCreationState> {
   final AlbumCreationService _albumCreationService = AlbumCreationService();
   final SingleAlbumService _singleAlbumService = SingleAlbumService();

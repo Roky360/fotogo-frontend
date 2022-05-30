@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+/// Holds all needed data to send a request to create a new album.
 class AlbumCreationData {
   final String title;
   final DateTimeRange dateRange;

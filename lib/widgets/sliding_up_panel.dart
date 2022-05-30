@@ -1,10 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:sizer/sizer.dart';
-import 'package:fotogo/utils/screen_manipulation.dart';
 
 class FotogoSlidingUpPanel extends StatelessWidget {
   final Widget panelWidget;
@@ -31,7 +28,9 @@ class FotogoSlidingUpPanel extends StatelessWidget {
         child: Column(
           children: [
             buildHandle(),
-            const SizedBox(height: 10,),
+            const SizedBox(
+              height: 10,
+            ),
             panelWidget,
           ],
         ),

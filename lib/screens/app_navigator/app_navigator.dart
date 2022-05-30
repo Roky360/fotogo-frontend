@@ -69,8 +69,6 @@ class _AppNavigatorState extends State<AppNavigator>
       curve: Curves.easeOutBack,
       reverseCurve: Curves.easeOutExpo,
     );
-    // curve: Curves.easeOutExpo,
-    // curve: Curves.easeOutBack,
   }
 
   void onRouteChange(int newIndex) {
@@ -83,33 +81,6 @@ class _AppNavigatorState extends State<AppNavigator>
 
   void navigateToCreateAlbumView() {
     Navigator.push(context, sharedAxisRoute(widget: CreateAlbumPage()));
-  }
-
-  void openCreateAlbumPanel() async {
-    await data.navigationBarController.reverse();
-    await data.createAlbumPanelController.show();
-    data.createAlbumPanelController.animatePanelToPosition(1,
-        duration: const Duration(milliseconds: 700), curve: Curves.easeOutExpo);
-  }
-
-  void closeCreateAlbumPanel() async {
-    // TODO: panel not closing smoothly. duration and curve have no effect.
-    await data.createAlbumPanelController.animatePanelToPosition(0,
-        duration: const Duration(milliseconds: 500), curve: Curves.easeOutExpo);
-    data.createAlbumPanelController.panelPosition = 0;
-    await data.createAlbumPanelController.hide();
-  }
-
-  void onPanelClose() async {
-    double pos = .03;
-
-    if (data.createAlbumPanelController.isPanelShown &&
-        data.createAlbumPanelController.panelPosition <= pos) {
-      await data.navigationBarController.forward();
-    } else if (data.createAlbumPanelController.isPanelShown &&
-        data.createAlbumPanelController.panelPosition > pos) {
-      await data.navigationBarController.reverse();
-    }
   }
 
   Widget _getBody() {
@@ -126,25 +97,6 @@ class _AppNavigatorState extends State<AppNavigator>
       ),
       child: data.routes[data.routeIndex].widget,
     );
-
-    // return FotogoSlidingUpPanel(
-    //   panelController: data.createAlbumPanelController,
-    //   panelWidget: CreateAlbumPage(),
-    //   onPanelSlideCallback: onPanelClose,
-    //   bodyWidget: PageTransitionSwitcher(
-    //     duration: const Duration(milliseconds: 500),
-    //     transitionBuilder: (Widget child, Animation<double> primaryAnimation,
-    //             Animation<double> secondaryAnimation) =>
-    //         FadeThroughTransition(
-    //       animation: primaryAnimation,
-    //       secondaryAnimation: secondaryAnimation,
-    //       child: child,
-    //       // fillColor: Colors.greenAccent,
-    //       fillColor: Theme.of(context).colorScheme.background,
-    //     ),
-    //     child: data.routes[data.routeIndex].widget,
-    //   ),
-    // );
   }
 
   Widget _getBottomNavigationBar() {

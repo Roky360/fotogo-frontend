@@ -108,7 +108,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
                   Row(
                     children: [
                       Text(
-                        "fotogo Albums",
+                        "Fotogo Albums",
                         style: Theme.of(context).textTheme.headline4,
                       ),
                       const Spacer(),
@@ -118,7 +118,14 @@ class _AlbumsPageState extends State<AlbumsPage> {
                         items: [
                           IconMenuItem('By title', Icons.sort_by_alpha,
                               onTap: () => setState(
-                                  () => _albumDetailsService.sortByName()))
+                                  () => _albumDetailsService.sortByName())),
+                          IconMenuItem(
+                              'By dates', Icons.calendar_view_day_outlined,
+                              onTap: () => setState(
+                                  () => _albumDetailsService.sortByDates())),
+                          IconMenuItem('By last modified', Icons.edit_outlined,
+                              onTap: () => setState(() =>
+                                  _albumDetailsService.sortByLastModified())),
                         ],
                       )
                     ],

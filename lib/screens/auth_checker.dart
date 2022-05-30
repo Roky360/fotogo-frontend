@@ -68,7 +68,7 @@ class _AuthCheckerState extends State<AuthChecker> {
                 duration: const Duration(milliseconds: 300),
                 child: state is AdminSignedIn
                     ? const AdminPage()
-                    : state is SignedIn
+                    : state is UserSignedIn
                         ? const AppNavigator()
                         : PageTransitionSwitcher(
                             transitionBuilder:

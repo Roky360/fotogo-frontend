@@ -3,6 +3,9 @@ import 'package:fotogo/fotogo_protocol/client_service.dart';
 import 'package:fotogo/fotogo_protocol/data_types.dart';
 import 'package:fotogo/fotogo_protocol/sender.dart';
 
+/// Sends request related to authentication and accounts.
+///
+/// used by [AuthBloc].
 class AuthService {
   final UserProvider _userProvider = UserProvider();
   final ClientService _clientService = ClientService();

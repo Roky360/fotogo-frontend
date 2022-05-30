@@ -5,10 +5,14 @@ abstract class AlbumDetailsEvent {
   const AlbumDetailsEvent();
 }
 
+/// Register to  the [dataStreamController] of [Client].
+///
+/// This event is called only once - when the bloc is created.
 class AlbumDetailsRegisterDataStreamEvent extends AlbumDetailsEvent {
   const AlbumDetailsRegisterDataStreamEvent();
 }
 
+/// Syncs the albums at client side with the albums in the DB.
 class SyncAlbumsDetailsEvent extends AlbumDetailsEvent {
   const SyncAlbumsDetailsEvent();
 }

@@ -8,7 +8,6 @@ import 'package:fotogo/launcher.dart';
 import 'package:fotogo/screens/app_navigator/app_navigator.dart';
 import 'package:fotogo/screens/auth_checker.dart';
 import 'package:fotogo/screens/on_boarding_setup/welcome_page.dart';
-import 'package:fotogo/testing.dart';
 import 'package:sizer/sizer.dart';
 
 import 'album_creation/bloc/album_creation_bloc.dart';
@@ -20,6 +19,10 @@ void main() async {
   runApp(const FotogoApp());
 }
 
+/// The root application of fotogo.
+///
+/// This widget contains the [MaterialApp], which is the base widget of the
+/// application. It initializes what is needed for the app.
 class FotogoApp extends StatelessWidget {
   const FotogoApp({Key? key}) : super(key: key);
 
@@ -40,15 +43,12 @@ class FotogoApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: "fotogo",
             theme: lightTheme,
-            // scrollBehavior: const ScrollBehavior(
-            //     androidOverscrollIndicator: AndroidOverscrollIndicator.stretch),
             initialRoute: '/launcher',
             routes: {
               '/launcher': (context) => FotogoLauncher(),
               '/app_navigator': (context) => const AppNavigator(),
               '/setup': (context) => WelcomePage(),
               '/auth_checker': (context) => const AuthChecker(),
-              '/testing': (context) => const Testing(),
             },
           ),
         );

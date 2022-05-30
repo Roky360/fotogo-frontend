@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+/// Formats a given [DateTimeRange] for displaying on screen.
 String formatDateRangeToString(DateTimeRange timeRange) {
   // TODO: rewrite this...
   final monthFormat = DateFormat('MMM');
@@ -11,7 +12,7 @@ String formatDateRangeToString(DateTimeRange timeRange) {
       if (timeRange.start.day == timeRange.end.day) {
         // Same day (single day)
         return "${timeRange.start.day} ${monthFormat.format(timeRange.start)}"
-            "${timeRange.start.year == DateTime.now().year ? "" : ' ,' + timeRange.start.year.toString()}";
+            "${timeRange.start.year == DateTime.now().year ? "" : ', ${timeRange.start.year}'}";
       }
       // Same month and year
       return "${timeRange.start.day}-${timeRange.end.day} "
