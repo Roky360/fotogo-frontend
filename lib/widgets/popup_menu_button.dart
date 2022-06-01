@@ -3,20 +3,21 @@ import 'package:flutter/material.dart';
 void _f() {}
 
 class FotogoMenuItem {
-  FotogoMenuItem(this.name, {this.onTap = _f});
-
   final String name;
   final VoidCallback onTap;
+
+  FotogoMenuItem(this.name, {this.onTap = _f});
 }
 
-class IconMenuItem extends FotogoMenuItem {
-  IconMenuItem(name, this.icon, {onTap = _f}) : super(name, onTap: onTap);
-
+class FotogoIconMenuItem extends FotogoMenuItem {
   final IconData icon;
+
+  FotogoIconMenuItem(name, this.icon, {onTap = _f}) : super(name, onTap: onTap);
 }
+
 // TODO: make factory for both constructors + . constructor (popupMenu.icon())
 Widget fotogoPopupMenuIconButton({
-  required List<IconMenuItem> items,
+  required List<FotogoIconMenuItem> items,
   IconData icon = Icons.more_vert,
   Color? iconColor,
   Color? foregroundColor,
@@ -85,6 +86,3 @@ Widget fotogoPopupMenuButton({
     },
   );
 }
-
-
-

@@ -66,8 +66,8 @@ class AlbumDetailsService {
               start: DateTime.parse(curr['date_range'][0]),
               end: DateTime.parse(curr['date_range'][1])),
           permittedUsers: curr['permitted_users'].cast<String>(),
-          coverImage: base64Decode(curr['cover_image']),
-          // coverImage: curr['cover_image'],
+          // coverImage: base64Decode(curr['cover_image']),
+          coverImage: curr['cover_image'],
           lastModified: DateTime.parse(curr['last_modified'])));
     }
 
@@ -91,7 +91,7 @@ class AlbumDetailsService {
   /// Sorts the [SingleAlbumRepository] by the start date of each album.
   void sortByDates() {
     _singleAlbumService.albumsData.sort(
-      (a, b) => a.data.dates.start.compareTo(b.data.dates.start),
+      (a, b) => b.data.dates.start.compareTo(a.data.dates.start),
     );
   }
 
@@ -106,7 +106,7 @@ class AlbumDetailsService {
   /// album.
   void sortByLastModified() {
     _singleAlbumService.albumsData.sort(
-      (a, b) => a.data.lastModified.compareTo(b.data.lastModified),
+      (a, b) => b.data.lastModified.compareTo(a.data.lastModified),
     );
   }
 }

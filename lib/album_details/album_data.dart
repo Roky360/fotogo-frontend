@@ -13,7 +13,8 @@ class AlbumData {
   List<String> permittedUsers;
 
   // TODO: url or whole image file?
-  final Uint8List coverImage;
+  final String coverImage;
+  // final Uint8List coverImage;
   DateTime lastModified;
 
   AlbumData(

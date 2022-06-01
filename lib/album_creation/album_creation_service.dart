@@ -69,7 +69,8 @@ class AlbumCreationService {
                 end: DateTime.parse(albumDataMap['date_range'][1])),
           lastModified: DateTime.parse(albumDataMap['last_modified']),
           permittedUsers: albumDataMap['permitted_users'],
-          coverImage: base64Decode(request.payload[0]['data'])
+          coverImage: request.payload[0]['data']
+          // coverImage: base64Decode(request.payload[0]['data'])
         )));
   }
 }

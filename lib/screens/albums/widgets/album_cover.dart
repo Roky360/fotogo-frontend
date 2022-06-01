@@ -29,16 +29,13 @@ class AlbumCover extends StatelessWidget {
     return Container(
       width: _size.width,
       height: _size.height,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(borderRadius),
-      ),
       child: Stack(
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(borderRadius),
             child: Image(
-              image: MemoryImage(data.coverImage),
-              // image: NetworkImage(data.coverImage),
+              // image: MemoryImage(data.coverImage),
+              image: NetworkImage(data.coverImage),
               fit: BoxFit.cover,
               width: _size.width,
               height: _size.height,
@@ -51,6 +48,7 @@ class AlbumCover extends StatelessWidget {
               width: _size.width,
               height: _size.height,
               decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(borderRadius),
                   gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -131,8 +129,8 @@ class AlbumCover extends StatelessWidget {
             child: fotogoPopupMenuIconButton(
               iconColor: textFGColor,
               items: [
-                IconMenuItem('Share', Icons.share),
-                IconMenuItem('Delete', Icons.delete,
+                FotogoIconMenuItem('Share', Icons.share),
+                FotogoIconMenuItem('Delete', Icons.delete,
                     onTap: () => context
                         .read<SingleAlbumBloc>()
                         .add(DeleteAlbumEvent(data.id))),

@@ -26,6 +26,10 @@ class _AlbumsPageState extends State<AlbumsPage> {
   final SingleAlbumService _singleAlbumService = SingleAlbumService();
   final AlbumDetailsService _albumDetailsService = AlbumDetailsService();
 
+  late Function sortingFilter;
+  List<String> filterTitles = ['Album title', 'Most recent', 'Last modified'];
+  late List<Function> filterFunctions;
+
   List<SingleAlbumData> get _albumsData => _singleAlbumService.albumsData;
 
   @override
@@ -33,6 +37,84 @@ class _AlbumsPageState extends State<AlbumsPage> {
     super.initState();
 
     context.read<AlbumDetailsBloc>().add(const SyncAlbumsDetailsEvent());
+
+    sortingFilter = _albumDetailsService.sortByLastModified;
+    filterFunctions = [
+      _albumDetailsService.sortByName,
+      _albumDetailsService.sortByDates,
+      _albumDetailsService.sortByLastModified,
+    ];
+  }
+
+  Widget getSortDropdown() {
+    return DropdownButton<Function>(
+      value: sortingFilter,
+      underline: const SizedBox(),
+      alignment: Alignment.centerRight,
+      borderRadius: BorderRadius.circular(15),
+      style: Theme.of(context)
+          .textTheme
+          .subtitle1
+          ?.copyWith(fontWeight: FontWeight.normal),
+      selectedItemBuilder: (context) {
+        return List.generate(
+            filterTitles.length,
+            (index) => Align(
+                  alignment: Alignment.centerRight,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.swap_vert,
+                        size: 22,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        filterTitles[index],
+                        style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                            fontWeight: FontWeight.normal,
+                            fontSize: 14.5,
+                            color: Theme.of(context).colorScheme.onSurface),
+                      ),
+                    ],
+                  ),
+                ));
+      },
+      items: List.generate(
+          filterTitles.length,
+          (index) => DropdownMenuItem<Function>(
+                value: filterFunctions[index],
+                child: Row(
+                  children: [
+                    sortingFilter == filterFunctions[index]
+                        ? Icon(Icons.done,
+                            color: Theme.of(context).colorScheme.onSurface)
+                        : const SizedBox(),
+                    SizedBox(
+                        width:
+                            sortingFilter == filterFunctions[index] ? 10 : 33),
+                    Text(
+                      filterTitles[index],
+                      style: sortingFilter == filterFunctions[index]
+                          ? Theme.of(context).textTheme.subtitle1?.copyWith(
+                              fontWeight: FontWeight.normal,
+                              fontSize: 14.5,
+                              color: Theme.of(context).colorScheme.onSurface)
+                          : null,
+                    ),
+                  ],
+                ),
+              )),
+      onChanged: (val) {
+        if (sortingFilter != val) {
+          setState(() {
+            val!();
+            sortingFilter = val;
+          });
+        }
+      },
+      icon: const Icon(null),
+    );
   }
 
   Widget _getAlbumCovers() {
@@ -60,33 +142,41 @@ class _AlbumsPageState extends State<AlbumsPage> {
             _albumsData.length,
             (index) => Column(
                   children: [
-                    OpenContainer(
-                      transitionType: ContainerTransitionType.fade,
-                      transitionDuration: const Duration(milliseconds: 400),
-                      closedElevation: 3,
-                      closedBuilder: (context, action) {
-                        return GestureDetector(
-                          onTap: action,
-                          child: AlbumCover(
-                            data: _albumsData[index].data,
-                          ),
-                        );
-                      },
-                      openBuilder: (context, action) {
+                    GestureDetector(
+                      onTap: () => Navigator.push(context,
+                          MaterialPageRoute(builder: (BuildContext context) {
                         return SingleAlbumPage(
                             albumId: _albumsData[index].data.id);
-                      },
-                      closedShape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                      })),
+                      child: AlbumCover(
+                        data: _albumsData[index].data,
+                      ),
                     ),
+                    // OpenContainer(
+                    //   transitionType: ContainerTransitionType.fade,
+                    //   transitionDuration: const Duration(milliseconds: 400),
+                    //   closedElevation: 3,
+                    //   closedBuilder: (context, action) {
+                    //     return GestureDetector(
+                    //       onTap: action,
+                    //       child: AlbumCover(
+                    //         data: _albumsData[index].data,
+                    //       ),
+                    //     );
+                    //   },
+                    //   openBuilder: (context, action) {
+                    //     return SingleAlbumPage(
+                    //         albumId: _albumsData[index].data.id);
+                    //   },
+                    //   closedShape: const RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.all(Radius.circular(20))),
+                    // ),
                     const SizedBox(height: 20),
                   ],
                 )),
       );
     }
   }
-
-  bool isShow = false;
 
   @override
   Widget build(BuildContext context) {
@@ -109,25 +199,30 @@ class _AlbumsPageState extends State<AlbumsPage> {
                     children: [
                       Text(
                         "Fotogo Albums",
-                        style: Theme.of(context).textTheme.headline4,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline6
+                            ?.copyWith(fontSize: 20),
                       ),
                       const Spacer(),
-                      fotogoPopupMenuIconButton(
-                        icon: Icons.sort,
-                        tooltip: 'Sort',
-                        items: [
-                          IconMenuItem('By title', Icons.sort_by_alpha,
-                              onTap: () => setState(
-                                  () => _albumDetailsService.sortByName())),
-                          IconMenuItem(
-                              'By dates', Icons.calendar_view_day_outlined,
-                              onTap: () => setState(
-                                  () => _albumDetailsService.sortByDates())),
-                          IconMenuItem('By last modified', Icons.edit_outlined,
-                              onTap: () => setState(() =>
-                                  _albumDetailsService.sortByLastModified())),
-                        ],
-                      )
+                      getSortDropdown(),
+
+                      // fotogoPopupMenuIconButton(
+                      //   icon: Icons.sort,
+                      //   tooltip: 'Sort',
+                      //   items: [
+                      //     FotogoIconMenuItem('By title', Icons.sort_by_alpha,
+                      //         onTap: () => setState(
+                      //             () => _albumDetailsService.sortByName())),
+                      //     FotogoIconMenuItem(
+                      //         'By dates', Icons.calendar_view_day_outlined,
+                      //         onTap: () => setState(
+                      //             () => _albumDetailsService.sortByDates())),
+                      //     FotogoIconMenuItem('By last modified', Icons.edit_outlined,
+                      //         onTap: () => setState(() =>
+                      //             _albumDetailsService.sortByLastModified())),
+                      //   ],
+                      // )
                     ],
                   ),
                   const SizedBox(height: 30),
@@ -143,12 +238,14 @@ class _AlbumsPageState extends State<AlbumsPage> {
                                 listener: (context, state) {
                               if (state is AlbumCreated) {
                                 // _insertItem(_albumsData.length - 1);
+                                sortingFilter();
                                 setState(() {});
                               }
                             }),
                             BlocListener<SingleAlbumBloc, SingleAlbumState>(
                                 listener: (context, state) {
-                              if (state is SingleAlbumDeleted) {
+                              if (state is SingleAlbumDeleted ||
+                                  state is AlbumUpdated) {
                                 // _removeItem(state.deletedIndex);
                                 setState(() {});
                               }
@@ -163,6 +260,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
                             },
                             builder: (context, state) {
                               if (state is AlbumDetailsFetched) {
+                                sortingFilter();
                                 return _getAlbumCovers();
                               } else if (state is AlbumDetailsError) {
                                 return Text(

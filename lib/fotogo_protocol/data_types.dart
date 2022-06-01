@@ -83,6 +83,7 @@ class ImageData {
 
   final List<String> containingAlbums;
   final int? tag;
+  // final String data;
   final Uint8List data;
 
   ImageData(

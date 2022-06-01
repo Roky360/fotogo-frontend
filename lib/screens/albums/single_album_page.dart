@@ -12,31 +12,46 @@ import 'package:fotogo/widgets/popup_menu_button.dart';
 import 'package:sizer/sizer.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import 'package:http/http.dart' show get;
+
 import '../../single_album/bloc/single_album_bloc.dart';
 import '../../widgets/dialogs.dart';
 import '../../widgets/image_picker.dart';
 import '../../widgets/shared_axis_route.dart';
 
-class SingleAlbumPage extends StatefulWidget {
+class SingleAlbumPage extends StatelessWidget {
   final String albumId;
 
-  const SingleAlbumPage({
+  const SingleAlbumPage({Key? key, required this.albumId}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider<SingleAlbumBloc>(
+      create: (context) => SingleAlbumBloc(),
+      child: _SingleAlbumPage(albumId: albumId),
+    );
+  }
+}
+
+class _SingleAlbumPage extends StatefulWidget {
+  final String albumId;
+
+  const _SingleAlbumPage({
     Key? key,
     required this.albumId,
   }) : super(key: key);
 
   @override
-  State<SingleAlbumPage> createState() => _SingleAlbumPageState();
+  State<_SingleAlbumPage> createState() => __SingleAlbumPageState();
 }
 
-class _SingleAlbumPageState extends State<SingleAlbumPage> {
+class __SingleAlbumPageState extends State<_SingleAlbumPage> {
   final SingleAlbumService _singleAlbumService = SingleAlbumService();
   final GlobalKey _scaffoldKey = GlobalKey();
   late final GlobalKey<FormFieldState> _formKey;
   late final TextEditingController _titleController;
 
-  SingleAlbumData get albumData => _singleAlbumService.albumsData
-      .firstWhere((element) => element.data.id == widget.albumId);
+  late final SingleAlbumData albumData;
 
   late bool firstBuild;
   late bool titleEditingMode;
@@ -47,6 +62,9 @@ class _SingleAlbumPageState extends State<SingleAlbumPage> {
   @override
   void initState() {
     super.initState();
+
+    albumData = _singleAlbumService.albumsData
+        .firstWhere((element) => element.data.id == widget.albumId);
 
     firstBuild = true;
     titleEditingMode = false;
@@ -94,6 +112,8 @@ class _SingleAlbumPageState extends State<SingleAlbumPage> {
     final List<File> imgFiles = [];
     for (final i in selectedMedia) {
       final img = albumData.imagesData![i];
+      // imgFiles.add(await writeFileToTempDirectory(
+      //     (await get(Uri.parse(img.data))).bodyBytes, img.fileName));
       imgFiles.add(await writeFileToTempDirectory(img.data, img.fileName));
     }
 
@@ -107,6 +127,8 @@ class _SingleAlbumPageState extends State<SingleAlbumPage> {
     if (imagesData != null) {
       final List<File> imageFiles = [];
       for (final i in imagesData) {
+        // imageFiles.add(await writeFileToTempDirectory(
+        //     (await get(Uri.parse(i.data))).bodyBytes, i.fileName));
         imageFiles.add(await writeFileToTempDirectory(i.data, i.fileName));
       }
 
@@ -130,7 +152,7 @@ class _SingleAlbumPageState extends State<SingleAlbumPage> {
         decoration: InputDecoration(
           hintText: 'Title',
           suffixIcon: IconButton(
-            onPressed: () => onDoneEditingTitle(context),
+            onPressed: onDoneEditingTitle,
             icon: const Icon(Icons.done),
             color: Colors.white,
             tooltip: "Done",
@@ -176,7 +198,7 @@ class _SingleAlbumPageState extends State<SingleAlbumPage> {
       return [];
     } else if (selectionMode) {
       return [
-        IconButton(onPressed: addImagesToAlbum, icon: const Icon(Icons.add)),
+        IconButton(onPressed: addTo, icon: const Icon(Icons.add)),
         selectedMedia.length == albumData.imagesData!.length
             ? IconButton(
                 icon: const Icon(Icons.deselect),
@@ -191,7 +213,9 @@ class _SingleAlbumPageState extends State<SingleAlbumPage> {
       ];
     } else {
       return [
-        IconButton(onPressed: addImagesToAlbum, icon: const Icon(Icons.add)),
+        IconButton(
+            onPressed: () => addImagesToAlbum(context),
+            icon: const Icon(Icons.add)),
         fotogoPopupMenuButton(items: [
           FotogoMenuItem('Select', onTap: initiateSelectionMode),
           FotogoMenuItem('Delete',
@@ -203,21 +227,23 @@ class _SingleAlbumPageState extends State<SingleAlbumPage> {
     }
   }
 
-  void addImagesToAlbum() async {
+  void addImagesToAlbum(BuildContext context) async {
     final res = await Navigator.push(
         context, sharedAxisRoute(widget: const FotogoImagePicker()));
 
     if (!mounted) return;
-    if (res != null) {
+    if ((res as List<File>).isNotEmpty) {
       context
           .read<SingleAlbumBloc>()
           .add(AddImagesToAlbumEvent(albumData.data.id, res));
     }
   }
 
-  void onDoneEditingTitle(BuildContext context) {
+  void onDoneEditingTitle() {
     if (_formKey.currentState!.validate()) {
-      context.read<SingleAlbumBloc>().add(UpdateAlbumEvent(albumData));
+      context
+          .read<SingleAlbumBloc>()
+          .add(UpdateAlbumEvent(albumData..data.title = _titleController.text));
       setState(() {
         titleEditingMode = false;
       });
@@ -226,287 +252,241 @@ class _SingleAlbumPageState extends State<SingleAlbumPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<SingleAlbumBloc>(
-      create: (context) => SingleAlbumBloc(),
-      child: Scaffold(
-        key: _scaffoldKey,
-        backgroundColor: Theme.of(context).colorScheme.background,
-        body: SafeArea(
-          child: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              SliverAppBar(
-                toolbarHeight: kToolbarHeight + 10,
-                expandedHeight: 20.h,
-                foregroundColor: Colors.white,
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                pinned: true,
-                stretch: true,
-                actions: _getActions(context),
-                title: _getTitle(context),
-                flexibleSpace: FlexibleSpaceBar(
-                  expandedTitleScale: 1.1,
-                  stretchModes: const [
-                    StretchMode.zoomBackground,
-                    StretchMode.blurBackground,
-                  ],
-                  background: Stack(
-                    children: [
-                      // background image (cover image)
-                      Image(
-                        image: MemoryImage(albumData.data.coverImage),
-                        alignment: Alignment.center,
-                        width: 100.w,
-                        fit: BoxFit.cover,
-                      ),
-                      // shade
-                      Container(
-                        decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                                colors: [
-                              Colors.black.withOpacity(.5),
-                              Colors.black.withOpacity(.3),
-                            ],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter)),
-                      ),
-                      Positioned(
-                        height: 25.h - 50,
-                        left: 50,
-                        top: 50,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Spacer(flex: 1),
-                            // Dates
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.calendar_month,
-                                  size: 22,
-                                  color: Colors.white,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  formatDateRangeToString(albumData.data.dates),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle1
-                                      ?.copyWith(
-                                          color: Colors.white,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.normal),
-                                ),
-                              ],
-                            ),
-                            const Spacer(flex: 2),
-                            // shared people
-                            albumData.data.permittedUsers.isNotEmpty
-                                ? const Icon(Icons.groups)
-                                : const SizedBox(),
-                            // // Tags & shared people
-                            // SizedBox(
-                            //   height: 45,
-                            //   child: Row(
-                            //     children: [
-                            //       SizedBox(
-                            //         width: 60.w,
-                            //         child: SingleChildScrollView(
-                            //           scrollDirection: Axis.horizontal,
-                            //           child: Row(
-                            //             children: List.generate(
-                            //                 data.tags.length,
-                            //                 (index) => Container(
-                            //                       margin: const EdgeInsets.only(
-                            //                           right: 8, bottom: 8),
-                            //                       padding:
-                            //                           const EdgeInsets.symmetric(
-                            //                               vertical: 6,
-                            //                               horizontal: 12),
-                            //                       decoration: BoxDecoration(
-                            //                         border: Border.all(
-                            //                             color:
-                            //                                 Colors.red.shade800),
-                            //                         borderRadius:
-                            //                             BorderRadius.circular(20),
-                            //                         color: Colors.red.shade200,
-                            //                       ),
-                            //                       child: Text(
-                            //                           widget.data.tags[index]
-                            //                               .toString(),
-                            //                           style: Theme.of(context)
-                            //                               .textTheme
-                            //                               .subtitle1
-                            //                               ?.copyWith(
-                            //                                   fontWeight:
-                            //                                       FontWeight
-                            //                                           .normal)),
-                            //                     )),
-                            //           ),
-                            //         ),
-                            //       ),
-                            //       // const VerticalDivider(
-                            //       //   thickness: 1,
-                            //       //   color: Colors.black26,
-                            //       //   endIndent: 5,
-                            //       //   width: 12,
-                            //       // ),
-                            //       widget.
-                            //     ],
-                            //   ),
-                            // ),
+    return Scaffold(
+      key: _scaffoldKey,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      body: SafeArea(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverAppBar(
+              toolbarHeight: kToolbarHeight + 10,
+              expandedHeight: 20.h,
+              foregroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              pinned: true,
+              stretch: true,
+              actions: _getActions(context),
+              title: _getTitle(context),
+              flexibleSpace: FlexibleSpaceBar(
+                expandedTitleScale: 1.1,
+                stretchModes: const [
+                  StretchMode.zoomBackground,
+                  StretchMode.blurBackground,
+                ],
+                background: Stack(
+                  children: [
+                    // background image (cover image)
+                    Image(
+                      image: NetworkImage(albumData.data.coverImage),
+                      // image: MemoryImage(albumData.data.coverImage),
+                      alignment: Alignment.center,
+                      width: 100.w,
+
+                      fit: BoxFit.cover,
+                    ),
+                    // shade
+                    Container(
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: [
+                            Colors.black.withOpacity(.5),
+                            Colors.black.withOpacity(.3),
                           ],
-                        ),
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter)),
+                    ),
+                    Positioned(
+                      height: 25.h - 50,
+                      left: 50,
+                      top: 50,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Spacer(flex: 1),
+                          // Dates
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.calendar_month,
+                                size: 22,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                formatDateRangeToString(albumData.data.dates),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle1
+                                    ?.copyWith(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.normal),
+                              ),
+                            ],
+                          ),
+                          const Spacer(flex: 2),
+                          // shared people
+                          albumData.data.permittedUsers.isNotEmpty
+                              ? const Icon(Icons.groups)
+                              : const SizedBox(),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              // Images
-              SliverToBoxAdapter(
-                child: BlocBuilder<SingleAlbumBloc, SingleAlbumState>(
-                  builder: (context, state) {
-                    if (state is SingleAlbumInitial) {
-                      if (firstBuild) {
-                        firstBuild = false;
-                        context
-                            .read<SingleAlbumBloc>()
-                            .add(GetAlbumContentsEvent(albumData.data.id));
-                      }
+            ),
+            // Images
+            SliverToBoxAdapter(
+              child: BlocConsumer<SingleAlbumBloc, SingleAlbumState>(
+                listener: (context, state) {
+                  if (state is SingleAlbumMessage) {
+                    AppWidgets.fotogoSnackBar(context,
+                        content: state.message, icon: FotogoSnackBarIcon.error);
+                  }
+                },
+                builder: (context, state) {
+                  if (state is SingleAlbumInitial) {
+                    if (firstBuild) {
+                      firstBuild = false;
+                      context
+                          .read<SingleAlbumBloc>()
+                          .add(GetAlbumContentsEvent(albumData.data.id));
+                    }
 
-                      return Center(
-                        child: AppWidgets.fotogoCircularLoadingAnimation(),
-                      );
-                    } else if (state is SingleAlbumFetched) {
-                      return GridView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          mainAxisSpacing: 2,
-                          crossAxisSpacing: 2,
-                        ),
-                        itemCount: albumData.imagesData?.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: selectionMode
-                                ? () => toggleSelection(index)
-                                : () => pushPhotoViewRoute(
-                                    index, _scaffoldKey.currentContext!),
-                            onLongPress: selectionMode
-                                ? null
-                                : () {
-                                    initiateSelectionMode();
-                                    selectedMedia.add(index);
-                                  },
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                Container(
-                                  color:
-                                      const Color(0xFFC1D5DD).withOpacity(.8),
-                                  child: AnimatedScale(
-                                    scale: selectionMode &&
-                                            selectedMedia.contains(index)
-                                        ? .8
-                                        : 1,
-                                    duration: animationDuration,
-                                    curve: Curves.easeInOutCubicEmphasized,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                        selectedMedia.contains(index) ? 15 : 0,
-                                      ),
-                                      child: FadeInImage(
-                                        fit: BoxFit.cover,
-                                        fadeInDuration:
-                                            const Duration(milliseconds: 100),
-                                        placeholder:
-                                            MemoryImage(kTransparentImage),
-                                        image: MemoryImage(
-                                            albumData.imagesData![index].data),
-                                      ),
+                    return Center(
+                      child: AppWidgets.fotogoCircularLoadingAnimation(),
+                    );
+                  } else if (state is SingleAlbumFetched) {
+                    return GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        mainAxisSpacing: 2,
+                        crossAxisSpacing: 2,
+                      ),
+                      itemCount: albumData.imagesData?.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: selectionMode
+                              ? () => toggleSelection(index)
+                              : () => pushPhotoViewRoute(
+                                  index, _scaffoldKey.currentContext!),
+                          onLongPress: selectionMode
+                              ? null
+                              : () {
+                                  initiateSelectionMode();
+                                  selectedMedia.add(index);
+                                },
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              Container(
+                                color: const Color(0xFFC1D5DD).withOpacity(.8),
+                                child: AnimatedScale(
+                                  scale: selectionMode &&
+                                          selectedMedia.contains(index)
+                                      ? .8
+                                      : 1,
+                                  duration: animationDuration,
+                                  curve: Curves.easeInOutCubicEmphasized,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(
+                                      selectedMedia.contains(index) ? 15 : 0,
+                                    ),
+                                    child: FadeInImage(
+                                      fit: BoxFit.cover,
+                                      fadeInDuration:
+                                          const Duration(milliseconds: 100),
+                                      placeholder:
+                                          MemoryImage(kTransparentImage),
+                                      // image: NetworkImage(
+                                      //     albumData.imagesData![index].data),
+                                      image: MemoryImage(
+                                          albumData.imagesData![index].data),
                                     ),
                                   ),
                                 ),
-                                // gradient cover
-                                AnimatedOpacity(
-                                  opacity: selectionMode &&
-                                          !selectedMedia.contains(index)
-                                      ? 1
-                                      : 0,
-                                  duration: animationDuration,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                      colors: [
-                                        Colors.black26.withOpacity(.2),
-                                        Colors.transparent
-                                      ],
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                    )),
-                                  ),
+                              ),
+                              // gradient cover
+                              AnimatedOpacity(
+                                opacity: selectionMode &&
+                                        !selectedMedia.contains(index)
+                                    ? 1
+                                    : 0,
+                                duration: animationDuration,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                    colors: [
+                                      Colors.black26.withOpacity(.2),
+                                      Colors.transparent
+                                    ],
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                  )),
                                 ),
-                                // checkbox
-                                Padding(
-                                  padding: const EdgeInsets.all(6),
-                                  child: Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Stack(
-                                      children: [
-                                        selectedMedia.contains(index)
-                                            ? ClipOval(
-                                                child: Container(
-                                                  width: 24,
-                                                  height: 24,
-                                                  // color: Colors.red,
-                                                  color: const Color(0xFFC1D5DD)
-                                                      .withOpacity(.9),
-                                                ),
-                                              )
-                                            : const SizedBox(),
-                                        AnimatedOpacity(
-                                          opacity: selectionMode ? .9 : 0,
+                              ),
+                              // checkbox
+                              Padding(
+                                padding: const EdgeInsets.all(6),
+                                child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Stack(
+                                    children: [
+                                      selectedMedia.contains(index)
+                                          ? ClipOval(
+                                              child: Container(
+                                                width: 24,
+                                                height: 24,
+                                                // color: Colors.red,
+                                                color: const Color(0xFFC1D5DD)
+                                                    .withOpacity(.9),
+                                              ),
+                                            )
+                                          : const SizedBox(),
+                                      AnimatedOpacity(
+                                        opacity: selectionMode ? .9 : 0,
+                                        duration: animationDuration,
+                                        child: AnimatedScale(
+                                          alignment: Alignment.topLeft,
+                                          scale: selectionMode ? 1 : .5,
                                           duration: animationDuration,
-                                          child: AnimatedScale(
-                                            alignment: Alignment.topLeft,
-                                            scale: selectionMode ? 1 : .5,
-                                            duration: animationDuration,
-                                            curve: Curves.easeInOut,
-                                            child: Icon(
-                                              selectedMedia.contains(index)
-                                                  ? Icons.check_circle
-                                                  : Icons.circle_outlined,
-                                              color:
-                                                  selectedMedia.contains(index)
-                                                      ? Theme.of(context)
-                                                          .colorScheme
-                                                          .primary
-                                                      : Theme.of(context)
-                                                          .colorScheme
-                                                          .onPrimary,
-                                            ),
+                                          curve: Curves.easeInOut,
+                                          child: Icon(
+                                            selectedMedia.contains(index)
+                                                ? Icons.check_circle
+                                                : Icons.circle_outlined,
+                                            color: selectedMedia.contains(index)
+                                                ? Theme.of(context)
+                                                    .colorScheme
+                                                    .primary
+                                                : Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary,
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    } else {
-                      // SingleAlbumError state
-                      return Text((state as SingleAlbumMessage).message);
-                    }
-                  },
-                ),
-              )
-            ],
-          ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  } else {
+                    // SingleAlbumError state
+                    return Text((state as SingleAlbumMessage).message);
+                  }
+                },
+              ),
+            )
+          ],
         ),
       ),
     );

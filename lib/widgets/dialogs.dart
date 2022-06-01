@@ -65,7 +65,7 @@ class FotogoDialogs {
                           body: Column(
                             children: List.generate(albumsData.length, (index) {
                               return ListTile(
-                                leading: Image.memory(
+                                leading: Image./*memory*/network(
                                   albumsData[index].data.coverImage,
                                   width: thumbnailSize,
                                   height: thumbnailSize,

@@ -58,7 +58,9 @@ class SingleAlbumService {
             containingAlbums:
                 payload[index]['containing_albums'].cast<String>(),
             tag: payload[index]['tag'],
-            data: base64Decode(payload[index]['data'])));
+            // data: payload[index]['data'],
+            data: base64Decode(payload[index]['data']),
+        ));
   }
 
   void updateAlbum(SingleAlbumData albumData) async {
@@ -67,13 +69,13 @@ class SingleAlbumService {
         idToken: await _userProvider.idToken,
         args: {
           'album_data': {
-            'album_id': albumData.data.id,
+            'id': albumData.data.id,
             'name': albumData.data.title,
-            'data_range': [
+            'date_range': [
               albumData.data.dates.start.toString().split(' ')[0],
               albumData.data.dates.end.toString().split(' ')[0],
             ],
-            'last_modified': DateTime.now(),
+            'last_modified': DateTime.now().toString(),
             'permitted_users': albumData.data.permittedUsers
           }
         })));

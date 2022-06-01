@@ -80,7 +80,10 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
       if (event.response.statusCode == StatusCode.ok) {
         final newAlbum = event.request.args['album_data'] as Map;
         final originalAlbumData = _singleAlbumService.albumsData
-            .firstWhere((element) => element.data.id == newAlbum['album_id'])
+            .firstWhere((element) {
+              print(element.data.id);
+              return element.data.id == newAlbum['id'];
+            })
             .data;
 
         originalAlbumData.title = newAlbum['name'];
@@ -91,9 +94,13 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
                 originalAlbumData.dates.end);
         originalAlbumData.lastModified =
             DateTime.parse(newAlbum['last_modified']);
+
+        emit(const AlbumUpdated());
+        emit(const SingleAlbumFetched());
       } else {
         emit(const SingleAlbumMessage(
             "Error updating album.", FotogoSnackBarIcon.error));
+        emit(const SingleAlbumFetched());
       }
     });
 
