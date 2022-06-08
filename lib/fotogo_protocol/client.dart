@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
 import 'package:fotogo/fotogo_protocol/sender.dart';
 import 'package:fotogo/functions/file_handling.dart';
 
@@ -13,10 +14,15 @@ import 'data_types.dart';
 class Client {
   late final String host;
   late final int port;
-  final StreamController dataStreamController = StreamController.broadcast();
   late final SecurityContext _securityContext;
 
-  Client({required this.host, required this.port}) {
+  late final StreamController dataStreamController =
+      StreamController.broadcast();
+
+  Client({
+    required this.host,
+    required this.port,
+  }) {
     _initializeCert();
   }
 

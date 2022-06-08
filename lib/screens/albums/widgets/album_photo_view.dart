@@ -1,16 +1,21 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/widgets/dialogs.dart';
 import 'package:fotogo/widgets/popup_menu_button.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
+import '../../../single_album/bloc/single_album_bloc.dart';
+
 class AlbumPhotoView extends StatefulWidget {
   final int index;
   final List<File> fileImages;
+  final SingleAlbumBloc singleAlbumBloc;
 
-  const AlbumPhotoView(this.index, {Key? key, required this.fileImages})
+  const AlbumPhotoView(this.index,
+      {Key? key, required this.fileImages, required this.singleAlbumBloc})
       : super(key: key);
 
   @override
@@ -52,6 +57,10 @@ class _AlbumPhotoViewState extends State<AlbumPhotoView> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
+        iconTheme: Theme.of(context)
+            .appBarTheme
+            .iconTheme
+            ?.copyWith(color: Colors.white),
         flexibleSpace: SafeArea(
           child: Container(
             decoration: const BoxDecoration(
@@ -68,13 +77,13 @@ class _AlbumPhotoViewState extends State<AlbumPhotoView> {
         ),
         actions: [
           fotogoPopupMenuButton(
-            items: [
-              FotogoMenuItem(
-                'Add to...',
-                onTap: () => FotogoDialogs.showAddToDialog(
-                    context, [media[currPageIndex]]),
-              )
-            ],
+            onSelected: (val) {
+              if (val == "Add to...") {
+                FotogoDialogs.showAddToDialog(context, [media[currPageIndex]],
+                    albumBloc: widget.singleAlbumBloc);
+              }
+            },
+            items: [FotogoMenuItem('Add to...')],
           ),
         ],
       ),

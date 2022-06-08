@@ -53,14 +53,14 @@ class SingleAlbumService {
     album.imagesData = List.generate(
         payload.length,
         (index) => ImageData(
-            fileName: payload[index]['file_name'],
-            timestamp: DateTime.tryParse(payload[index]['timestamp']),
-            containingAlbums:
-                payload[index]['containing_albums'].cast<String>(),
-            tag: payload[index]['tag'],
-            // data: payload[index]['data'],
-            data: base64Decode(payload[index]['data']),
-        ));
+              fileName: payload[index]['file_name'],
+              timestamp: DateTime.tryParse(payload[index]['timestamp']),
+              containingAlbums:
+                  payload[index]['containing_albums'].cast<String>(),
+              tag: payload[index]['tag'],
+              // data: payload[index]['data'],
+              data: base64Decode(payload[index]['data']),
+            ));
   }
 
   void updateAlbum(SingleAlbumData albumData) async {
@@ -86,7 +86,7 @@ class SingleAlbumService {
     for (final i in imagesToAdd) {
       images.add({
         'file_name': i.uri.pathSegments.last,
-        'timestamp': '',
+        'timestamp': '', // TODO: extract exif datetime
         'location': null,
         'tag': null,
         'data': base64Encode(await i.readAsBytes())
@@ -96,24 +96,92 @@ class SingleAlbumService {
     _clientService.sendRequest(AlbumSender.addImagesToAlbum(Request(
       requestType: RequestType.addImagesToAlbum,
       idToken: await _userProvider.idToken,
-      args: {'album_id': albumId},
+      args: {'album_id': albumId, 'last_modified': DateTime.now().toString()},
       payload: images,
     )));
+  }
+
+  void updateAddedImages(String albumId, List images, DateTime lastModified) {
+    final imagesData = albumsData
+        .firstWhere((element) => element.data.id == albumId)
+        .imagesData;
+
+    for (final i in images) {
+      imagesData?.add(ImageData(
+          fileName: i['file_name'],
+          timestamp: DateTime.tryParse(i['timestamp']),
+          containingAlbums: [albumId],
+          data: base64Decode(i['data'])));
+    }
+
+    albumsData
+        .firstWhere((element) => element.data.id == albumId)
+        .data
+        .lastModified = lastModified;
   }
 
   void removeImagesFromAlbum(String albumId, List<String> imagesIds) async {
     _clientService.sendRequest(AlbumSender.removeImagesFromAlbum(Request(
       requestType: RequestType.removeImagesFromAlbum,
       idToken: await _userProvider.idToken,
-      args: {'album_id': albumId},
+      args: {'album_id': albumId, 'last_modified': DateTime.now().toString()},
       payload: imagesIds,
     )));
   }
 
+  void updateRemovedImages(
+      String albumId, List imageIds, DateTime lastModified) {
+    final imagesData = albumsData
+        .firstWhere((element) => element.data.id == albumId)
+        .imagesData;
+
+    for (final i in imageIds) {
+      imagesData?.removeWhere((element) => element.fileName == i.toString());
+    }
+
+    albumsData
+        .firstWhere((element) => element.data.id == albumId)
+        .data
+        .lastModified = lastModified;
+  }
+
+  /// [RequestType] is passed to decide which bloc called the function.
   void deleteAlbum(String albumId) async {
     _clientService.sendRequest(AlbumSender.deleteAlbum(Request(
         requestType: RequestType.deleteAlbum,
         idToken: await _userProvider.idToken,
         args: {'album_id': albumId})));
+  }
+
+  // EXTERNAL
+
+  void extDeleteAlbum(String albumId) async {
+    _clientService.sendRequest(AlbumSender.extDeleteAlbum(Request(
+        requestType: RequestType.extDeleteAlbum,
+        idToken: await _userProvider.idToken,
+        args: {
+          'album_id': albumId,
+          'last_modified': DateTime.now().toString()
+        })));
+  }
+
+  void extAddImagesToAlbum(String albumId, List<File> imagesToAdd) async {
+    final images = [];
+    for (final i in imagesToAdd) {
+      images.add({
+        'file_name': i.uri.pathSegments.last,
+        'timestamp': '', // TODO: extract exif datetime
+        'location': null,
+        'tag': null,
+        'data': base64Encode(await i.readAsBytes())
+      });
+    }
+
+    _clientService.sendRequest(AlbumSender.addImagesToAlbum(Request(
+      requestType: RequestType.extAddImagesToAlbum,
+      idToken: await _userProvider.idToken,
+      args: {'album_id': albumId, 'last_modified': DateTime.now().toString()},
+      payload: images,
+    )));
   }
 }

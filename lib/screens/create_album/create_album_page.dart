@@ -29,7 +29,7 @@ class CreateAlbumPage extends StatelessWidget {
     return BlocConsumer<AlbumCreationBloc, AlbumCreationState>(
       listener: (context, state) {
         if (state is AlbumCreated) {
-          Navigator.pop(context);
+          Navigator.popUntil(context, (route) => route.isFirst);
         } else if (state is AlbumCreationMessage) {
           AppWidgets.fotogoSnackBar(
             context,

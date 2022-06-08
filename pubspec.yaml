@@ -97,7 +97,6 @@ flutter:
     - assets/animations/
     - assets/logos/
     - assets/test_images/
-    - assets/fotogo_launcher_icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
 import 'package:fotogo/single_album/bloc/single_album_bloc.dart';
+import 'package:fotogo/single_album/external_bloc/ext_single_album_bloc.dart';
 import 'package:fotogo/utils/string_formatting.dart';
 import 'package:fotogo/widgets/popup_menu_button.dart';
 import 'package:sizer/sizer.dart';
@@ -26,7 +27,7 @@ class AlbumCover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: _size.width,
       height: _size.height,
       child: Stack(
@@ -48,12 +49,12 @@ class AlbumCover extends StatelessWidget {
               width: _size.width,
               height: _size.height,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(borderRadius),
+                  borderRadius: BorderRadius.circular(borderRadius),
                   gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Colors.transparent, Colors.black.withOpacity(.6)],
-              )),
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.transparent, Colors.black.withOpacity(.6)],
+                  )),
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: SizedBox(
@@ -132,8 +133,8 @@ class AlbumCover extends StatelessWidget {
                 FotogoIconMenuItem('Share', Icons.share),
                 FotogoIconMenuItem('Delete', Icons.delete,
                     onTap: () => context
-                        .read<SingleAlbumBloc>()
-                        .add(DeleteAlbumEvent(data.id))),
+                        .read<ExtSingleAlbumBloc>()
+                        .add(ExtDeleteAlbumEvent(data.id))),
               ],
             ),
           ),

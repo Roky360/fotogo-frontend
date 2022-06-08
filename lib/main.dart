@@ -8,6 +8,7 @@ import 'package:fotogo/launcher.dart';
 import 'package:fotogo/screens/app_navigator/app_navigator.dart';
 import 'package:fotogo/screens/auth_checker.dart';
 import 'package:fotogo/screens/on_boarding_setup/welcome_page.dart';
+import 'package:fotogo/single_album/external_bloc/ext_single_album_bloc.dart';
 import 'package:sizer/sizer.dart';
 
 import 'album_creation/bloc/album_creation_bloc.dart';
@@ -37,6 +38,9 @@ class FotogoApp extends StatelessWidget {
             ),
             BlocProvider<AlbumCreationBloc>(
               create: (context) => AlbumCreationBloc(),
+            ),
+            BlocProvider<ExtSingleAlbumBloc>(
+              create: (context) => ExtSingleAlbumBloc(),
             ),
           ],
           child: MaterialApp(

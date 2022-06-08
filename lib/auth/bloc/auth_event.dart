@@ -5,7 +5,7 @@ abstract class AuthEvent {
   const AuthEvent();
 }
 
-/// Register to  the [dataStreamController] of [Client].
+/// Register to  the [_dataStreamController] of [Client].
 ///
 /// This event is called only once - when the bloc is created.
 class AuthRegisterDataStreamEvent extends AuthEvent {

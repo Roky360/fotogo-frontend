@@ -74,18 +74,9 @@ class _AlbumViewState extends State<AlbumView> {
       imgFiles.add(await media![i].getFile());
     }
 
-    FotogoDialogs.showAddToDialog(context, imgFiles);
-  }
-
-  void exifTest() async {
-    if (media != null) {
-      List<File> files = [];
-      for (final i in media!) {
-        files.add(await i.getFile());
-      }
-
-      print(await calculateDateRangeFromImages(files));
-    }
+    if (!mounted) return;
+    FotogoDialogs.showAddToDialog(context, imgFiles,
+        albumBloc: context.read<ExtSingleAlbumBloc>(), insideAlbum: false);
   }
 
   @override
@@ -133,10 +124,6 @@ class _AlbumViewState extends State<AlbumView> {
                 onPressed: () => Navigator.of(context).pop(),
               ),
               actions: [
-                IconButton(
-                  icon: const Icon(Icons.ac_unit),
-                  onPressed: exifTest,
-                ),
                 fotogoPopupMenuButton(
                   items: [
                     FotogoMenuItem(

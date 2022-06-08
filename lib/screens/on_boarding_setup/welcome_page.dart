@@ -30,14 +30,11 @@ class WelcomePage extends StatelessWidget {
             gravity: .05,
             numberOfParticles: 8,
             shouldLoop: true,
-            child: Container(
-              // color: Colors.grey[200],
-              child: Column(
-                children: [
-                  SizedBox(height: 20.h),
-                  AppWidgets.fotogoLogoFull(height: 50),
-                ],
-              ),
+            child: Column(
+              children: [
+                SizedBox(height: 20.h),
+                AppWidgets.fotogoLogoFull(height: 50),
+              ],
             ),
           ),
           decoration: pageDecoration,

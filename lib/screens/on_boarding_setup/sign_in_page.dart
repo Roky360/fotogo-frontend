@@ -12,7 +12,9 @@ class FotogoBasePage extends StatelessWidget {
   final Widget child;
   final Widget bottomSheet;
 
-  const FotogoBasePage({Key? key, required this.child, required this.bottomSheet}) : super(key: key);
+  const FotogoBasePage(
+      {Key? key, required this.child, required this.bottomSheet})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +35,7 @@ class FotogoBasePage extends StatelessWidget {
           ),
         ),
       ),
-      bottomSheet: Padding(
-        padding: const EdgeInsets.all(pageMargin),
-        child: bottomSheet,
-      ),
+      bottomSheet: bottomSheet,
     );
   }
 }
@@ -69,19 +68,23 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return FotogoBasePage(
       bottomSheet: Padding(
-        padding: const EdgeInsets.only(bottom: 50),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "Stay signed in",
-              style: Theme.of(context).textTheme.subtitle1,
-            ),
-            StatefulBuilder(
-              builder: (context, setState) {
-                return SizedBox(
+          padding: const EdgeInsets.only(bottom: 50),
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return ListTile(
+                title: Text(
+                  "Stay signed in",
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: pageMargin),
+                onTap: () => setState(() {
+                  staySignedIn = !staySignedIn;
+                  changeStaySignedInValue(staySignedIn);
+                }),
+                trailing: SizedBox(
                   height: 35,
+                  width: 70,
                   child: FlutterSwitch(
                     width: 70,
                     height: 35,
@@ -91,6 +94,7 @@ class _SignInPageState extends State<SignInPage> {
                     borderRadius: 30.0,
                     padding: 8.0,
                     showOnOff: true,
+                    activeColor: Theme.of(context).colorScheme.tertiary,
                     onToggle: (val) {
                       setState(() {
                         staySignedIn = val;
@@ -98,17 +102,50 @@ class _SignInPageState extends State<SignInPage> {
                       });
                     },
                   ),
-                );
-              },
-            ),
-            // TextButton(
-            //   child: Text('ggs'),
-            //   onPressed: () => AppWidgets.fotogoSnackBar(context,
-            //       content: 'dsagfasgasgnasijokgnsaindisaoindsadinodsnio'),
-            // )
-          ],
-        ),
-      ),
+                ),
+              );
+            },
+          )
+          // child: Row(
+          //   mainAxisSize: MainAxisSize.max,
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     Text(
+          //       "Stay signed in",
+          //       style: Theme.of(context).textTheme.subtitle1,
+          //     ),
+          //     StatefulBuilder(
+          //       builder: (context, setState) {
+          //         return SizedBox(
+          //           height: 35,
+          //           child: FlutterSwitch(
+          //             width: 70,
+          //             height: 35,
+          //             valueFontSize: 18,
+          //             toggleSize: 20,
+          //             value: staySignedIn,
+          //             borderRadius: 30.0,
+          //             padding: 8.0,
+          //             showOnOff: true,
+          //             onToggle: (val) {
+          //               setState(() {
+          //                 staySignedIn = val;
+          //                 changeStaySignedInValue(staySignedIn);
+          //               });
+          //             },
+          //           ),
+          //         );
+          //       },
+          //     ),
+          //     // TextButton(
+          //     //   child: Text('ggs'),
+          //     //   onPressed: () => AppWidgets.fotogoSnackBar(context,
+          //     //       content: 'dsagfasgasgnasijokgnsaindisaoindsadinodsnio'),
+          //     // )
+          //   ],
+          // ),
+          // ),
+          ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -149,31 +186,35 @@ class CreateAccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FotogoBasePage(
-      bottomSheet: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            'This Google account is not yet registered in fotogo. By clicking '
-                'on "Accept and create", a new fotogo account will be created for '
-                'you with this Google account profile.\n'
-                'You can switch an account by pressing on "Change".',
-            style: Theme.of(context).textTheme.bodyText1,
-          ),
-          const SizedBox(height: 30),
-          Row(
-            children: [
-              TextButton(
-                  onPressed: () =>
-                      context.read<AuthBloc>().add(const SignOutEvent()),
-                  child: const Text('Change')),
-              const Spacer(),
-              ElevatedButton(
-                  onPressed: () async =>
-                      context.read<AuthBloc>().add(const CreateAccountEvent()),
-                  child: const Text('Accept and create')),
-            ],
-          ),
-        ],
+      bottomSheet: Padding(
+        padding: const EdgeInsets.all(pageMargin),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'This Google account is not yet registered in fotogo. By clicking '
+              'on "Accept and create", a new fotogo account will be created for '
+              'you with this Google account profile.\n'
+              'You can switch an account by pressing on "Change".',
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            const SizedBox(height: 35),
+            Row(
+              children: [
+                TextButton(
+                    onPressed: () =>
+                        context.read<AuthBloc>().add(const SignOutEvent()),
+                    child: const Text('Change')),
+                const Spacer(),
+                ElevatedButton(
+                    onPressed: () async => context
+                        .read<AuthBloc>()
+                        .add(const CreateAccountEvent()),
+                    child: const Text('Accept and create')),
+              ],
+            ),
+          ],
+        ),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -183,7 +224,7 @@ class CreateAccountPage extends StatelessWidget {
             'Create a new fotogo account',
             style: Theme.of(context).textTheme.headline4,
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 40),
           // user card
           AppWidgets.userCard(context),
         ],

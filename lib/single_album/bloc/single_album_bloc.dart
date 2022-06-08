@@ -41,10 +41,10 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
             add(UpdatedAlbumEvent(event.response, event.request));
             break;
           case RequestType.addImagesToAlbum:
-            add(AddedImagesToAlbumEvent(event.response));
+            add(AddedImagesToAlbumEvent(event.response, event.request));
             break;
           case RequestType.removeImagesFromAlbum:
-            add(RemovedImagesFromAlbumEvent(event.response));
+            add(RemovedImagesFromAlbumEvent(event.response, event.request));
             break;
           case RequestType.deleteAlbum:
             add(DeletedAlbumEvent(event.response, event.request));
@@ -79,12 +79,10 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
     on<UpdatedAlbumEvent>((event, emit) {
       if (event.response.statusCode == StatusCode.ok) {
         final newAlbum = event.request.args['album_data'] as Map;
-        final originalAlbumData = _singleAlbumService.albumsData
-            .firstWhere((element) {
-              print(element.data.id);
-              return element.data.id == newAlbum['id'];
-            })
-            .data;
+        final originalAlbumData =
+            _singleAlbumService.albumsData.firstWhere((element) {
+          return element.data.id == newAlbum['id'];
+        }).data;
 
         originalAlbumData.title = newAlbum['name'];
         originalAlbumData.dates = DateTimeRange(
@@ -105,12 +103,21 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
     });
 
     on<AddImagesToAlbumEvent>((event, emit) {
-      emit(const AlbumUpdated());
-      // _singleAlbumService.addImagesToAlbum(event.albumId, event.imagesToAdd);
+      _singleAlbumService.addImagesToAlbum(event.albumId, event.imagesToAdd);
     });
     on<AddedImagesToAlbumEvent>((event, emit) {
       if (event.response.statusCode == StatusCode.ok) {
-        // emit()
+        _singleAlbumService.updateAddedImages(
+            event.request.args['album_id'].toString(),
+            event.request.payload,
+            DateTime.parse(event.request.args['last_modified'].toString()));
+
+        emit(const AlbumUpdated());
+        emit(const SingleAlbumFetched());
+      } else {
+        emit(const SingleAlbumMessage(
+            "Error adding images.", FotogoSnackBarIcon.error));
+        emit(const SingleAlbumFetched());
       }
     });
 
@@ -118,7 +125,21 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
       _singleAlbumService.removeImagesFromAlbum(
           event.albumId, event.imagesFileNamesToRemove);
     });
-    on<RemovedImagesFromAlbumEvent>((event, emit) => null);
+    on<RemovedImagesFromAlbumEvent>((event, emit) {
+      if (event.response.statusCode == StatusCode.ok) {
+        _singleAlbumService.updateRemovedImages(
+            event.request.args['album_id'].toString(),
+            event.request.payload,
+            DateTime.parse(event.request.args['last_modified'].toString()));
+
+        emit(const AlbumUpdated());
+        emit(const SingleAlbumFetched());
+      } else {
+        emit(const SingleAlbumMessage(
+            "Error removing images.", FotogoSnackBarIcon.error));
+        emit(const SingleAlbumFetched());
+      }
+    });
 
     on<DeleteAlbumEvent>((event, emit) {
       _singleAlbumService.deleteAlbum(event.albumId);

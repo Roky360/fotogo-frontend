@@ -59,4 +59,10 @@ class AlbumSender extends Sender {
 
   AlbumSender.deleteAlbum(Request request)
       : super(RequestType.deleteAlbum, request);
+
+  AlbumSender.extDeleteAlbum(Request request)
+      : super(RequestType.extDeleteAlbum, request);
+
+  AlbumSender.extAddImagesTpAlbum(Request request)
+      : super(RequestType.extAddImagesToAlbum, request);
 }

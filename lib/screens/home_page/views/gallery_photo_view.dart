@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/widgets/dialogs.dart';
 import 'package:fotogo/widgets/popup_menu_button.dart';
 import 'package:photo_gallery/photo_gallery.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+
+import '../../../single_album/external_bloc/ext_single_album_bloc.dart';
 
 class GalleryPhotoView extends StatefulWidget {
   final int index;
@@ -25,29 +28,13 @@ class GalleryPhotoView extends StatefulWidget {
 class _GalleryPhotoViewState extends State<GalleryPhotoView> {
   late List<Medium> media;
 
-  // late List<File>? fileImages;
   late PhotoViewController controller;
   late PageController pageController;
   late int currPageIndex;
 
-  // late final bool usingMediums;
-
   @override
   void initState() {
     super.initState();
-
-    // assert(widget.media != null || widget.fileImages != null,
-    //     "Must provide media. Either a list of mediums or list of files.");
-
-    // enter full screen mode
-    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-
-    // if (widget.media == null) {
-    //   fileImages = widget.fileImages;
-    // } else {
-    //   media = widget.media;
-    // }
-    // usingMediums = media == null;
 
     media = widget.media;
 
@@ -73,6 +60,7 @@ class _GalleryPhotoViewState extends State<GalleryPhotoView> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
         flexibleSpace: SafeArea(
           child: Container(
             decoration: const BoxDecoration(
@@ -92,10 +80,9 @@ class _GalleryPhotoViewState extends State<GalleryPhotoView> {
             items: [
               FotogoMenuItem('Add to...',
                   onTap: () async => FotogoDialogs.showAddToDialog(
-                      context, [await media[currPageIndex].getFile()]))
-              // usingMediums
-              //     ? [await media![currPageIndex].getFile()]
-              //     : [fileImages![currPageIndex]])),
+                      context, [await media[currPageIndex].getFile()],
+                      albumBloc: context.read<ExtSingleAlbumBloc>(),
+                      insideAlbum: false))
             ],
           ),
         ],
@@ -104,16 +91,11 @@ class _GalleryPhotoViewState extends State<GalleryPhotoView> {
         pageController: pageController,
         scrollPhysics: const BouncingScrollPhysics(),
         itemCount: media.length,
-        // itemCount: usingMediums ? media!.length : fileImages!.length,
         onPageChanged: (index) => currPageIndex = index,
         builder: (context, index) {
           return PhotoViewGalleryPageOptions.customChild(
             controller: controller,
-            child: Image(image: PhotoProvider(mediumId: media[index].id)
-                // usingMediums
-                //     ? PhotoProvider(mediumId: media![index].id)
-                //     : FileImage(fileImages![index]) as ImageProvider,
-                ),
+            child: Image(image: PhotoProvider(mediumId: media[index].id)),
             minScale: PhotoViewComputedScale.contained,
             maxScale: PhotoViewComputedScale.contained * 3,
           );

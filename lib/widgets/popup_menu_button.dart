@@ -62,6 +62,7 @@ Widget fotogoPopupMenuButton({
   IconData icon = Icons.more_vert,
   Color? iconColor,
   Color? foregroundColor,
+  void Function(String)? onSelected,
   String tooltip = "More options",
 }) {
   return PopupMenuButton<String>(
@@ -69,6 +70,7 @@ Widget fotogoPopupMenuButton({
     tooltip: tooltip,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     offset: const Offset(0, 50),
+    onSelected: onSelected,
     itemBuilder: (context) {
       return items
           .map((e) => PopupMenuItem<String>(

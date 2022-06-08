@@ -14,7 +14,10 @@ enum RequestType {
   removeImagesFromAlbum,
   deleteAlbum,
   uploadImage,
-  deleteImage
+  deleteImage,
+
+  extAddImagesToAlbum,
+  extDeleteAlbum,
 }
 
 /// Holds all the possible status codes that the server can return with a

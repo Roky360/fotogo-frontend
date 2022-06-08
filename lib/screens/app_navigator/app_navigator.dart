@@ -10,7 +10,7 @@ import 'package:fotogo/widgets/bottom_navigation_bar/bottom_navigation_bar.dart'
 import 'package:fotogo/widgets/shared_axis_route.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import '../../single_album/bloc/single_album_bloc.dart';
+import '../../single_album/external_bloc/ext_single_album_bloc.dart';
 
 class AppNavigator extends StatefulWidget {
   const AppNavigator({Key? key}) : super(key: key);
@@ -114,7 +114,8 @@ class _AppNavigatorState extends State<AppNavigator>
     return MultiBlocProvider(
       providers: [
         BlocProvider<AlbumDetailsBloc>(create: (context) => AlbumDetailsBloc()),
-        BlocProvider<SingleAlbumBloc>(create: (context) => SingleAlbumBloc()),
+        BlocProvider<ExtSingleAlbumBloc>(
+            create: (context) => ExtSingleAlbumBloc()),
         BlocProvider<AlbumCreationBloc>(
             create: (context) => AlbumCreationBloc()),
       ],
@@ -134,8 +135,8 @@ class _AppNavigatorState extends State<AppNavigator>
 
   @override
   void dispose() {
-    super.dispose();
-
     data.navigationBarController.dispose();
+
+    super.dispose();
   }
 }

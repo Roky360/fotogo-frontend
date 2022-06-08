@@ -27,6 +27,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         title: const Text('Settings'),
       ),
@@ -51,12 +52,12 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 10),
               TextButton(
                 onPressed: () => FotogoDialogs.showDeleteAccountDialog(context),
-                child: const Text('Delete account'),
                 style: Theme.of(context).textButtonTheme.style?.copyWith(
                     foregroundColor:
                         MaterialStateProperty.all(Colors.red.shade700),
                     backgroundColor: MaterialStateProperty.all(
                         Colors.red.shade200.withOpacity(.4))),
+                child: const Text('Delete account'),
               )
             ],
           ),

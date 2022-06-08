@@ -83,7 +83,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
         _userProvider.signIn(_googleSignInProvider.user!);
         add(CheckUserExistsEvent(_userProvider.id));
-        // emit(const SignedIn());
       } catch (e) {
         emit(AuthMessage(e.toString(), FotogoSnackBarIcon.error));
         emit(const SignedOut());

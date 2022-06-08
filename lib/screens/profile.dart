@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/auth/bloc/auth_bloc.dart';
 import 'package:fotogo/auth/user/user_provider.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
+import 'package:fotogo/config/themes/light_theme.dart';
+import 'package:fotogo/screens/create_album/create_album_page.dart';
 import '/screens/settings_page/settings.dart';
 import 'package:sizer/sizer.dart';
 
@@ -94,23 +96,31 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           const SizedBox(height: 30),
-          OpenContainer(
-            transitionType: ContainerTransitionType.fadeThrough,
-            closedColor: Colors.transparent,
-            closedElevation: 0,
-            openElevation: 0,
-            closedShape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(/*2*/ 0)),
-            closedBuilder: (context, action) {
-              return ListTile(
-                leading: const Icon(Icons.settings),
-                title: const Text("Settings"),
-                onTap: action,
-                contentPadding: const EdgeInsets.only(left: pageMargin),
-              );
-            },
-            openBuilder: (context, action) => const SettingsPage(),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text("Settings"),
+            onTap: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const SettingsPage())),
+            // pushZoomTransitionRoute(context, const SettingsPage()),
+            contentPadding: const EdgeInsets.only(left: pageMargin),
           ),
+          // OpenContainer(
+          //   transitionType: ContainerTransitionType.fadeThrough,
+          //   closedColor: Colors.transparent,
+          //   closedElevation: 0,
+          //   openElevation: 0,
+          //   closedShape:
+          //       RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+          //   closedBuilder: (context, action) {
+          //     return ListTile(
+          //       leading: const Icon(Icons.settings),
+          //       title: const Text("Settings"),
+          //       onTap: action,
+          //       contentPadding: const EdgeInsets.only(left: pageMargin),
+          //     );
+          //   },
+          //   openBuilder: (context, action) => const SettingsPage(),
+          // ),
         ],
       ),
     );

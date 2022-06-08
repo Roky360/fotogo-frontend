@@ -13,10 +13,12 @@ import 'package:fotogo/widgets/shared_axis_route.dart';
 import 'package:sizer/sizer.dart';
 
 import '../single_album/bloc/single_album_bloc.dart';
+import '../single_album/external_bloc/ext_single_album_bloc.dart';
 
 /// Custom application dialogs.
 class FotogoDialogs {
-  static void showAddToDialog(BuildContext context, List<File> images) {
+  static void showAddToDialog(BuildContext context, List<File> images,
+      {required Bloc albumBloc, bool insideAlbum = true}) {
     final List<SingleAlbumData> albumsData = SingleAlbumService().albumsData;
     const double thumbnailSize = 40;
 
@@ -24,14 +26,11 @@ class FotogoDialogs {
       context: context,
       builder: (context) {
         return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           backgroundColor: Theme.of(context).colorScheme.background,
           title: Text('Add to', style: Theme.of(context).textTheme.headline6),
           content: ConstrainedBox(
             constraints: BoxConstraints(minHeight: 5.h, maxHeight: 40.h),
             child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
                   // create
@@ -65,7 +64,7 @@ class FotogoDialogs {
                           body: Column(
                             children: List.generate(albumsData.length, (index) {
                               return ListTile(
-                                leading: Image./*memory*/network(
+                                leading: Image. /*memory*/ network(
                                   albumsData[index].data.coverImage,
                                   width: thumbnailSize,
                                   height: thumbnailSize,
@@ -74,12 +73,11 @@ class FotogoDialogs {
                                 title: Text(albumsData[index].data.title),
                                 contentPadding: const EdgeInsets.only(left: 8),
                                 onTap: () {
-                                  context
-                                      .read<SingleAlbumBloc>()
-                                      .add(AddImagesToAlbumEvent(
-                                        albumsData[index].data.id,
-                                        images,
-                                      ));
+                                  albumBloc.add(insideAlbum
+                                      ? AddImagesToAlbumEvent(
+                                          albumsData[index].data.id, images)
+                                      : ExtAddImagesToAlbumEvent(
+                                          albumsData[index].data.id, images));
                                   Navigator.pop(context);
                                 },
                               );
@@ -116,8 +114,6 @@ class FotogoDialogs {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
               backgroundColor: Theme.of(context).colorScheme.background,
               title: Text('Delete Account',
                   style: Theme.of(context).textTheme.headline6),
@@ -133,17 +129,16 @@ class FotogoDialogs {
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.pop(context);
+                    Navigator.popUntil(context, (route) => route.isFirst);
                     context.read<AuthBloc>().add(const DeleteAccountEvent());
                   },
-                  child: const Text("Delete account"),
                   style: Theme.of(context).textButtonTheme.style?.copyWith(
                         foregroundColor:
                             MaterialStateProperty.all(Colors.red.shade700),
                         backgroundColor: MaterialStateProperty.all(
                             Colors.red.shade200.withOpacity(.4)),
                       ),
+                  child: const Text("Delete account"),
                 ),
                 TextButton(
                   onPressed: () {

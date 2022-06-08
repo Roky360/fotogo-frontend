@@ -5,6 +5,6 @@ class AlbumsRepository {
   List<SingleAlbumData> albumsData = List.empty(growable: true);
 
   void clear() {
-    albumsData = List.empty(growable: true);
+    albumsData.clear();
   }
 }

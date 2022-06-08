@@ -15,11 +15,14 @@ class AlbumDetailsService {
   final SingleAlbumService _singleAlbumService = SingleAlbumService();
   final UserProvider _userProvider = UserProvider();
   final ClientService _clientService = ClientService();
+  late Function currSortingFilter;
 
   static final AlbumDetailsService _albumDetailsService =
       AlbumDetailsService._();
 
-  AlbumDetailsService._();
+  AlbumDetailsService._() {
+    currSortingFilter = sortByLastModified;
+  }
 
   factory AlbumDetailsService() => _albumDetailsService;
 

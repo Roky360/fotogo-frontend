@@ -13,29 +13,47 @@ final ThemeData lightTheme = ThemeData.light().copyWith(
     colorScheme: const ColorScheme.light(
       primary: Color(0xFF013250),
       onPrimary: Color(0xffdef2ff),
-      // onPrimary: Color(0xFFC4E0FF),
-      background: Color(0xFFF1F5FB),
 
       secondary: Color(0xFF4C76A7),
+
+      tertiary: Color(0xFF19686a),
+      tertiaryContainer: Color(0xFFa8eff0),
+
+      background: Color(0xFFF1F5FB),
+
       surface: Color(0xFFB7F2FF),
-      // surface: Color(0xffb3e6ff),
       onSurface: Color(0xFF2A7279),
       // onSurface: Color(0xFF56B1B7),
+
       shadow: Color(0xFFC4E0FF),
+
       error: Color(0xFFEEC8C8),
       errorContainer: Color(0xFFD25555),
       // errorContainer: Color(0xFFC66161),
     ),
 
     // Appbar
-    appBarTheme: const AppBarTheme(
-      shadowColor: Colors.white,
-      color: Color(0xFF013250),
-      // color: Color(0xFF4C76A7),
-    ),
+    appBarTheme: AppBarTheme(
+        shadowColor: Colors.white,
+        color: const Color(0xFFD3F2F3),
+        // color: const Color(0xFFF1F5FB),
+        // color: Color(0xFF013250),
+        titleTextStyle: TextStyle(
+          fontFamily: fontFamily,
+          color: const Color(0xFF013250),
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+        iconTheme: const IconThemeData(
+          color: Color(0xFF013250),
+        ),
+        elevation: 0
+        // color: Color(0xFF4C76A7),
+        ),
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: <TargetPlatform, PageTransitionsBuilder>{
-        TargetPlatform.android: ZoomPageTransitionsBuilder(),
+        TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
+        // TargetPlatform.android: ZoomPageTransitionsBuilder(),
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
       },
     ),
@@ -45,28 +63,36 @@ final ThemeData lightTheme = ThemeData.light().copyWith(
         style: TextButton.styleFrom(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       textStyle: TextStyle(
-          fontFamily: fontFamily, fontSize: 14, fontWeight: FontWeight.normal
-          // color: const Color(0xFF187D88),
-          ),
+          fontFamily: fontFamily, fontSize: 14, fontWeight: FontWeight.normal),
       backgroundColor: const Color(0xFFB7F2FF).withOpacity(.4),
-      // backgroundColor: const Color(0xFFCBE5FF),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     )),
     elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
       textStyle: TextStyle(
           fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.bold),
-      padding: const EdgeInsets.symmetric(horizontal: 37, vertical: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 16),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      onPrimary: const Color(0xffdef2ff),
+      primary: const Color(0xFF013250),
+      elevation: 3,
+      shadowColor: const Color(0xFFa8eff0),
     )),
     outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
       textStyle: TextStyle(
           fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.normal),
-      side: const BorderSide(width: .2, color: Color(0xFF013250)),
+      side: const BorderSide(width: .3, color: Color(0xFF013250)),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     )),
+
+    // Card
+    cardTheme: CardTheme(
+      color: const Color(0xFFB7F2FF).withOpacity(.7),
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+    ),
 
     // Text
     textTheme: TextTheme(

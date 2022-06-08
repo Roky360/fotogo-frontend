@@ -26,3 +26,33 @@ ThemeData lightThemeSharedAxisPageTransition(
         },
       ),
     );
+
+void pushOpenUpwardsTransitionRoute(BuildContext context, Widget child) {
+  Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const OpenUpwardsPageTransitionsBuilder().buildTransitions(
+          null,
+          context,
+          animation,
+          secondaryAnimation,
+          child,
+        ),
+      ));
+}
+
+void pushZoomTransitionRoute(BuildContext context, Widget child) {
+  Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const ZoomPageTransitionsBuilder().buildTransitions(
+          null,
+          context,
+          animation,
+          secondaryAnimation,
+          child,
+        ),
+      ));
+}

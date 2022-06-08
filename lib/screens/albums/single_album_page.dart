@@ -12,8 +12,6 @@ import 'package:fotogo/widgets/popup_menu_button.dart';
 import 'package:sizer/sizer.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import 'package:http/http.dart' show get;
-
 import '../../single_album/bloc/single_album_bloc.dart';
 import '../../widgets/dialogs.dart';
 import '../../widgets/image_picker.dart';
@@ -104,37 +102,54 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
 
   void deselectAll() {
     setState(() {
-      selectedMedia = List.empty(growable: true);
+      selectedMedia.clear();
     });
+  }
+
+  void cancelAllModes() {
+    titleEditingMode = false;
+    deselectAll();
+    selectionMode = false;
   }
 
   void addTo() async {
     final List<File> imgFiles = [];
     for (final i in selectedMedia) {
       final img = albumData.imagesData![i];
-      // imgFiles.add(await writeFileToTempDirectory(
-      //     (await get(Uri.parse(img.data))).bodyBytes, img.fileName));
       imgFiles.add(await writeFileToTempDirectory(img.data, img.fileName));
     }
 
     if (!mounted) return;
-    FotogoDialogs.showAddToDialog(context, imgFiles);
+    FotogoDialogs.showAddToDialog(context, imgFiles,
+        albumBloc: context.read<SingleAlbumBloc>());
   }
 
-  void pushPhotoViewRoute(int index, BuildContext context) async {
+  void deleteImages() {
+    final List<String> imgFileNames =
+        selectedMedia.map((e) => albumData.imagesData![e].fileName).toList();
+
+    context
+        .read<SingleAlbumBloc>()
+        .add(RemoveImagesFromAlbumEvent(albumData.data.id, imgFileNames));
+  }
+
+  void pushPhotoViewRoute(int index/*, BuildContext context*/) async {
     final imagesData = albumData.imagesData;
 
     if (imagesData != null) {
       final List<File> imageFiles = [];
       for (final i in imagesData) {
-        // imageFiles.add(await writeFileToTempDirectory(
-        //     (await get(Uri.parse(i.data))).bodyBytes, i.fileName));
         imageFiles.add(await writeFileToTempDirectory(i.data, i.fileName));
       }
 
       if (!mounted) return;
+      final route = AlbumPhotoView(
+        index,
+        fileImages: imageFiles,
+        singleAlbumBloc: context.read<SingleAlbumBloc>(),
+      );
       Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => AlbumPhotoView(index, fileImages: imageFiles)));
+          builder: (context) => route));
     }
   }
 
@@ -143,6 +158,7 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
       return TextFormField(
         key: _formKey,
         controller: _titleController,
+        autofocus: true,
         validator: (val) {
           if (val == '') {
             return "Title must not be empty";
@@ -198,7 +214,18 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
       return [];
     } else if (selectionMode) {
       return [
-        IconButton(onPressed: addTo, icon: const Icon(Icons.add)),
+        // add to
+        IconButton(
+          onPressed: addTo,
+          icon: const Icon(Icons.add),
+          tooltip: "Add to...",
+        ),
+        // delete images
+        IconButton(
+          onPressed: deleteImages,
+          icon: const Icon(Icons.delete),
+          tooltip: "Remove images",
+        ),
         selectedMedia.length == albumData.imagesData!.length
             ? IconButton(
                 icon: const Icon(Icons.deselect),
@@ -214,8 +241,10 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
     } else {
       return [
         IconButton(
-            onPressed: () => addImagesToAlbum(context),
-            icon: const Icon(Icons.add)),
+          onPressed: () => addImagesToAlbum(context),
+          icon: const Icon(Icons.add),
+          tooltip: "Add more photos",
+        ),
         fotogoPopupMenuButton(items: [
           FotogoMenuItem('Select', onTap: initiateSelectionMode),
           FotogoMenuItem('Delete',
@@ -224,6 +253,17 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
                   .add(DeleteAlbumEvent(albumData.data.id))),
         ]),
       ];
+    }
+  }
+
+  Widget _getLeading(BuildContext context) {
+    if (titleEditingMode || selectionMode) {
+      return IconButton(
+        onPressed: cancelAllModes,
+        icon: const Icon(Icons.close),
+      );
+    } else {
+      return const BackButton();
     }
   }
 
@@ -241,6 +281,12 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
 
   void onDoneEditingTitle() {
     if (_formKey.currentState!.validate()) {
+      // if title hasn't changed
+      if (_titleController.text == albumData.data.title) {
+        setState(() => titleEditingMode = false);
+        return;
+      }
+
       context
           .read<SingleAlbumBloc>()
           .add(UpdateAlbumEvent(albumData..data.title = _titleController.text));
@@ -263,11 +309,16 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
               toolbarHeight: kToolbarHeight + 10,
               expandedHeight: 20.h,
               foregroundColor: Colors.white,
-              backgroundColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: Theme.of(context).colorScheme.background,
               pinned: true,
               stretch: true,
               actions: _getActions(context),
+              leading: _getLeading(context),
               title: _getTitle(context),
+              titleTextStyle: AppBarTheme.of(context)
+                  .titleTextStyle
+                  ?.copyWith(color: Colors.white),
+              iconTheme: const IconThemeData(color: Colors.white),
               flexibleSpace: FlexibleSpaceBar(
                 expandedTitleScale: 1.1,
                 stretchModes: const [
@@ -344,6 +395,10 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
                   if (state is SingleAlbumMessage) {
                     AppWidgets.fotogoSnackBar(context,
                         content: state.message, icon: FotogoSnackBarIcon.error);
+                  } else if (state is AlbumUpdated) {
+                    setState(cancelAllModes);
+                  } else if (state is SingleAlbumDeleted) {
+                    Navigator.pop(context, true);
                   }
                 },
                 builder: (context, state) {
@@ -358,7 +413,8 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
                     return Center(
                       child: AppWidgets.fotogoCircularLoadingAnimation(),
                     );
-                  } else if (state is SingleAlbumFetched) {
+                  } else if (state is SingleAlbumFetched ||
+                      state is SingleAlbumDeleted) {
                     return GridView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
@@ -374,7 +430,7 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
                           onTap: selectionMode
                               ? () => toggleSelection(index)
                               : () => pushPhotoViewRoute(
-                                  index, _scaffoldKey.currentContext!),
+                                  index, /*_scaffoldKey.currentContext!*/),
                           onLongPress: selectionMode
                               ? null
                               : () {

@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/album_details/album_details_service.dart';
 import 'package:fotogo/album_details/bloc/album_details_bloc.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
 import 'package:fotogo/screens/albums/single_album_page.dart';
 import 'package:fotogo/screens/albums/widgets/album_cover.dart';
+import 'package:fotogo/single_album/external_bloc/ext_single_album_bloc.dart';
 import 'package:fotogo/single_album/single_album_data.dart';
 import 'package:fotogo/single_album/single_album_service.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
@@ -13,7 +14,6 @@ import 'package:sizer/sizer.dart';
 
 import '../../album_creation/bloc/album_creation_bloc.dart';
 import '../../single_album/bloc/single_album_bloc.dart';
-import '../../widgets/popup_menu_button.dart';
 
 class AlbumsPage extends StatefulWidget {
   const AlbumsPage({Key? key}) : super(key: key);
@@ -26,11 +26,15 @@ class _AlbumsPageState extends State<AlbumsPage> {
   final SingleAlbumService _singleAlbumService = SingleAlbumService();
   final AlbumDetailsService _albumDetailsService = AlbumDetailsService();
 
-  late Function sortingFilter;
+  List<SingleAlbumData> get _albumsData => _singleAlbumService.albumsData;
+
   List<String> filterTitles = ['Album title', 'Most recent', 'Last modified'];
   late List<Function> filterFunctions;
 
-  List<SingleAlbumData> get _albumsData => _singleAlbumService.albumsData;
+  Function get sortingFilter => _albumDetailsService.currSortingFilter;
+
+  set sortingFilter(Function val) =>
+      _albumDetailsService.currSortingFilter = val;
 
   @override
   void initState() {
@@ -38,7 +42,6 @@ class _AlbumsPageState extends State<AlbumsPage> {
 
     context.read<AlbumDetailsBloc>().add(const SyncAlbumsDetailsEvent());
 
-    sortingFilter = _albumDetailsService.sortByLastModified;
     filterFunctions = [
       _albumDetailsService.sortByName,
       _albumDetailsService.sortByDates,
@@ -108,8 +111,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
       onChanged: (val) {
         if (sortingFilter != val) {
           setState(() {
-            val!();
-            sortingFilter = val;
+            sortingFilter = val ?? sortingFilter;
           });
         }
       },
@@ -142,35 +144,45 @@ class _AlbumsPageState extends State<AlbumsPage> {
             _albumsData.length,
             (index) => Column(
                   children: [
-                    GestureDetector(
-                      onTap: () => Navigator.push(context,
-                          MaterialPageRoute(builder: (BuildContext context) {
+                    // GestureDetector(
+                    //   onTap: () async {
+                    //     final String albumId = _albumsData[index].data.id;
+                    //     await Navigator.push(context,
+                    //         MaterialPageRoute(builder: (BuildContext context) {
+                    //       return SingleAlbumPage(albumId: albumId);
+                    //     }));
+                    //
+                    //     if (_albumsData.indexWhere(
+                    //             (element) => element.data.id == albumId) ==
+                    //         -1) setState(() {});
+                    //   },
+                    //   child: AlbumCover(
+                    //     data: _albumsData[index].data,
+                    //   ),
+                    // ),
+                    OpenContainer<bool>(
+                      transitionType: ContainerTransitionType.fade,
+                      transitionDuration: const Duration(milliseconds: 400),
+                      closedElevation: 0,
+                      closedShape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                      onClosed: (isDeleted) {
+                        // refresh UI if album was deleted
+                        if (isDeleted is bool && isDeleted) setState(() {});
+                      },
+                      closedBuilder: (context, action) {
+                        return GestureDetector(
+                          onTap: action,
+                          child: AlbumCover(
+                            data: _albumsData[index].data,
+                          ),
+                        );
+                      },
+                      openBuilder: (context, action) {
                         return SingleAlbumPage(
                             albumId: _albumsData[index].data.id);
-                      })),
-                      child: AlbumCover(
-                        data: _albumsData[index].data,
-                      ),
+                      },
                     ),
-                    // OpenContainer(
-                    //   transitionType: ContainerTransitionType.fade,
-                    //   transitionDuration: const Duration(milliseconds: 400),
-                    //   closedElevation: 3,
-                    //   closedBuilder: (context, action) {
-                    //     return GestureDetector(
-                    //       onTap: action,
-                    //       child: AlbumCover(
-                    //         data: _albumsData[index].data,
-                    //       ),
-                    //     );
-                    //   },
-                    //   openBuilder: (context, action) {
-                    //     return SingleAlbumPage(
-                    //         albumId: _albumsData[index].data.id);
-                    //   },
-                    //   closedShape: const RoundedRectangleBorder(
-                    //       borderRadius: BorderRadius.all(Radius.circular(20))),
-                    // ),
                     const SizedBox(height: 20),
                   ],
                 )),
@@ -242,10 +254,11 @@ class _AlbumsPageState extends State<AlbumsPage> {
                                 setState(() {});
                               }
                             }),
-                            BlocListener<SingleAlbumBloc, SingleAlbumState>(
+                            BlocListener<ExtSingleAlbumBloc,
+                                    ExtSingleAlbumState>(
                                 listener: (context, state) {
-                              if (state is SingleAlbumDeleted ||
-                                  state is AlbumUpdated) {
+                              if (state is ExtSingleAlbumDeleted ||
+                                  state is ExtUpdatedAlbum) {
                                 // _removeItem(state.deletedIndex);
                                 setState(() {});
                               }

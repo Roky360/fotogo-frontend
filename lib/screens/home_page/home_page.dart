@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/auth/user/user_provider.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
 import 'package:fotogo/functions/file_handling.dart';
@@ -12,6 +13,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_gallery/photo_gallery.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import '../../single_album/external_bloc/ext_single_album_bloc.dart';
 import 'views/gallery_photo_view.dart';
 
 part 'views/gallery_view.dart';

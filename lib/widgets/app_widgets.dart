@@ -65,19 +65,17 @@ class AppWidgets {
     return SizedBox(
       width: 80.w,
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: Row(
           children: [
             Padding(
               padding: const EdgeInsets.all(10),
               child: CircleAvatar(
                 radius: 25,
-                backgroundColor: Theme.of(context).colorScheme.secondary,
+                backgroundColor: Theme.of(context).colorScheme.shadow,
                 backgroundImage: NetworkImage(userProvider.photoUrl ?? ''),
               ),
             ),
             const SizedBox(width: 5),
-
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -85,15 +83,16 @@ class AppWidgets {
                 // TODO: change text direction according to the language (+ detect language)
                 Text(
                   userProvider.displayName ?? '',
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface),
                 ),
                 // Email
                 Text(
                   userProvider.email,
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle1
-                      ?.copyWith(fontWeight: FontWeight.normal, fontSize: 14),
+                  style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 14,
+                      color: Theme.of(context).colorScheme.onSurface),
                 )
               ],
             ),
@@ -103,7 +102,13 @@ class AppWidgets {
     );
   }
 
-  static fotogoSnackBar(BuildContext context,
+  // static Widget fotogoUserAvatar(BuildContext context, double size) {
+  //   final UserProvider userProvider = UserProvider();
+  //
+  //   return
+  // }
+
+  static void fotogoSnackBar(BuildContext context,
       {required String content,
       FotogoSnackBarIcon icon = FotogoSnackBarIcon.fotogo}) {
     ScaffoldMessenger.of(context).showSnackBar(
