@@ -36,6 +36,9 @@ class AlbumCreationSender extends Sender {
       : super(RequestType.createAlbum, request);
 }
 
+/// A [Sender] that related to album creation requests.
+///
+/// Used by [AlbumDetailsBloc] and [AlbumDetailsBloc].
 class AlbumDetailsSender extends Sender {
   AlbumDetailsSender.syncAlbumDetails(Request request)
       : super(RequestType.syncAlbumDetails, request);
@@ -65,4 +68,17 @@ class AlbumSender extends Sender {
 
   AlbumSender.extAddImagesTpAlbum(Request request)
       : super(RequestType.extAddImagesToAlbum, request);
+}
+
+/// A [Sender] that related to album creation requests.
+///
+/// Used by [AdminBloc].
+class AdminSender extends Sender {
+  AdminSender.generateStatistics(Request request)
+      : super(RequestType.generateStatistics, request);
+
+  AdminSender.getUsers(Request request) : super(RequestType.getUsers, request);
+
+  AdminSender.deleteUser(Request request)
+      : super(RequestType.adminDeleteUser, request);
 }

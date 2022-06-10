@@ -12,6 +12,7 @@ import 'package:fotogo/widgets/popup_menu_button.dart';
 import 'package:sizer/sizer.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import '../../config/constants/theme_constants.dart';
 import '../../single_album/bloc/single_album_bloc.dart';
 import '../../widgets/dialogs.dart';
 import '../../widgets/image_picker.dart';
@@ -121,7 +122,7 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
 
     if (!mounted) return;
     FotogoDialogs.showAddToDialog(context, imgFiles,
-        albumBloc: context.read<SingleAlbumBloc>());
+        disabledAlbumId: albumData.data.id);
   }
 
   void deleteImages() {
@@ -133,7 +134,7 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
         .add(RemoveImagesFromAlbumEvent(albumData.data.id, imgFileNames));
   }
 
-  void pushPhotoViewRoute(int index/*, BuildContext context*/) async {
+  void pushPhotoViewRoute(int index) async {
     final imagesData = albumData.imagesData;
 
     if (imagesData != null) {
@@ -146,10 +147,9 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
       final route = AlbumPhotoView(
         index,
         fileImages: imageFiles,
-        singleAlbumBloc: context.read<SingleAlbumBloc>(),
       );
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => route));
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => route));
     }
   }
 
@@ -394,7 +394,9 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
                 listener: (context, state) {
                   if (state is SingleAlbumMessage) {
                     AppWidgets.fotogoSnackBar(context,
-                        content: state.message, icon: FotogoSnackBarIcon.error);
+                        content: state.message,
+                        icon: FotogoSnackBarIcon.error,
+                        bottomPadding: fSnackBarPaddingFromBNB);
                   } else if (state is AlbumUpdated) {
                     setState(cancelAllModes);
                   } else if (state is SingleAlbumDeleted) {
@@ -430,7 +432,8 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
                           onTap: selectionMode
                               ? () => toggleSelection(index)
                               : () => pushPhotoViewRoute(
-                                  index, /*_scaffoldKey.currentContext!*/),
+                                    index, /*_scaffoldKey.currentContext!*/
+                                  ),
                           onLongPress: selectionMode
                               ? null
                               : () {

@@ -37,7 +37,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ExpansionTile(
             expandedAlignment: Alignment.topLeft,
             childrenPadding: const EdgeInsets.symmetric(
-                horizontal: pageMargin, vertical: 10),
+                horizontal: fPageMargin, vertical: 10),
             leading: const Icon(Icons.account_circle_outlined),
             title: const Text('Account'),
             subtitle: Text(
@@ -65,7 +65,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ExpansionTile(
             expandedAlignment: Alignment.topLeft,
             childrenPadding: const EdgeInsets.symmetric(
-                horizontal: pageMargin, vertical: 10),
+                horizontal: fPageMargin, vertical: 10),
             leading: const Icon(Icons.info_outlined),
             title: const Text('About'),
             children: [

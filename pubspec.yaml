@@ -67,6 +67,7 @@ dependencies:
   badges: ^2.0.2
   tab_indicator_styler: ^2.0.0
   confetti: ^0.7.0
+  fluttertoast: ^8.0.9
 
 
 dev_dependencies:

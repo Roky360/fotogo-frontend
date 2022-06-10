@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fotogo/auth/user/user_provider.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
 import 'package:sizer/sizer.dart';
+
+import '../admin/admin_data_types.dart';
 
 /// General widgets of the application.
 class AppWidgets {
@@ -59,7 +62,10 @@ class AppWidgets {
         });
   }
 
-  static Widget userCard(BuildContext context) {
+  /// if [UserData] is null, using the current signed in Google account.
+  static Widget userCard(BuildContext context,
+      {UserData? userData, double avatarRadius = 25}) {
+    final bool usingUserProvider = userData == null;
     final UserProvider userProvider = UserProvider();
 
     return SizedBox(
@@ -70,25 +76,30 @@ class AppWidgets {
             Padding(
               padding: const EdgeInsets.all(10),
               child: CircleAvatar(
-                radius: 25,
+                radius: avatarRadius,
                 backgroundColor: Theme.of(context).colorScheme.shadow,
-                backgroundImage: NetworkImage(userProvider.photoUrl ?? ''),
+                backgroundImage: NetworkImage(usingUserProvider
+                    ? userProvider.photoUrl ?? ''
+                    : userData.photoUrl),
               ),
             ),
             const SizedBox(width: 5),
             Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Name
                 // TODO: change text direction according to the language (+ detect language)
                 Text(
-                  userProvider.displayName ?? '',
+                  usingUserProvider
+                      ? userProvider.displayName ?? ''
+                      : userData.displayName,
                   style: Theme.of(context).textTheme.subtitle1?.copyWith(
                       color: Theme.of(context).colorScheme.onSurface),
                 ),
                 // Email
                 Text(
-                  userProvider.email,
+                  usingUserProvider ? userProvider.email : userData.email,
                   style: Theme.of(context).textTheme.subtitle1?.copyWith(
                       fontWeight: FontWeight.normal,
                       fontSize: 14,
@@ -102,17 +113,35 @@ class AppWidgets {
     );
   }
 
-  // static Widget fotogoUserAvatar(BuildContext context, double size) {
-  //   final UserProvider userProvider = UserProvider();
-  //
-  //   return
-  // }
+  static Widget fotogoUserAvatar({VoidCallback? onTap, double radius = 18}) {
+    final UserProvider userProvider = UserProvider();
+
+    return InkWell(
+      onTap: onTap,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          fotogoLogoCircle(height: radius * 2.4),
+          CircleAvatar(
+            radius: radius,
+            backgroundImage: NetworkImage(userProvider.photoUrl ?? ''),
+            backgroundColor: Colors.transparent,
+          ),
+        ],
+      ),
+    );
+  }
 
   static void fotogoSnackBar(BuildContext context,
       {required String content,
-      FotogoSnackBarIcon icon = FotogoSnackBarIcon.fotogo}) {
+      FotogoSnackBarIcon icon = FotogoSnackBarIcon.fotogo,
+      double bottomPadding = fSnackBarDefaultPadding}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 11),
+        margin: EdgeInsets.symmetric(
+            horizontal: fPageMargin, vertical: bottomPadding),
+        dismissDirection: DismissDirection.horizontal,
         content: Row(
           children: [
             _getIcon(icon, Theme.of(context).colorScheme.onPrimary),

@@ -54,13 +54,8 @@ class _GalleryViewState extends State<GalleryView> {
                 double ratio = gridWidth / gridHeight;
                 return Container(
                   padding: const EdgeInsets.only(
-                      bottom: pageMargin, left: pageMargin, right: pageMargin),
+                      bottom: fPageMargin, left: fPageMargin, right: fPageMargin),
                   child: GridView.builder(
-                    // childAspectRatio: ratio,
-                    // crossAxisCount: 3,
-                    // maxCrossAxisExtent: 3,
-                    // mainAxisSpacing: 16,
-                    // crossAxisSpacing: 5.0,
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: _albums?.length,
@@ -74,11 +69,12 @@ class _GalleryViewState extends State<GalleryView> {
                       final singleAlbum = _albums![index];
 
                       return OpenContainer(
-                        closedColor: Colors.transparent,
                         closedElevation: 0,
-                        openColor: Theme.of(context).colorScheme.background,
                         openElevation: 0,
-                        transitionType: ContainerTransitionType.fadeThrough,
+                        closedColor: Colors.transparent,
+                        middleColor: Colors.transparent,
+                        openColor: Theme.of(context).colorScheme.background,
+                        transitionType: ContainerTransitionType.fade,
                         openBuilder: (BuildContext context,
                                 void Function({Object? returnValue}) action) =>
                             AlbumView(singleAlbum),

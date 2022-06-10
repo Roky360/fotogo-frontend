@@ -22,7 +22,7 @@ class FotogoBasePage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(pageMargin),
+            padding: const EdgeInsets.all(fPageMargin),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -68,7 +68,7 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return FotogoBasePage(
       bottomSheet: Padding(
-          padding: const EdgeInsets.only(bottom: 50),
+          padding: const EdgeInsets.only(bottom: 60),
           child: StatefulBuilder(
             builder: (context, setState) {
               return ListTile(
@@ -77,7 +77,7 @@ class _SignInPageState extends State<SignInPage> {
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 contentPadding:
-                    const EdgeInsets.symmetric(horizontal: pageMargin),
+                    const EdgeInsets.symmetric(horizontal: fPageMargin),
                 onTap: () => setState(() {
                   staySignedIn = !staySignedIn;
                   changeStaySignedInValue(staySignedIn);
@@ -187,7 +187,7 @@ class CreateAccountPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return FotogoBasePage(
       bottomSheet: Padding(
-        padding: const EdgeInsets.all(pageMargin),
+        padding: const EdgeInsets.all(fPageMargin),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

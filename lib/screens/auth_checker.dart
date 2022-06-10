@@ -1,8 +1,10 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fotogo/admin/bloc/admin_bloc.dart';
 import 'package:fotogo/auth/bloc/auth_bloc.dart';
 import 'package:fotogo/auth/user/user_provider.dart';
+import 'package:fotogo/config/constants/theme_constants.dart';
 import 'package:fotogo/screens/admin/admin_main_page.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:fotogo/widgets/splash_screen.dart';
@@ -52,22 +54,23 @@ class _AuthCheckerState extends State<AuthChecker> {
           child: BlocConsumer<AuthBloc, AuthState>(
             listener: (context, state) {
               if (state is AuthMessage) {
-                AppWidgets.fotogoSnackBar(
-                  context,
-                  content: state.message,
-                  icon: state.icon,
-                );
+                AppWidgets.fotogoSnackBar(context,
+                    content: state.message,
+                    icon: state.icon,
+                    bottomPadding: state.bottomPadding);
               } else if (state is AdminSignedIn) {
                 // For security purposes, if admin has signed - set
                 // stay_signed_in to false.
-                _setStaySignedIn(false);
+                // _setStaySignedIn(false);
               }
             },
             builder: (BuildContext context, AuthState state) {
               return AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 child: state is AdminSignedIn
-                    ? const AdminPage()
+                    ? BlocProvider(
+                        create: (context) => AdminBloc(),
+                        child: const AdminPage())
                     : state is UserSignedIn
                         ? const AppNavigator()
                         : PageTransitionSwitcher(

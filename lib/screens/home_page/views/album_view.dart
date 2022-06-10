@@ -75,8 +75,7 @@ class _AlbumViewState extends State<AlbumView> {
     }
 
     if (!mounted) return;
-    FotogoDialogs.showAddToDialog(context, imgFiles,
-        albumBloc: context.read<ExtSingleAlbumBloc>(), insideAlbum: false);
+    FotogoDialogs.showAddToDialog(context, imgFiles, insideAlbum: false);
   }
 
   @override

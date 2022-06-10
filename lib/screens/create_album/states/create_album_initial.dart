@@ -53,20 +53,18 @@ class _CreateAlbumInitialState extends State<CreateAlbumInitial> {
   void onSubmit() async {
     // Check if title is not empty
     if (!_formKey.currentState!.validate()) {
-      AppWidgets.fotogoSnackBar(
-        context,
-        content: "Please provide a title",
-        icon: FotogoSnackBarIcon.error,
-      );
+      AppWidgets.fotogoSnackBar(context,
+          content: "Please provide a title",
+          icon: FotogoSnackBarIcon.error,
+          bottomPadding: 8);
       return;
     }
     // Check that album has at least one image
     if (images.isEmpty) {
-      AppWidgets.fotogoSnackBar(
-        context,
-        content: "Please add at least one image",
-        icon: FotogoSnackBarIcon.error,
-      );
+      AppWidgets.fotogoSnackBar(context,
+          content: "Please add at least one image",
+          icon: FotogoSnackBarIcon.error,
+          bottomPadding: 8);
       return;
     }
 
@@ -101,7 +99,7 @@ class _CreateAlbumInitialState extends State<CreateAlbumInitial> {
               const Spacer(flex: 1),
               // Title text field
               SizedBox(
-                  width: 100.w - pageMargin * 2,
+                  width: 100.w - fPageMargin * 2,
                   child: TextFormField(
                     controller: titleController,
                     validator: (val) {
@@ -133,8 +131,8 @@ class _CreateAlbumInitialState extends State<CreateAlbumInitial> {
                 title: 'People',
                 body: TextButton(
                     onPressed: () {},
-                    child: const Text('Add people to your album'),
-                    style: Theme.of(context).textButtonTheme.style),
+                    style: Theme.of(context).textButtonTheme.style,
+                    child: const Text('Add people to your album')),
               ),
               const Spacer(flex: 1),
               FotogoSection(
@@ -171,15 +169,15 @@ class _CreateAlbumInitialState extends State<CreateAlbumInitial> {
       ),
       // Submit button
       bottomSheet: Padding(
-        padding: const EdgeInsets.only(bottom: pageMargin * 2.5, top: 10),
+        padding: const EdgeInsets.only(bottom: fPageMargin * 3, top: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
               onPressed: onSubmit,
+              style: Theme.of(context).elevatedButtonTheme.style,
               // onPressed: onSubmit,
               child: const Text('Create album'),
-              style: Theme.of(context).elevatedButtonTheme.style,
             ),
           ],
         ),

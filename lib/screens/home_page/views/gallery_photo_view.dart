@@ -81,7 +81,6 @@ class _GalleryPhotoViewState extends State<GalleryPhotoView> {
               FotogoMenuItem('Add to...',
                   onTap: () async => FotogoDialogs.showAddToDialog(
                       context, [await media[currPageIndex].getFile()],
-                      albumBloc: context.read<ExtSingleAlbumBloc>(),
                       insideAlbum: false))
             ],
           ),

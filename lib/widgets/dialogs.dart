@@ -1,7 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:fotogo/admin/admin_data_types.dart';
+import 'package:fotogo/admin/bloc/admin_bloc.dart';
 import 'package:fotogo/auth/bloc/auth_bloc.dart';
 import 'package:fotogo/auth/user/user_provider.dart';
 import 'package:fotogo/screens/create_album/create_album_page.dart';
@@ -18,18 +22,18 @@ import '../single_album/external_bloc/ext_single_album_bloc.dart';
 /// Custom application dialogs.
 class FotogoDialogs {
   static void showAddToDialog(BuildContext context, List<File> images,
-      {required Bloc albumBloc, bool insideAlbum = true}) {
+      {bool insideAlbum = true, String disabledAlbumId = ''}) {
     final List<SingleAlbumData> albumsData = SingleAlbumService().albumsData;
     const double thumbnailSize = 40;
 
     showDialog(
       context: context,
-      builder: (context) {
+      builder: (_context) {
         return AlertDialog(
-          backgroundColor: Theme.of(context).colorScheme.background,
-          title: Text('Add to', style: Theme.of(context).textTheme.headline6),
+          backgroundColor: Theme.of(_context).colorScheme.background,
+          title: Text('Add to', style: Theme.of(_context).textTheme.headline6),
           content: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: 5.h, maxHeight: 40.h),
+            constraints: BoxConstraints(minHeight: 5.h, maxHeight: 50.h),
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -43,9 +47,9 @@ class FotogoDialogs {
                           leading: const Icon(Icons.photo_album_outlined),
                           title: const Text('Album'),
                           onTap: () {
-                            Navigator.pop(context);
+                            Navigator.pop(_context);
                             Navigator.push(
-                                context,
+                                _context,
                                 sharedAxisRoute(
                                     widget: CreateAlbumPage(
                                   images: images,
@@ -64,21 +68,29 @@ class FotogoDialogs {
                           body: Column(
                             children: List.generate(albumsData.length, (index) {
                               return ListTile(
+                                enabled: albumsData[index].data.id !=
+                                    disabledAlbumId,
                                 leading: Image. /*memory*/ network(
                                   albumsData[index].data.coverImage,
                                   width: thumbnailSize,
                                   height: thumbnailSize,
                                   fit: BoxFit.cover,
+                                  filterQuality: FilterQuality.none,
                                 ),
                                 title: Text(albumsData[index].data.title),
                                 contentPadding: const EdgeInsets.only(left: 8),
                                 onTap: () {
-                                  albumBloc.add(insideAlbum
-                                      ? AddImagesToAlbumEvent(
-                                          albumsData[index].data.id, images)
-                                      : ExtAddImagesToAlbumEvent(
-                                          albumsData[index].data.id, images));
-                                  Navigator.pop(context);
+                                  if (insideAlbum) {
+                                    context.read<SingleAlbumBloc>().add(
+                                        AddImagesToAlbumEvent(
+                                            albumsData[index].data.id, images));
+                                  } else {
+                                    context.read<ExtSingleAlbumBloc>().add(
+                                        ExtAddImagesToAlbumEvent(
+                                            albumsData[index].data.id, images));
+                                  }
+
+                                  Navigator.pop(_context);
                                 },
                               );
                             }),
@@ -90,10 +102,11 @@ class FotogoDialogs {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pop(_context),
               child: const Text('Close'),
             ),
           ],
+          buttonPadding: EdgeInsets.zero,
         );
       },
     );
@@ -141,9 +154,66 @@ class FotogoDialogs {
                   child: const Text("Delete account"),
                 ),
                 TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Cancel"),
+                )
+              ],
+            ));
+  }
+
+  static void showAdminUserDetailsDialog(
+      BuildContext context, UserData userData,
+      {bool showDeleteButton = true}) {
+    showDialog(
+        context: context,
+        builder: (_context) => AlertDialog(
+              title: Text("Details",
+                  style: Theme.of(_context).textTheme.headline6),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AppWidgets.userCard(_context,
+                      userData: userData, avatarRadius: 20),
+                  const SizedBox(height: 10),
+                  GestureDetector(
+                    onTap: () {
+                      Clipboard.setData(ClipboardData(text: userData.uid));
+                      Fluttertoast.showToast(
+                          msg: "User ID copied to clipboard");
+                    },
+                    child: Text(
+                      "uid: ${userData.uid}\n(tap to copy)",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(_context)
+                          .textTheme
+                          .bodyText2
+                          ?.copyWith(fontSize: 13),
+                    ),
+                  )
+                ],
+              ),
+              contentPadding: const EdgeInsets.only(top: 15, bottom: 10),
+              actions: [
+                showDeleteButton
+                    ? TextButton(
+                        onPressed: () {
+                          Navigator.pop(_context);
+                          context
+                              .read<AdminBloc>()
+                              .add(DeleteUserAccountEvent(userData.uid));
+                        },
+                        style:
+                            Theme.of(_context).textButtonTheme.style?.copyWith(
+                                  foregroundColor: MaterialStateProperty.all(
+                                      Colors.red.shade700),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Colors.red.shade200.withOpacity(.4)),
+                                ),
+                        child: const Text("Delete user"),
+                      )
+                    : const SizedBox(),
+                TextButton(
+                  onPressed: () => Navigator.pop(_context),
                   child: const Text("Cancel"),
                 )
               ],

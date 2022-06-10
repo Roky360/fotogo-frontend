@@ -124,10 +124,17 @@ final ThemeData lightTheme = ThemeData.light().copyWith(
       ),
 
       bodyText1: TextStyle(
-          fontFamily: fontFamily,
-          fontWeight: FontWeight.normal,
-          color: const Color(0xFF013250),
-          fontSize: 14),
+        fontFamily: fontFamily,
+        fontWeight: FontWeight.normal,
+        color: const Color(0xFF013250),
+        fontSize: 14,
+      ),
+      bodyText2: TextStyle(
+        fontFamily: fontFamily,
+        fontWeight: FontWeight.normal,
+        color: const Color(0xFF013250),
+        fontSize: 12,
+      ),
 
       caption: TextStyle(
         fontFamily: fontFamily,
@@ -140,18 +147,21 @@ final ThemeData lightTheme = ThemeData.light().copyWith(
         textStyle: TextStyle(
           fontFamily: fontFamily,
           fontWeight: FontWeight.normal,
+          color: Colors.white
         ),
         decoration: BoxDecoration(
-            color: const Color(0xFF013250).withOpacity(.7),
+            color: const Color(0xFF0E6092).withOpacity(.75),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: const Color(0xFF0E6092).withOpacity(.8),
-            ))),
+                color: const Color(0xFF013250).withOpacity(.8), width: .7))),
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
+      backgroundColor: const Color(0xFF2D79A8).withOpacity(.75),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: BorderSide(color: const Color(0xFF0E6092).withOpacity(.8)),
+        borderRadius: BorderRadius.circular(13),
+        side: BorderSide(
+          color: const Color(0xFF013250).withOpacity(.8),
+          width: .7,
+        ),
       ),
-      backgroundColor: const Color(0xFF013250).withOpacity(.7),
     ));

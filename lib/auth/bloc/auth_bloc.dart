@@ -6,6 +6,7 @@ import 'package:fotogo/album_details/album_details_service.dart';
 import 'package:fotogo/auth/auth_service.dart';
 import 'package:fotogo/auth/providers/google_sign_in.dart';
 import 'package:fotogo/auth/user/user_provider.dart';
+import 'package:fotogo/config/constants/theme_constants.dart';
 import 'package:fotogo/fotogo_protocol/client_service.dart';
 import 'package:fotogo/fotogo_protocol/data_types.dart';
 import 'package:fotogo/fotogo_protocol/sender.dart';
@@ -69,6 +70,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         add(CheckUserExistsEvent(_userProvider.id));
       } catch (e) {
         emit(AuthMessage(e.toString(), FotogoSnackBarIcon.error));
+        add(const SignOutEvent());
       }
     });
 
@@ -85,7 +87,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         add(CheckUserExistsEvent(_userProvider.id));
       } catch (e) {
         emit(AuthMessage(e.toString(), FotogoSnackBarIcon.error));
-        emit(const SignedOut());
+        add(const SignOutEvent());
       }
     });
 
@@ -129,7 +131,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(const SignedOut());
       } catch (e) {
         emit(AuthMessage(e.toString(), FotogoSnackBarIcon.error));
-        add(const SignOutEvent());
+        emit(const SignedOut());
       }
     });
 
@@ -140,13 +142,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _authService.createAccount();
       } catch (e) {
         emit(AuthMessage(e.toString(), FotogoSnackBarIcon.error));
+        emit(const SignedOut());
       }
     });
     on<CreatedAccountEvent>((event, emit) {
       if (event.response.statusCode == StatusCode.ok) {
-        emit(const AuthMessage("Account Created", FotogoSnackBarIcon.success));
-        emit(
-            const AuthMessage("Welcome to fotogo!", FotogoSnackBarIcon.fotogo));
+        emit(const AuthMessage("Account Created", FotogoSnackBarIcon.success,
+            bottomPadding: fSnackBarPaddingFromBNB));
+        emit(const AuthMessage("Welcome to fotogo!", FotogoSnackBarIcon.fotogo,
+            bottomPadding: fSnackBarPaddingFromBNB));
         emit(const UserSignedIn());
       } else {
         emit(AuthMessage(event.response.payload, FotogoSnackBarIcon.error));

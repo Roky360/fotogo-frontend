@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fotogo/admin/admin_service.dart';
+import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:fotogo/widgets/section.dart';
 
+import '../../admin/admin_data_types.dart';
+import '../../admin/bloc/admin_bloc.dart';
+
 class StatisticsTab extends StatelessWidget {
-  const StatisticsTab({Key? key}) : super(key: key);
+  final AdminService _adminService = AdminService();
+
+  StatisticsTab({Key? key}) : super(key: key);
 
   Widget statisticItem(BuildContext context, String title, final value) {
     return Padding(
@@ -23,14 +31,52 @@ class StatisticsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FotogoSection(
-        title: "General statistics",
-        body: Column(
-          children: [
-            statisticItem(context, "Total users", 4),
-            statisticItem(context, "Total albums", 10),
-            statisticItem(context, "Total images", 24),
-          ],
-        ));
+    return BlocBuilder<AdminBloc, AdminState>(
+      builder: (context, state) {
+        if ((state is StatisticsFetched || state is UsersFetched) &&
+            _adminService.appStatistics != null) {
+          final AppStatistics appStatistics = _adminService.appStatistics!;
+
+          return FotogoSection(
+              title: "General statistics",
+              body: Column(
+                children: [
+                  statisticItem(
+                      context, "Total users", appStatistics.usersCount),
+                  statisticItem(
+                      context, "Total albums", appStatistics.albumsCount),
+                  statisticItem(
+                      context, "Total photos", appStatistics.imagesCount),
+                  statisticItem(
+                      context,
+                      "Average albums per user",
+                      (appStatistics.albumsCount / appStatistics.usersCount)
+                          .round()),
+                  statisticItem(
+                      context,
+                      "Average photos per album",
+                      (appStatistics.imagesCount / appStatistics.albumsCount)
+                          .round()),
+                ],
+              ));
+        } else {
+          // loading
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AppWidgets.fotogoCircularLoadingAnimation(),
+              const SizedBox(height: 20),
+              Text(
+                "Generating statistics...",
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle1
+                    ?.copyWith(fontWeight: FontWeight.normal),
+              )
+            ],
+          );
+        }
+      },
+    );
   }
 }

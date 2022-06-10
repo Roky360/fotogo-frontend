@@ -13,7 +13,7 @@ class AlbumCover extends StatelessWidget {
   final AlbumData data;
   final double borderRadius;
 
-  final Size _size = Size(100.w - pageMargin * 2, 150);
+  final Size _size = Size(100.w - fPageMargin * 2, 150);
   late final double margin = _size.width * .06;
   final double blurAmount = 3;
 

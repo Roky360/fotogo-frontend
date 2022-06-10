@@ -35,6 +35,7 @@ class CreateAlbumPage extends StatelessWidget {
             context,
             content: state.message,
             icon: state.icon,
+            bottomPadding: fSnackBarPaddingFromBNB
           );
         }
       },

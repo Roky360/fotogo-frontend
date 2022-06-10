@@ -39,7 +39,7 @@ class _AppNavigatorState extends State<AppNavigator>
         createAlbumPanelController: PanelController(),
         routes: [
           NavigatorRoute(
-            widget: const HomePage(),
+            widget: HomePage(changeAppNavigatorRoute: onRouteChange),
             icon: Icons.image,
             selectedIcon: Icons.image_outlined,
             title: "Gallery",
@@ -57,7 +57,7 @@ class _AppNavigatorState extends State<AppNavigator>
             title: "People",
           ),
           NavigatorRoute(
-            widget: const ProfilePage(),
+            widget: ProfilePage(),
             icon: Icons.account_circle,
             selectedIcon: Icons.account_circle_outlined,
             title: "Profile",
@@ -79,21 +79,21 @@ class _AppNavigatorState extends State<AppNavigator>
     }
   }
 
-  void navigateToCreateAlbumView() {
-    Navigator.push(context, sharedAxisRoute(widget: CreateAlbumPage()));
-  }
+  // void navigateToCreateAlbumView() {
+  //   Navigator.push(context, MaterialPageRoute(builder:(context) => CreateAlbumPage()));
+  //   // Navigator.push(context, sharedAxisRoute(widget: CreateAlbumPage()));
+  // }
 
   Widget _getBody() {
     return PageTransitionSwitcher(
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 400),
       transitionBuilder: (Widget child, Animation<double> primaryAnimation,
               Animation<double> secondaryAnimation) =>
           FadeThroughTransition(
         animation: primaryAnimation,
         secondaryAnimation: secondaryAnimation,
-        child: child,
-        // fillColor: Colors.greenAccent,
         fillColor: Theme.of(context).colorScheme.background,
+        child: child,
       ),
       child: data.routes[data.routeIndex].widget,
     );
@@ -105,7 +105,8 @@ class _AppNavigatorState extends State<AppNavigator>
       controller: _navigationBarAnimation,
       foregroundColor: Theme.of(context).colorScheme.onPrimary,
       onTabTap: onRouteChange,
-      onMiddleButtonTap: navigateToCreateAlbumView,
+      middleButtonOpensWidget: CreateAlbumPage(),
+      // onMiddleButtonTap: navigateToCreateAlbumView,
     );
   }
 

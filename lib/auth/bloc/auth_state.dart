@@ -34,8 +34,9 @@ class AuthLoading extends AuthState {
 class AuthMessage extends AuthState {
   final String message;
   final FotogoSnackBarIcon icon;
+  final double bottomPadding;
 
-  const AuthMessage(this.message, this.icon);
+  const AuthMessage(this.message, this.icon, {this.bottomPadding = 14});
 
   @override
   bool operator ==(Object other) =>

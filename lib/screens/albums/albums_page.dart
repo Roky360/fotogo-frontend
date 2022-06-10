@@ -120,6 +120,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
   }
 
   Widget _getAlbumCovers() {
+    print("print 1: ${_albumsData.length}");
     if (_albumsData.isEmpty) {
       return Center(
         child: Column(
@@ -139,6 +140,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
         ),
       );
     } else {
+      print("print 2: ${_albumsData.length}");
       return Column(
         children: List.generate(
             _albumsData.length,
@@ -171,6 +173,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
                         if (isDeleted is bool && isDeleted) setState(() {});
                       },
                       closedBuilder: (context, action) {
+                        print("print 3: ${_albumsData.length}");
                         return GestureDetector(
                           onTap: action,
                           child: AlbumCover(
@@ -204,7 +207,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
           SliverFillRemaining(
             hasScrollBody: false,
             child: Padding(
-              padding: const EdgeInsets.all(pageMargin),
+              padding: const EdgeInsets.all(fPageMargin),
               child: Column(
                 children: [
                   Row(

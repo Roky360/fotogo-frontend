@@ -6,6 +6,7 @@ enum RequestType {
   checkUserExists,
   createAccount,
   deleteAccount,
+
   createAlbum,
   syncAlbumDetails,
   getAlbumContents,
@@ -13,8 +14,10 @@ enum RequestType {
   addImagesToAlbum,
   removeImagesFromAlbum,
   deleteAlbum,
-  uploadImage,
-  deleteImage,
+
+  generateStatistics,
+  getUsers,
+  adminDeleteUser,
 
   extAddImagesToAlbum,
   extDeleteAlbum,

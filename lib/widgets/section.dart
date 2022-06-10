@@ -12,7 +12,7 @@ class FotogoSection extends StatelessWidget {
     required this.title,
     required this.body,
     this.padding =
-        const EdgeInsets.only(left: pageMargin, right: pageMargin, top: 35),
+        const EdgeInsets.only(left: fPageMargin, right: fPageMargin, top: 35),
     this.action = const SizedBox(),
   }) : super(key: key);
 

@@ -28,7 +28,7 @@ class CreateAlbumCreating extends StatelessWidget {
             const Spacer(flex: 1),
             // Title text field
             SizedBox(
-                width: 100.w - pageMargin * 2,
+                width: 100.w - fPageMargin * 2,
                 child: TextFormField(
                   controller: TextEditingController()..text = data.title,
                   enabled: false,

@@ -12,10 +12,8 @@ import '../../../single_album/bloc/single_album_bloc.dart';
 class AlbumPhotoView extends StatefulWidget {
   final int index;
   final List<File> fileImages;
-  final SingleAlbumBloc singleAlbumBloc;
 
-  const AlbumPhotoView(this.index,
-      {Key? key, required this.fileImages, required this.singleAlbumBloc})
+  const AlbumPhotoView(this.index, {Key? key, required this.fileImages})
       : super(key: key);
 
   @override
@@ -79,8 +77,7 @@ class _AlbumPhotoViewState extends State<AlbumPhotoView> {
           fotogoPopupMenuButton(
             onSelected: (val) {
               if (val == "Add to...") {
-                FotogoDialogs.showAddToDialog(context, [media[currPageIndex]],
-                    albumBloc: widget.singleAlbumBloc);
+                FotogoDialogs.showAddToDialog(context, [media[currPageIndex]]);
               }
             },
             items: [FotogoMenuItem('Add to...')],
