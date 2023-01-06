@@ -68,36 +68,21 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
 
         emit(const SingleAlbumFetched());
       } else {
-        emit(SingleAlbumMessage(
-            event.response.payload, FotogoSnackBarIcon.error));
+        errorHandler(emit, event.response.payload);
       }
     });
 
     on<UpdateAlbumEvent>((event, emit) {
-      _singleAlbumService.updateAlbum(event.albumData);
+      _singleAlbumService.requestUpdateAlbum(event.albumData);
     });
     on<UpdatedAlbumEvent>((event, emit) {
       if (event.response.statusCode == StatusCode.ok) {
-        final newAlbum = event.request.args['album_data'] as Map;
-        final originalAlbumData =
-            _singleAlbumService.albumsData.firstWhere((element) {
-          return element.data.id == newAlbum['id'];
-        }).data;
-
-        originalAlbumData.title = newAlbum['name'];
-        originalAlbumData.dates = DateTimeRange(
-            start: DateTime.tryParse(newAlbum['date_range'][0]) ??
-                originalAlbumData.dates.start,
-            end: DateTime.tryParse(newAlbum['date_range'][1]) ??
-                originalAlbumData.dates.end);
-        originalAlbumData.lastModified =
-            DateTime.parse(newAlbum['last_modified']);
+        _singleAlbumService.updateAlbum(event.request);
 
         emit(const AlbumUpdated());
         emit(const SingleAlbumFetched());
       } else {
-        emit(const SingleAlbumMessage(
-            "Error updating album.", FotogoSnackBarIcon.error));
+        errorHandler(emit, event.response.payload);
         emit(const SingleAlbumFetched());
       }
     });
@@ -115,8 +100,9 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
         emit(const AlbumUpdated());
         emit(const SingleAlbumFetched());
       } else {
-        emit(const SingleAlbumMessage(
-            "Error adding images.", FotogoSnackBarIcon.error));
+        emit(SingleAlbumMessage(
+            "Could not add images.", FotogoSnackBarIcon.error,
+            exception: event.response.payload));
         emit(const SingleAlbumFetched());
       }
     });
@@ -136,7 +122,8 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
         emit(const SingleAlbumFetched());
       } else {
         emit(const SingleAlbumMessage(
-            "Error removing images.", FotogoSnackBarIcon.error));
+            "Could not remove images.", FotogoSnackBarIcon.error));
+        // errorHandler(emit, event.response.payload);
         emit(const SingleAlbumFetched());
       }
     });
@@ -157,6 +144,20 @@ class SingleAlbumBloc extends Bloc<SingleAlbumEvent, SingleAlbumState> {
             event.response.payload, FotogoSnackBarIcon.error));
       }
     });
+  }
+
+  void errorHandler(Emitter emit, Exception e) {
+    if (e is SocketException) {
+      emit(SingleAlbumMessage(
+          "Could not connect to server. Try checking your internet connection.",
+          FotogoSnackBarIcon.error,
+          exception: e));
+    } else {
+      emit(SingleAlbumMessage(
+          "An unexpected error occurred. Sorry for the inconvenience",
+          FotogoSnackBarIcon.error,
+          exception: e));
+    }
   }
 
   @override

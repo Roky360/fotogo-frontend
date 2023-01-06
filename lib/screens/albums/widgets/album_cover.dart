@@ -1,9 +1,11 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/config/constants/theme_constants.dart';
-import 'package:fotogo/single_album/bloc/single_album_bloc.dart';
 import 'package:fotogo/single_album/external_bloc/ext_single_album_bloc.dart';
 import 'package:fotogo/utils/string_formatting.dart';
+import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:fotogo/widgets/popup_menu_button.dart';
 import 'package:sizer/sizer.dart';
 
@@ -37,6 +39,7 @@ class AlbumCover extends StatelessWidget {
             child: Image(
               // image: MemoryImage(data.coverImage),
               image: NetworkImage(data.coverImage),
+              errorBuilder: AppWidgets.fotogoImageErrorBuilder,
               fit: BoxFit.cover,
               width: _size.width,
               height: _size.height,
@@ -130,7 +133,10 @@ class AlbumCover extends StatelessWidget {
             child: fotogoPopupMenuIconButton(
               iconColor: textFGColor,
               items: [
-                FotogoIconMenuItem('Share', Icons.share),
+                FotogoIconMenuItem('Share', Icons.share,
+                    onTap: () => AppWidgets.fotogoSnackBar(context,
+                        content: "Sharing albums is coming soon!",
+                        bottomPadding: fSnackBarPaddingFromBNB)),
                 FotogoIconMenuItem('Delete', Icons.delete,
                     onTap: () => context
                         .read<ExtSingleAlbumBloc>()

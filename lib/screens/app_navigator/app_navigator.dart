@@ -7,7 +7,6 @@ import 'package:fotogo/screens/app_navigator/app_navigator_data.dart';
 import 'package:fotogo/screens/app_navigator_screens.dart';
 import 'package:fotogo/screens/create_album/create_album_page.dart';
 import 'package:fotogo/widgets/bottom_navigation_bar/bottom_navigation_bar.dart';
-import 'package:fotogo/widgets/shared_axis_route.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../../single_album/external_bloc/ext_single_album_bloc.dart';

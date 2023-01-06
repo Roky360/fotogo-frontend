@@ -31,24 +31,15 @@ class CreateAlbumPage extends StatelessWidget {
         if (state is AlbumCreated) {
           Navigator.popUntil(context, (route) => route.isFirst);
         } else if (state is AlbumCreationMessage) {
-          AppWidgets.fotogoSnackBar(
-            context,
-            content: state.message,
-            icon: state.icon,
-            bottomPadding: fSnackBarPaddingFromBNB
-          );
+          AppWidgets.fotogoSnackBar(context,
+              content: state.message,
+              icon: state.icon,
+              bottomPadding: state.bottomPadding);
         }
       },
       builder: (context, state) {
         if (state is AlbumCreating) {
           return CreateAlbumCreating(data: state.albumCreationData);
-        } else if (state is AlbumCreationMessage) {
-          return Scaffold(
-            body: Center(
-              child: Text(state.message,
-                  style: Theme.of(context).textTheme.subtitle1),
-            ),
-          );
         } else {
           // initial state
           return CreateAlbumInitial(images: images);

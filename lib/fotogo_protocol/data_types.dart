@@ -26,6 +26,10 @@ enum RequestType {
 /// Holds all the possible status codes that the server can return with a
 /// [Response].
 class StatusCode {
+  // connection error
+  static const int networkError = -1;
+
+  // server status codes
   static const int ok = 200;
 
   static const int created = 201;

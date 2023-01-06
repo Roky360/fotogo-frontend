@@ -46,11 +46,14 @@ class _SingleAlbumPage extends StatefulWidget {
 
 class __SingleAlbumPageState extends State<_SingleAlbumPage> {
   final SingleAlbumService _singleAlbumService = SingleAlbumService();
-  final GlobalKey _scaffoldKey = GlobalKey();
+
+  // final GlobalKey _scaffoldKey = GlobalKey();
   late final GlobalKey<FormFieldState> _formKey;
   late final TextEditingController _titleController;
 
-  late final SingleAlbumData albumData;
+  // late final SingleAlbumData albumData;
+  SingleAlbumData get albumData => _singleAlbumService.albumsData
+      .firstWhere((element) => element.data.id == widget.albumId);
 
   late bool firstBuild;
   late bool titleEditingMode;
@@ -58,12 +61,15 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
   late List<int> selectedMedia;
   late Duration animationDuration;
 
+  void Function(void Function())? optionsButtonSetState;
+  bool loaded = false;
+
   @override
   void initState() {
     super.initState();
 
-    albumData = _singleAlbumService.albumsData
-        .firstWhere((element) => element.data.id == widget.albumId);
+    // albumData = _singleAlbumService.albumsData
+    //     .firstWhere((element) => element.data.id == widget.albumId);
 
     firstBuild = true;
     titleEditingMode = false;
@@ -144,9 +150,13 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
       }
 
       if (!mounted) return;
-      final route = AlbumPhotoView(
-        index,
-        fileImages: imageFiles,
+      final route = BlocProvider.value(
+        value: context.read<SingleAlbumBloc>(),
+        child: AlbumPhotoView(
+          index,
+          fileImages: imageFiles,
+          albumId: albumData.data.id,
+        ),
       );
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => route));
@@ -165,6 +175,7 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
           }
           return null;
         },
+        onFieldSubmitted: (_) => onDoneEditingTitle(),
         decoration: InputDecoration(
           hintText: 'Title',
           suffixIcon: IconButton(
@@ -216,13 +227,13 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
       return [
         // add to
         IconButton(
-          onPressed: addTo,
+          onPressed: selectedMedia.isNotEmpty ? addTo : null,
           icon: const Icon(Icons.add),
           tooltip: "Add to...",
         ),
         // delete images
         IconButton(
-          onPressed: deleteImages,
+          onPressed: selectedMedia.isNotEmpty ? deleteImages : null,
           icon: const Icon(Icons.delete),
           tooltip: "Remove images",
         ),
@@ -240,18 +251,40 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
       ];
     } else {
       return [
-        IconButton(
-          onPressed: () => addImagesToAlbum(context),
-          icon: const Icon(Icons.add),
-          tooltip: "Add more photos",
+        StatefulBuilder(
+          builder: (context, _setState) {
+            optionsButtonSetState = _setState;
+            return Row(
+              children: [
+                IconButton(
+                  onPressed: albumData.imagesData != null
+                      ? () => addImagesToAlbum(context)
+                      : null,
+                  icon: const Icon(Icons.add_photo_alternate_outlined),
+                  tooltip: "Add more photos",
+                ),
+                fotogoPopupMenuButton(
+                    enabled: albumData.imagesData != null,
+                    items: [
+                      FotogoMenuItem(
+                        'Select',
+                        onTap: () {
+                          if (albumData.imagesData != null) {
+                            initiateSelectionMode();
+                          }
+                        },
+                      ),
+                      FotogoMenuItem('Rename',
+                          onTap: () => setState(() => titleEditingMode = true)),
+                      FotogoMenuItem('Delete',
+                          onTap: () => context
+                              .read<SingleAlbumBloc>()
+                              .add(DeleteAlbumEvent(albumData.data.id))),
+                    ]),
+              ],
+            );
+          },
         ),
-        fotogoPopupMenuButton(items: [
-          FotogoMenuItem('Select', onTap: initiateSelectionMode),
-          FotogoMenuItem('Delete',
-              onTap: () => context
-                  .read<SingleAlbumBloc>()
-                  .add(DeleteAlbumEvent(albumData.data.id))),
-        ]),
       ];
     }
   }
@@ -269,10 +302,15 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
 
   void addImagesToAlbum(BuildContext context) async {
     final res = await Navigator.push(
-        context, sharedAxisRoute(widget: const FotogoImagePicker()));
+        context,
+        sharedAxisRoute(
+            widget: FotogoImagePicker(
+          selectedImages: albumData.imagesData?.map((e) => e.fileName).toList(),
+          blockSelectedImages: true,
+        )));
 
     if (!mounted) return;
-    if ((res as List<File>).isNotEmpty) {
+    if (res != null) {
       context
           .read<SingleAlbumBloc>()
           .add(AddImagesToAlbumEvent(albumData.data.id, res));
@@ -287,9 +325,8 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
         return;
       }
 
-      context
-          .read<SingleAlbumBloc>()
-          .add(UpdateAlbumEvent(albumData..data.title = _titleController.text));
+      context.read<SingleAlbumBloc>().add(UpdateAlbumEvent(albumData.copyWith(
+          data: albumData.data.copyWith(title: _titleController.text))));
       setState(() {
         titleEditingMode = false;
       });
@@ -299,7 +336,6 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
         child: CustomScrollView(
@@ -333,8 +369,8 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
                       // image: MemoryImage(albumData.data.coverImage),
                       alignment: Alignment.center,
                       width: 100.w,
-
                       fit: BoxFit.cover,
+                      errorBuilder: AppWidgets.fotogoImageErrorBuilder,
                     ),
                     // shade
                     Container(
@@ -397,6 +433,11 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
                         content: state.message,
                         icon: FotogoSnackBarIcon.error,
                         bottomPadding: fSnackBarPaddingFromBNB);
+                  } else if (state is SingleAlbumFetched) {
+                    if (optionsButtonSetState != null && !loaded) {
+                      optionsButtonSetState!(() {});
+                      loaded = true;
+                    }
                   } else if (state is AlbumUpdated) {
                     setState(cancelAllModes);
                   } else if (state is SingleAlbumDeleted) {
@@ -417,6 +458,19 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
                     );
                   } else if (state is SingleAlbumFetched ||
                       state is SingleAlbumDeleted) {
+                    if (albumData.imagesData == null) return const SizedBox();
+                    if (albumData.imagesData!.isEmpty) {
+                      return Padding(
+                        padding: const EdgeInsets.all(fPageMargin),
+                        child: Center(
+                          child: Text(
+                            "Start by adding photos to your album ヽ(✿ﾟ▽ﾟ)ノ",
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                        ),
+                      );
+                    }
+
                     return GridView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
@@ -456,16 +510,20 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
                                     borderRadius: BorderRadius.circular(
                                       selectedMedia.contains(index) ? 15 : 0,
                                     ),
-                                    child: FadeInImage(
-                                      fit: BoxFit.cover,
-                                      fadeInDuration:
-                                          const Duration(milliseconds: 100),
-                                      placeholder:
-                                          MemoryImage(kTransparentImage),
-                                      // image: NetworkImage(
-                                      //     albumData.imagesData![index].data),
-                                      image: MemoryImage(
-                                          albumData.imagesData![index].data),
+                                    child: Hero(
+                                      tag:
+                                          albumData.imagesData![index].fileName,
+                                      child: FadeInImage(
+                                        fit: BoxFit.cover,
+                                        fadeInDuration:
+                                            const Duration(milliseconds: 100),
+                                        placeholder:
+                                            MemoryImage(kTransparentImage),
+                                        // image: NetworkImage(
+                                        //     albumData.imagesData![index].data),
+                                        image: MemoryImage(
+                                            albumData.imagesData![index].data),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -540,7 +598,13 @@ class __SingleAlbumPageState extends State<_SingleAlbumPage> {
                     );
                   } else {
                     // SingleAlbumError state
-                    return Text((state as SingleAlbumMessage).message);
+                    return const Padding(
+                      padding: EdgeInsets.all(fPageMargin),
+                      child: Text(
+                        "There was an error while loading the album's images.",
+                        textAlign: TextAlign.center,
+                      ),
+                    );
                   }
                 },
               ),

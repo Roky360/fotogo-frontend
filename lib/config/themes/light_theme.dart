@@ -31,6 +31,7 @@ final ThemeData lightTheme = ThemeData.light().copyWith(
       errorContainer: Color(0xFFD25555),
       // errorContainer: Color(0xFFC66161),
     ),
+    dividerTheme: DividerThemeData(color: Colors.blueGrey[200]),
 
     // Appbar
     appBarTheme: AppBarTheme(
@@ -86,6 +87,11 @@ final ThemeData lightTheme = ThemeData.light().copyWith(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     )),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      extendedTextStyle: TextStyle(
+          fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.bold),
+      extendedPadding: const EdgeInsets.symmetric(horizontal: 15),
+    ),
 
     // Card
     cardTheme: CardTheme(
@@ -106,7 +112,7 @@ final ThemeData lightTheme = ThemeData.light().copyWith(
       headline5: TextStyle(
         fontFamily: fontFamily,
         color: const Color(0xFF4C76A7),
-        fontSize: 22,
+        fontSize: 20,
         fontWeight: FontWeight.bold,
       ),
       headline6: TextStyle(
@@ -145,10 +151,9 @@ final ThemeData lightTheme = ThemeData.light().copyWith(
     ),
     tooltipTheme: TooltipThemeData(
         textStyle: TextStyle(
-          fontFamily: fontFamily,
-          fontWeight: FontWeight.normal,
-          color: Colors.white
-        ),
+            fontFamily: fontFamily,
+            fontWeight: FontWeight.normal,
+            color: Colors.white),
         decoration: BoxDecoration(
             color: const Color(0xFF0E6092).withOpacity(.75),
             borderRadius: BorderRadius.circular(10),

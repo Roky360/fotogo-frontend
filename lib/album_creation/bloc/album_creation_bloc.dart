@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/album_creation/album_creation_data.dart';
 import 'package:fotogo/album_creation/album_creation_service.dart';
+import 'package:fotogo/config/constants/theme_constants.dart';
 import 'package:fotogo/fotogo_protocol/client_service.dart';
 import 'package:fotogo/fotogo_protocol/data_types.dart';
 import 'package:fotogo/fotogo_protocol/sender.dart';
@@ -50,7 +52,7 @@ class AlbumCreationBloc extends Bloc<AlbumCreationEvent, AlbumCreationState> {
       try {
         _albumCreationService.createAlbum(event._albumCreationData);
       } catch (e) {
-        emit(AlbumCreationMessage(e.toString(), FotogoSnackBarIcon.error));
+        errorHandler(emit, e as Exception);
       }
     });
     on<CreatedAlbumEvent>((event, emit) {
@@ -61,13 +63,27 @@ class AlbumCreationBloc extends Bloc<AlbumCreationEvent, AlbumCreationState> {
 
         emit(AlbumCreationMessage(
             'Album "${(event.request.args['album_data'] as Map)['name']}" created',
-            FotogoSnackBarIcon.success));
+            FotogoSnackBarIcon.success,
+            bottomPadding: fSnackBarPaddingFromBNB));
         emit(const AlbumCreated());
       } else {
-        emit(AlbumCreationMessage(
-            event.response.payload, FotogoSnackBarIcon.error));
+        errorHandler(emit, event.response.payload);
       }
     });
+  }
+
+  void errorHandler(Emitter emit, Exception e) {
+    if (e is SocketException) {
+      emit(AlbumCreationMessage(
+          "Could not connect to server. Try checking your internet connection.",
+          FotogoSnackBarIcon.error,
+          exception: e));
+    } else {
+      emit(AlbumCreationMessage(
+          "An unexpected error occurred. Sorry for the inconvenience",
+          FotogoSnackBarIcon.error,
+          exception: e));
+    }
   }
 
   @override

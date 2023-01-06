@@ -6,8 +6,12 @@ import 'client.dart';
 /// A service for the [Client] class.
 class ClientService {
   final Client _client = Client(
-    host: "vm128.hisham.ru",
-    port: 20200,
+    // host: "46.120.174.27",
+    // host: "192.168.1.196",
+    // host: "192.168.1.162",
+    host: "192.168.211.253",
+    // host: "vm128.hisham.ru",
+    port: 30200,
   );
 
   static final ClientService _clientService = ClientService._();

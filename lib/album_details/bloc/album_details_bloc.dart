@@ -44,14 +44,17 @@ class AlbumDetailsBloc extends Bloc<AlbumDetailsEvent, AlbumDetailsState> {
     });
     add(const AlbumDetailsRegisterDataStreamEvent());
 
-    on<SyncAlbumsDetailsEvent>((event, emit) {
+    on<SyncAlbumsDetailsEvent>((event, emit) async {
       try {
-        _albumDetailsService.syncAlbumsDetails({
+        final res = await _albumDetailsService.syncAlbumsDetails({
           for (var element in _singleAlbumService.albumsData)
             element.data.id: element.data.lastModified.toString()
         });
+        if (res is! bool) throw res;
       } catch (e) {
-        emit(AlbumDetailsError(e.toString()));
+        emit(const AlbumDetailsError(
+            "Could not send a request to sync albums."));
+        emit(const AlbumDetailsFetched());
       }
     });
     on<SyncedAlbumsDetailsEvent>((event, emit) {
@@ -61,8 +64,13 @@ class AlbumDetailsBloc extends Bloc<AlbumDetailsEvent, AlbumDetailsState> {
 
         emit(const AlbumDetailsInitial());
         emit(const AlbumDetailsFetched());
+      } else if (event.response.statusCode == StatusCode.networkError) {
+        emit(const AlbumDetailsError("Could not connect to server.\n"
+            "The data displayed may be outdated."));
+        emit(const AlbumDetailsFetched());
       } else {
         emit(AlbumDetailsError(event.response.payload));
+        emit(const AlbumDetailsFetched());
       }
     });
   }

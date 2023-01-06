@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:fotogo/auth/user/user_provider.dart';
 import 'package:fotogo/fotogo_protocol/client_service.dart';
 import 'package:fotogo/fotogo_protocol/data_types.dart';
@@ -63,7 +64,7 @@ class SingleAlbumService {
             ));
   }
 
-  void updateAlbum(SingleAlbumData albumData) async {
+  void requestUpdateAlbum(SingleAlbumData albumData) async {
     _clientService.sendRequest(AlbumSender.updateAlbum(Request(
         requestType: RequestType.updateAlbum,
         idToken: await _userProvider.idToken,
@@ -79,6 +80,23 @@ class SingleAlbumService {
             'permitted_users': albumData.data.permittedUsers
           }
         })));
+  }
+
+  void updateAlbum(Request request) {
+    final newAlbum = request.args['album_data'] as Map;
+    final originalAlbumData =
+        _singleAlbumService.albumsData.firstWhere((element) {
+          return element.data.id == newAlbum['id'];
+        }).data;
+
+    originalAlbumData.title = newAlbum['name'];
+    originalAlbumData.dates = DateTimeRange(
+        start: DateTime.tryParse(newAlbum['date_range'][0]) ??
+            originalAlbumData.dates.start,
+        end: DateTime.tryParse(newAlbum['date_range'][1]) ??
+            originalAlbumData.dates.end);
+    originalAlbumData.lastModified =
+        DateTime.parse(newAlbum['last_modified']);
   }
 
   void addImagesToAlbum(String albumId, List<File> imagesToAdd) async {

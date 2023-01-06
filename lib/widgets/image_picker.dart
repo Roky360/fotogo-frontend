@@ -8,7 +8,15 @@ import 'package:transparent_image/transparent_image.dart';
 
 /// A custom interactive image picker.
 class FotogoImagePicker extends StatefulWidget {
-  const FotogoImagePicker({Key? key}) : super(key: key);
+  /// Filenames of the images
+  late final List<String> selectedImages;
+  final bool blockSelectedImages;
+
+  FotogoImagePicker(
+      {Key? key, selectedImages, this.blockSelectedImages = false})
+      : super(key: key) {
+    this.selectedImages = selectedImages ?? [];
+  }
 
   @override
   State<StatefulWidget> createState() => _FotogoImagePickerState();
@@ -29,17 +37,26 @@ class _FotogoImagePickerState extends State<FotogoImagePicker> {
 
     animationDuration = const Duration(milliseconds: 200);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => loadImages());
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await loadImages();
+      initializeSelectedImages();
+      setState(() {});
+    });
   }
 
-  void loadImages() async {
+  Future<void> loadImages() async {
     List<Album> albums =
         await PhotoGallery.listAlbums(mediumType: MediumType.image);
     Album allAlbum = albums.firstWhere((element) => element.id == '__ALL__');
     MediaPage mediaPage = await allAlbum.listMedia();
-    setState(() {
-      media = mediaPage.items;
-    });
+    media = mediaPage.items;
+  }
+
+  void initializeSelectedImages() {
+    for (final i in widget.selectedImages) {
+      final index = media!.indexWhere((element) => element.filename == i);
+      if (index != -1) selectedMedia.add(index);
+    }
   }
 
   void toggleSelection(int index) {
@@ -50,28 +67,17 @@ class _FotogoImagePickerState extends State<FotogoImagePicker> {
     });
   }
 
-  void selectAll() {
-    setState(() {
-      selectedMedia = List.empty(growable: true);
-      for (int i = 0; i < media!.length; i++) {
-        selectedMedia.add(i);
-      }
-    });
-  }
-
-  void deselectAll() {
-    setState(() {
-      selectedMedia = List.empty(growable: true);
-    });
-  }
-
   void onDone() async {
     List<File> images = [];
 
-    for (var element in selectedMedia) {
-      images.add(await media![element].getFile());
+    for (final int element in selectedMedia) {
+      if (!widget.blockSelectedImages ||
+          !widget.selectedImages.contains(media![element].filename)) {
+        images.add(await media![element].getFile());
+      }
     }
 
+    if (!mounted) return;
     Navigator.pop(context, images);
   }
 
@@ -87,23 +93,9 @@ class _FotogoImagePickerState extends State<FotogoImagePicker> {
         // cancel selection mode
         leading: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () {
-            selectedMedia = List.empty(growable: true);
-            onDone();
-          },
+          onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          media != null && selectedMedia.length == media!.length
-              ? IconButton(
-                  icon: const Icon(Icons.deselect),
-                  tooltip: "Deselect all",
-                  onPressed: deselectAll,
-                )
-              : IconButton(
-                  icon: const Icon(Icons.select_all),
-                  tooltip: "Select all",
-                  onPressed: selectAll,
-                ),
           IconButton(
             icon: const Icon(Icons.done),
             tooltip: 'Done',
@@ -124,7 +116,11 @@ class _FotogoImagePickerState extends State<FotogoImagePicker> {
                     .entries
                     .map(
                       (entry) => GestureDetector(
-                        onTap: () => toggleSelection(entry.key),
+                        onTap: widget.blockSelectedImages &&
+                                widget.selectedImages
+                                    .contains(entry.value.filename)
+                            ? null
+                            : () => toggleSelection(entry.key),
                         child: Stack(
                           fit: StackFit.expand,
                           children: [
@@ -139,19 +135,15 @@ class _FotogoImagePickerState extends State<FotogoImagePicker> {
                                   borderRadius: BorderRadius.circular(
                                     selectedMedia.contains(entry.key) ? 15 : 0,
                                   ),
-                                  child: Hero(
-                                    tag: entry.value.id,
-                                    child: FadeInImage(
-                                      fit: BoxFit.cover,
-                                      fadeInDuration:
-                                          const Duration(milliseconds: 200),
-                                      placeholder:
-                                          MemoryImage(kTransparentImage),
-                                      image: ThumbnailProvider(
-                                        mediumId: entry.value.id,
-                                        mediumType: entry.value.mediumType,
-                                        highQuality: true,
-                                      ),
+                                  child: FadeInImage(
+                                    fit: BoxFit.cover,
+                                    fadeInDuration:
+                                        const Duration(milliseconds: 200),
+                                    placeholder: MemoryImage(kTransparentImage),
+                                    image: ThumbnailProvider(
+                                      mediumId: entry.value.id,
+                                      mediumType: entry.value.mediumType,
+                                      highQuality: true,
                                     ),
                                   ),
                                 ),

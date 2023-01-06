@@ -57,6 +57,7 @@ class StatisticsTab extends StatelessWidget {
                       "Average photos per album",
                       (appStatistics.imagesCount / appStatistics.albumsCount)
                           .round()),
+                  const SizedBox(height: 75),
                 ],
               ));
         } else {

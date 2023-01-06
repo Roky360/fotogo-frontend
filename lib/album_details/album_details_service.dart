@@ -39,16 +39,20 @@ class AlbumDetailsService {
 
   /// The requested albums to check if they're up-to-date
   /// [{'single_album id': 'last modified datetime object'}]
-  void syncAlbumsDetails(Map<String, String>? requestedAlbums) async {
-    // TODO:
-    _clientService.sendRequest(AlbumDetailsSender.syncAlbumDetails(Request(
-        requestType: RequestType.syncAlbumDetails,
-        idToken: await _userProvider.idToken,
-        args: requestedAlbums != null
-            ? {
-                'requested_albums': requestedAlbums,
-              }
-            : null)));
+  Future<Object> syncAlbumsDetails(Map<String, String>? requestedAlbums) async {
+    try {
+      _clientService.sendRequest(AlbumDetailsSender.syncAlbumDetails(Request(
+          requestType: RequestType.syncAlbumDetails,
+          idToken: await _userProvider.idToken,
+          args: requestedAlbums != null
+              ? {
+                  'requested_albums': requestedAlbums,
+                }
+              : null)));
+      return true;
+    } catch (e) {
+      return e;
+    }
   }
 
   void updateAlbumDetailsByResponse(Response response) {

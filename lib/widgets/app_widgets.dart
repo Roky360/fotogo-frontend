@@ -1,4 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fotogo/auth/user/user_provider.dart';
@@ -126,9 +127,29 @@ class AppWidgets {
             radius: radius,
             backgroundImage: NetworkImage(userProvider.photoUrl ?? ''),
             backgroundColor: Colors.transparent,
+            // backgroundColor: Colors.grey[400],
+            onBackgroundImageError: (_, __) {
+              return;
+            },
           ),
         ],
       ),
+    );
+  }
+
+  static Widget fotogoImageErrorBuilder(
+      BuildContext context, Object exception, StackTrace? stackTrace) {
+    return Stack(
+      children: [
+        AppWidgets.fotogoLogoCircle(height: 100.w),
+        Positioned.fill(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(
+                sigmaX: 15, sigmaY: 6, tileMode: TileMode.mirror),
+            child: const SizedBox(),
+          ),
+        ),
+      ],
     );
   }
 
@@ -136,6 +157,7 @@ class AppWidgets {
       {required String content,
       FotogoSnackBarIcon icon = FotogoSnackBarIcon.fotogo,
       double bottomPadding = fSnackBarDefaultPadding}) {
+    ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 11),

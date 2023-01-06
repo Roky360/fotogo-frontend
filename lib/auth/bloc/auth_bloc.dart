@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -69,7 +70,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _userProvider.signIn(_googleSignInProvider.user!);
         add(CheckUserExistsEvent(_userProvider.id));
       } catch (e) {
-        emit(AuthMessage(e.toString(), FotogoSnackBarIcon.error));
+        errorHandler(emit, e as Exception);
         add(const SignOutEvent());
       }
     });
@@ -80,19 +81,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         if (!(await _googleSignInProvider.loginSilently())) {
           // signed out
-          emit(const SignedOut());
+          add(const SignOutEvent());
           return;
         }
         _userProvider.signIn(_googleSignInProvider.user!);
         add(CheckUserExistsEvent(_userProvider.id));
       } catch (e) {
-        emit(AuthMessage(e.toString(), FotogoSnackBarIcon.error));
+        errorHandler(emit, e as Exception);
         add(const SignOutEvent());
       }
     });
 
     on<CheckUserExistsEvent>((event, emit) {
-      _authService.checkUserExists(event.userId);
+      try {
+        _authService.checkUserExists(event.userId);
+      } catch (e) {
+        errorHandler(emit, e as Exception);
+        emit(const SignedOut());
+      }
     });
     on<CheckedUserExistsEvent>((event, emit) {
       if (event.response.statusCode == StatusCode.ok) {
@@ -107,14 +113,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             emit(const UserSignedIn());
             break;
           default:
-            emit(const AuthMessage(
-                "An error occurred while signing in. Please try again later.",
-                FotogoSnackBarIcon.error));
+            errorHandler(emit, event.response.payload);
             add(const SignOutEvent());
             break;
         }
       } else {
-        emit(AuthMessage(event.response.payload, FotogoSnackBarIcon.error));
+        errorHandler(emit, event.response.payload);
         add(const SignOutEvent());
       }
     });
@@ -130,7 +134,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _singleAlbumService.clear();
         emit(const SignedOut());
       } catch (e) {
-        emit(AuthMessage(e.toString(), FotogoSnackBarIcon.error));
+        errorHandler(emit, e as Exception);
         emit(const SignedOut());
       }
     });
@@ -141,7 +145,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         _authService.createAccount();
       } catch (e) {
-        emit(AuthMessage(e.toString(), FotogoSnackBarIcon.error));
+        errorHandler(emit, e as Exception);
         emit(const SignedOut());
       }
     });
@@ -153,7 +157,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             bottomPadding: fSnackBarPaddingFromBNB));
         emit(const UserSignedIn());
       } else {
-        emit(AuthMessage(event.response.payload, FotogoSnackBarIcon.error));
+        errorHandler(emit, event.response.payload);
         add(const SignOutEvent());
       }
     });
@@ -164,7 +168,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         _authService.deleteAccount();
       } catch (e) {
-        emit(AuthMessage(e.toString(), FotogoSnackBarIcon.error));
+        errorHandler(emit, e as Exception);
       }
     });
     on<DeletedAccountEvent>((event, emit) {
@@ -172,10 +176,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(const AuthMessage("Account Deleted", FotogoSnackBarIcon.info));
         add(const SignOutEvent());
       } else {
-        emit(AuthMessage(event.response.payload, FotogoSnackBarIcon.error));
+        errorHandler(emit, event.response.payload);
         add(const SignOutEvent());
       }
     });
+  }
+
+  void errorHandler(Emitter emit, Exception e) {
+    if (e is SocketException) {
+      emit(AuthMessage(
+          "Could not connect to server. Try checking your internet connection.",
+          FotogoSnackBarIcon.error,
+          exception: e));
+    } else {
+      emit(AuthMessage(
+          "An unexpected error occurred. Sorry for the inconvenience",
+          FotogoSnackBarIcon.error,
+          exception: e));
+    }
+    throw e;
   }
 
   @override

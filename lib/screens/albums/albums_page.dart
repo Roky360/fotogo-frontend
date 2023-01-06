@@ -120,7 +120,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
   }
 
   Widget _getAlbumCovers() {
-    print("print 1: ${_albumsData.length}");
+    // print("print 1: ${_albumsData.length}");
     if (_albumsData.isEmpty) {
       return Center(
         child: Column(
@@ -140,28 +140,12 @@ class _AlbumsPageState extends State<AlbumsPage> {
         ),
       );
     } else {
-      print("print 2: ${_albumsData.length}");
+      // print("print 2: ${_albumsData.length}");
       return Column(
         children: List.generate(
             _albumsData.length,
             (index) => Column(
                   children: [
-                    // GestureDetector(
-                    //   onTap: () async {
-                    //     final String albumId = _albumsData[index].data.id;
-                    //     await Navigator.push(context,
-                    //         MaterialPageRoute(builder: (BuildContext context) {
-                    //       return SingleAlbumPage(albumId: albumId);
-                    //     }));
-                    //
-                    //     if (_albumsData.indexWhere(
-                    //             (element) => element.data.id == albumId) ==
-                    //         -1) setState(() {});
-                    //   },
-                    //   child: AlbumCover(
-                    //     data: _albumsData[index].data,
-                    //   ),
-                    // ),
                     OpenContainer<bool>(
                       transitionType: ContainerTransitionType.fade,
                       transitionDuration: const Duration(milliseconds: 400),
@@ -173,7 +157,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
                         if (isDeleted is bool && isDeleted) setState(() {});
                       },
                       closedBuilder: (context, action) {
-                        print("print 3: ${_albumsData.length}");
+                        // print("print 3: ${_albumsData.length}");
                         return GestureDetector(
                           onTap: action,
                           child: AlbumCover(
@@ -221,23 +205,6 @@ class _AlbumsPageState extends State<AlbumsPage> {
                       ),
                       const Spacer(),
                       getSortDropdown(),
-
-                      // fotogoPopupMenuIconButton(
-                      //   icon: Icons.sort,
-                      //   tooltip: 'Sort',
-                      //   items: [
-                      //     FotogoIconMenuItem('By title', Icons.sort_by_alpha,
-                      //         onTap: () => setState(
-                      //             () => _albumDetailsService.sortByName())),
-                      //     FotogoIconMenuItem(
-                      //         'By dates', Icons.calendar_view_day_outlined,
-                      //         onTap: () => setState(
-                      //             () => _albumDetailsService.sortByDates())),
-                      //     FotogoIconMenuItem('By last modified', Icons.edit_outlined,
-                      //         onTap: () => setState(() =>
-                      //             _albumDetailsService.sortByLastModified())),
-                      //   ],
-                      // )
                     ],
                   ),
                   const SizedBox(height: 30),
@@ -253,6 +220,9 @@ class _AlbumsPageState extends State<AlbumsPage> {
                                 listener: (context, state) {
                               if (state is AlbumCreated) {
                                 // _insertItem(_albumsData.length - 1);
+                                context
+                                    .read<AlbumDetailsBloc>()
+                                    .add(const SyncAlbumsDetailsEvent());
                                 sortingFilter();
                                 setState(() {});
                               }
@@ -264,6 +234,11 @@ class _AlbumsPageState extends State<AlbumsPage> {
                                   state is ExtUpdatedAlbum) {
                                 // _removeItem(state.deletedIndex);
                                 setState(() {});
+                              } else if (state is ExtSingleAlbumMessage) {
+                                AppWidgets.fotogoSnackBar(context,
+                                    icon: state.icon,
+                                    content: state.message,
+                                    bottomPadding: fSnackBarPaddingFromBNB);
                               }
                             }),
                           ],
@@ -272,18 +247,27 @@ class _AlbumsPageState extends State<AlbumsPage> {
                             listener: (context, state) {
                               if (state is AlbumDetailsFetched) {
                                 setState(() {});
+                              } else if (state is AlbumDetailsError) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                AppWidgets.fotogoSnackBar(context,
+                                    content: state.message,
+                                    icon: FotogoSnackBarIcon.error,
+                                    bottomPadding: fSnackBarPaddingFromBNB);
                               }
                             },
                             builder: (context, state) {
-                              if (state is AlbumDetailsFetched) {
+                              if (state is AlbumDetailsFetched ||
+                                  state is AlbumDetailsError) {
                                 sortingFilter();
                                 return _getAlbumCovers();
-                              } else if (state is AlbumDetailsError) {
+                              }
+                              /*else if (state is AlbumDetailsError) {
                                 return Text(
-                                  state.message,
+                                  "Could not load albums",
                                   style: Theme.of(context).textTheme.headline6,
                                 );
-                              } else {
+                              }*/
+                              else {
                                 // initial state - loading
                                 return Column(
                                   children: [

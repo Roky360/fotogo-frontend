@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/widgets/dialogs.dart';
 import 'package:fotogo/widgets/popup_menu_button.dart';
@@ -12,8 +13,10 @@ import '../../../single_album/bloc/single_album_bloc.dart';
 class AlbumPhotoView extends StatefulWidget {
   final int index;
   final List<File> fileImages;
+  final String albumId;
 
-  const AlbumPhotoView(this.index, {Key? key, required this.fileImages})
+  const AlbumPhotoView(this.index,
+      {Key? key, required this.fileImages, required this.albumId})
       : super(key: key);
 
   @override
@@ -24,7 +27,7 @@ class _AlbumPhotoViewState extends State<AlbumPhotoView> {
   late final List<File> media;
   late int currPageIndex;
 
-  late PhotoViewController controller;
+  late final PhotoViewController controller;
   late PageController pageController;
 
   @override
@@ -36,11 +39,17 @@ class _AlbumPhotoViewState extends State<AlbumPhotoView> {
     controller = PhotoViewController();
     pageController = PageController(initialPage: widget.index);
     currPageIndex = widget.index;
+
+    SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(statusBarColor: Colors.black45));
   }
 
   @override
   void dispose() {
     super.dispose();
+
+    controller.dispose();
+    pageController.dispose();
 
     // exit full screen mode
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
@@ -71,22 +80,30 @@ class _AlbumPhotoViewState extends State<AlbumPhotoView> {
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+          onPressed: () => Navigator.pop(context),
         ),
         actions: [
           fotogoPopupMenuButton(
             onSelected: (val) {
               if (val == "Add to...") {
-                FotogoDialogs.showAddToDialog(context, [media[currPageIndex]]);
+                FotogoDialogs.showAddToDialog(context, [media[currPageIndex]],
+                    disabledAlbumId: widget.albumId);
+              } else if (val == 'Remove from album') {
+                context.read<SingleAlbumBloc>().add(RemoveImagesFromAlbumEvent(
+                    widget.albumId,
+                    [media[currPageIndex].uri.pathSegments.last]));
+                Navigator.pop(context);
               }
             },
-            items: [FotogoMenuItem('Add to...')],
+            items: [
+              FotogoMenuItem('Add to...'),
+              FotogoMenuItem('Remove from album'),
+            ],
           ),
         ],
       ),
       body: PhotoViewGallery.builder(
         pageController: pageController,
-        scrollPhysics: const BouncingScrollPhysics(),
         itemCount: media.length,
         onPageChanged: (index) => currPageIndex = index,
         builder: (context, index) {

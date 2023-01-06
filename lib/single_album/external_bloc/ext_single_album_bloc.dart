@@ -31,7 +31,6 @@ class ExtSingleAlbumBloc
       dataStreamSubscription =
           _clientService.registerToDataStreamController((event) {
         if (event is! AlbumSender) return;
-        print(event.requestType);
 
         switch (event.requestType) {
           case RequestType.extAddImagesToAlbum:
@@ -57,13 +56,13 @@ class ExtSingleAlbumBloc
 
       if (sender.response.statusCode == StatusCode.ok) {
         _singleAlbumService.updateAddedImages(
-            sender.request.args['album_id'].toString(), sender.request.payload,
+            sender.request.args['album_id'].toString(),
+            sender.request.payload,
             DateTime.parse(sender.request.args['last_modified'].toString()));
 
         emit(const ExtUpdatedAlbum());
       } else {
-        emit(const ExtSingleAlbumMessage(
-            "Error adding images.", FotogoSnackBarIcon.error));
+        errorHandler(emit, sender.response.payload);
       }
     });
 
@@ -81,10 +80,23 @@ class ExtSingleAlbumBloc
             'Album deleted', FotogoSnackBarIcon.info));
         emit(ExtSingleAlbumDeleted(index));
       } else {
-        emit(ExtSingleAlbumMessage(
-            sender.response.payload, FotogoSnackBarIcon.error));
+        errorHandler(emit, sender.response.payload);
       }
     });
+  }
+
+  void errorHandler(Emitter emit, Exception e) {
+    if (e is SocketException) {
+      emit(ExtSingleAlbumMessage(
+          "Could not connect to server. Try checking your internet connection.",
+          FotogoSnackBarIcon.error,
+          exception: e));
+    } else {
+      emit(ExtSingleAlbumMessage(
+          "An unexpected error occurred. Sorry for the inconvenience",
+          FotogoSnackBarIcon.error,
+          exception: e));
+    }
   }
 
   @override

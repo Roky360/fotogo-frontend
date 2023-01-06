@@ -14,6 +14,7 @@ class AlbumData {
 
   // TODO: url or whole image file?
   final String coverImage;
+
   // final Uint8List coverImage;
   DateTime lastModified;
 
@@ -24,4 +25,20 @@ class AlbumData {
       required this.permittedUsers,
       required this.coverImage,
       required this.lastModified});
+
+  AlbumData copyWith(
+      {String? id,
+      String? title,
+      DateTimeRange? dates,
+      List<String>? permittedUsers,
+      String? coverImage,
+      DateTime? lastModified}) {
+    return AlbumData(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        dates: dates ?? this.dates,
+        coverImage: coverImage ?? this.coverImage,
+        lastModified: lastModified ?? this.lastModified,
+        permittedUsers: permittedUsers ?? this.permittedUsers);
+  }
 }

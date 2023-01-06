@@ -26,6 +26,7 @@ class SingleAlbumDeleted extends SingleAlbumState {
 class SingleAlbumMessage extends SingleAlbumState {
   final String message;
   final FotogoSnackBarIcon icon;
+  final Exception? exception;
 
-  const SingleAlbumMessage(this.message, this.icon);
+  const SingleAlbumMessage(this.message, this.icon, {this.exception});
 }

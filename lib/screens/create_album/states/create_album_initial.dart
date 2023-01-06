@@ -41,11 +41,15 @@ class _CreateAlbumInitialState extends State<CreateAlbumInitial> {
   void openGalleryPicker() async {
     // TODO: can add same image multiple times, fix this
     final res = await Navigator.push(
-        context, sharedAxisRoute(widget: const FotogoImagePicker()));
+        context,
+        sharedAxisRoute(
+            widget: FotogoImagePicker(
+                selectedImages:
+                    images.map((e) => e.uri.pathSegments.last).toList())));
 
     if (res != null) {
       setState(() {
-        images += res;
+        images = res;
       });
     }
   }
@@ -130,9 +134,9 @@ class _CreateAlbumInitialState extends State<CreateAlbumInitial> {
               FotogoSection(
                 title: 'People',
                 body: TextButton(
-                    onPressed: () {},
+                    onPressed: null,
                     style: Theme.of(context).textButtonTheme.style,
-                    child: const Text('Add people to your album')),
+                    child: const Text('Add people (COMING SOON)')),
               ),
               const Spacer(flex: 1),
               FotogoSection(
@@ -175,8 +179,6 @@ class _CreateAlbumInitialState extends State<CreateAlbumInitial> {
           children: [
             ElevatedButton(
               onPressed: onSubmit,
-              style: Theme.of(context).elevatedButtonTheme.style,
-              // onPressed: onSubmit,
               child: const Text('Create album'),
             ),
           ],

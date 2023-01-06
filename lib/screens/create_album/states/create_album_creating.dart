@@ -8,14 +8,11 @@ class CreateAlbumCreating extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          onPressed: null,
-          icon: const Icon(Icons.close),
-          color: Theme.of(context).colorScheme.primary,
-        ),
+        leading: CloseButton(color: Theme.of(context).colorScheme.primary),
       ),
       body: SafeArea(
         child: Column(
@@ -23,24 +20,27 @@ class CreateAlbumCreating extends StatelessWidget {
             // Panel title
             Text(
               'Create album',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.headline4,
             ),
             const Spacer(flex: 1),
             // Title text field
             SizedBox(
                 width: 100.w - fPageMargin * 2,
                 child: TextFormField(
-                  controller: TextEditingController()..text = data.title,
                   enabled: false,
+                  controller: TextEditingController()..text = data.title,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.fromLTRB(3, 20, 0, 0),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary),
+                    ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
                           color: Theme.of(context).colorScheme.primary),
                     ),
                   ),
                   style: Theme.of(context).textTheme.headline5,
-                  textCapitalization: TextCapitalization.sentences,
                 )),
             // const SizedBox(height: 35),
             const Spacer(flex: 1),
@@ -49,8 +49,8 @@ class CreateAlbumCreating extends StatelessWidget {
               title: 'People',
               body: TextButton(
                   onPressed: null,
-                  child: const Text('Add people to your album'),
-                  style: Theme.of(context).textButtonTheme.style),
+                  style: Theme.of(context).textButtonTheme.style,
+                  child: const Text('Add people (COMING SOON)')),
             ),
             const Spacer(flex: 1),
             FotogoSection(
@@ -66,22 +66,28 @@ class CreateAlbumCreating extends StatelessWidget {
                   children: List.generate(
                       data.imagesFiles.length,
                       (index) => Image(
-                            image: FileImage(data.imagesFiles[index]),
+                            image:
+                                FileImage(data.imagesFiles[index], scale: .1),
                             fit: BoxFit.cover,
                           )),
                 ),
               ),
             ),
             // SizedBox(height: 25.h),
-            const Spacer(flex: 3),
-            // Submit button
+            const Spacer(flex: 10),
+          ],
+        ),
+      ),
+      // Submit button
+      bottomSheet: Padding(
+        padding: const EdgeInsets.only(bottom: fPageMargin * 3, top: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
             ElevatedButton(
               onPressed: null,
-              // onPressed: onSubmit,
               child: AppWidgets.fotogoCircularLoadingAnimation(),
-              style: Theme.of(context).elevatedButtonTheme.style,
             ),
-            const Spacer(flex: 4),
           ],
         ),
       ),

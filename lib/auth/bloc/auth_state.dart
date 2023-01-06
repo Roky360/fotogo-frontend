@@ -35,8 +35,10 @@ class AuthMessage extends AuthState {
   final String message;
   final FotogoSnackBarIcon icon;
   final double bottomPadding;
+  final Exception? exception;
 
-  const AuthMessage(this.message, this.icon, {this.bottomPadding = 14});
+  const AuthMessage(this.message, this.icon,
+      {this.bottomPadding = 14, this.exception});
 
   @override
   bool operator ==(Object other) =>

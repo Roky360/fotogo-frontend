@@ -27,16 +27,9 @@ class AlbumCreated extends AlbumCreationState {
 class AlbumCreationMessage extends AlbumCreationState {
   final String message;
   final FotogoSnackBarIcon icon;
+  final Exception? exception;
+  final double bottomPadding;
 
-  const AlbumCreationMessage(this.message, this.icon);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is AlbumCreationMessage &&
-          runtimeType == other.runtimeType &&
-          message == other.message;
-
-  @override
-  int get hashCode => message.hashCode;
+  const AlbumCreationMessage(this.message, this.icon,
+      {this.exception, this.bottomPadding = fSnackBarDefaultPadding});
 }

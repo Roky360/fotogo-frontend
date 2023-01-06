@@ -1,13 +1,13 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fotogo/admin/admin_service.dart';
 import 'package:fotogo/admin/bloc/admin_bloc.dart';
 import 'package:fotogo/auth/user/user_provider.dart';
 import 'package:fotogo/screens/admin/statistics_tab.dart';
 import 'package:fotogo/screens/admin/users_tab.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../auth/bloc/auth_bloc.dart';
 import '../../config/constants/theme_constants.dart';
@@ -21,14 +21,21 @@ class AdminPage extends StatefulWidget {
 
 class _AdminPageState extends State<AdminPage> with TickerProviderStateMixin {
   final UserProvider _userProvider = UserProvider();
-  final AdminService _adminService = AdminService();
   late final TabController _tabController;
   late final PageController _tabsPageController;
 
   final Duration _tabAnimationDuration = const Duration(milliseconds: 400);
   final double _tabRadius = 15;
 
-  // late final List<Widget> _tabs;
+  void launchFirebaseUrl(BuildContext context) async {
+    final Uri firebaseConsoleUrl = Uri.parse(
+        "https://console.firebase.google.com/u/0/project/fotogo-5e99f/overview");
+
+    if (!await launchUrl(firebaseConsoleUrl,
+        mode: LaunchMode.externalApplication)) {
+      AppWidgets.fotogoSnackBar(context, content: "Could not launch URL.");
+    }
+  }
 
   Widget getTopBar(BuildContext context) {
     return Padding(
@@ -108,52 +115,60 @@ class _AdminPageState extends State<AdminPage> with TickerProviderStateMixin {
               content: state.message, icon: state.snackBarIcon);
         }
       },
-      child: Column(
-        children: [
-          getTopBar(context),
-          // tab bar
-          Theme(
-            data: ThemeData().copyWith(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent),
-            child: TabBar(
-              controller: _tabController,
-              onTap: (index) => _tabsPageController.animateToPage(index,
-                  duration: _tabAnimationDuration, curve: Curves.easeInOutCirc),
-              tabs: const [
-                Tab(text: "Statistics"),
-                Tab(text: "Users"),
-              ],
-              labelColor: Theme.of(context).colorScheme.onSurface,
-              labelStyle: Theme.of(context).textTheme.subtitle1,
-              padding: const EdgeInsets.symmetric(horizontal: fPageMargin),
-              indicator: RectangularIndicator(
-                color: Theme.of(context).colorScheme.onPrimary,
-                topLeftRadius: _tabRadius,
-                topRightRadius: _tabRadius,
-                bottomLeftRadius: _tabRadius,
-                bottomRightRadius: _tabRadius,
-                horizontalPadding: 12,
+      child: Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => launchFirebaseUrl(context),
+          label: const Text('Firebase console'),
+          icon: const Icon(Icons.dashboard),
+        ),
+        body: Column(
+          children: [
+            getTopBar(context),
+            // tab bar
+            Theme(
+              data: ThemeData().copyWith(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent),
+              child: TabBar(
+                controller: _tabController,
+                onTap: (index) => _tabsPageController.animateToPage(index,
+                    duration: _tabAnimationDuration,
+                    curve: Curves.easeInOutCirc),
+                tabs: const [
+                  Tab(text: "Statistics"),
+                  Tab(text: "Users"),
+                ],
+                labelColor: Theme.of(context).colorScheme.onSurface,
+                labelStyle: Theme.of(context).textTheme.subtitle1,
+                padding: const EdgeInsets.symmetric(horizontal: fPageMargin),
+                indicator: RectangularIndicator(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  topLeftRadius: _tabRadius,
+                  topRightRadius: _tabRadius,
+                  bottomLeftRadius: _tabRadius,
+                  bottomRightRadius: _tabRadius,
+                  horizontalPadding: 12,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: fPageMargin + 10),
-          Expanded(
-              child: Container(
-            alignment: Alignment.topCenter,
-            padding: const EdgeInsets.all(0),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.onPrimary.withOpacity(.7),
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(30)),
-            ),
-            child: PageView(
-              controller: _tabsPageController,
-              onPageChanged: (index) => _tabController.animateTo(index),
-              children: [StatisticsTab(), UsersTab()],
-            ),
-          ))
-        ],
+            const SizedBox(height: fPageMargin + 10),
+            Expanded(
+                child: Container(
+              alignment: Alignment.topCenter,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.onPrimary.withOpacity(.7),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(30)),
+              ),
+              child: PageView(
+                controller: _tabsPageController,
+                onPageChanged: (index) => _tabController.animateTo(index),
+                children: [StatisticsTab(), const UsersTab()],
+              ),
+            )),
+          ],
+        ),
       ),
     );
   }

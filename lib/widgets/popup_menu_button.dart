@@ -5,14 +5,16 @@ void _f() {}
 class FotogoMenuItem {
   final String name;
   final VoidCallback onTap;
+  final bool enabled;
 
-  FotogoMenuItem(this.name, {this.onTap = _f});
+  FotogoMenuItem(this.name, {this.onTap = _f, this.enabled = true});
 }
 
 class FotogoIconMenuItem extends FotogoMenuItem {
   final IconData icon;
 
-  FotogoIconMenuItem(name, this.icon, {onTap = _f}) : super(name, onTap: onTap);
+  FotogoIconMenuItem(name, this.icon, {onTap = _f, enabled = true})
+      : super(name, onTap: onTap, enabled: enabled);
 }
 
 // TODO: make factory for both constructors + . constructor (popupMenu.icon())
@@ -22,8 +24,10 @@ Widget fotogoPopupMenuIconButton({
   Color? iconColor,
   Color? foregroundColor,
   String tooltip = "More options",
+  bool enabled = true,
 }) {
   return PopupMenuButton<String>(
+    enabled: enabled,
     icon: Icon(icon, color: iconColor),
     tooltip: tooltip,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -31,6 +35,7 @@ Widget fotogoPopupMenuIconButton({
     itemBuilder: (context) {
       return items
           .map((e) => PopupMenuItem<String>(
+                enabled: e.enabled,
                 value: e.name,
                 onTap: e.onTap,
                 child: Row(
@@ -64,8 +69,10 @@ Widget fotogoPopupMenuButton({
   Color? foregroundColor,
   void Function(String)? onSelected,
   String tooltip = "More options",
+  bool enabled = true,
 }) {
   return PopupMenuButton<String>(
+    enabled: enabled,
     icon: Icon(icon, color: iconColor),
     tooltip: tooltip,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -74,6 +81,7 @@ Widget fotogoPopupMenuButton({
     itemBuilder: (context) {
       return items
           .map((e) => PopupMenuItem<String>(
+                enabled: e.enabled,
                 value: e.name,
                 onTap: e.onTap,
                 child: Text(

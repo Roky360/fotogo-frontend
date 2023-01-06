@@ -84,23 +84,6 @@ class ProfilePage extends StatelessWidget {
           // pushZoomTransitionRoute(context, const SettingsPage()),
           contentPadding: const EdgeInsets.only(left: fPageMargin),
         ),
-        // OpenContainer(
-        //   transitionType: ContainerTransitionType.fadeThrough,
-        //   closedColor: Colors.transparent,
-        //   closedElevation: 0,
-        //   openElevation: 0,
-        //   closedShape:
-        //       RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-        //   closedBuilder: (context, action) {
-        //     return ListTile(
-        //       leading: const Icon(Icons.settings),
-        //       title: const Text("Settings"),
-        //       onTap: action,
-        //       contentPadding: const EdgeInsets.only(left: pageMargin),
-        //     );
-        //   },
-        //   openBuilder: (context, action) => const SettingsPage(),
-        // ),
       ],
     );
   }

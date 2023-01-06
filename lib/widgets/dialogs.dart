@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -70,12 +71,24 @@ class FotogoDialogs {
                               return ListTile(
                                 enabled: albumsData[index].data.id !=
                                     disabledAlbumId,
-                                leading: Image. /*memory*/ network(
-                                  albumsData[index].data.coverImage,
-                                  width: thumbnailSize,
-                                  height: thumbnailSize,
-                                  fit: BoxFit.cover,
-                                  filterQuality: FilterQuality.none,
+                                leading: ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: Image. /*memory*/ network(
+                                    albumsData[index].data.coverImage,
+                                    width: thumbnailSize,
+                                    height: thumbnailSize,
+                                    fit: BoxFit.cover,
+                                    filterQuality: FilterQuality.none,
+                                    errorBuilder:
+                                        (context, exception, stackTrace) =>
+                                            Padding(
+                                      padding: const EdgeInsets.only(left: 8),
+                                      child: Icon(
+                                          Icons
+                                              .signal_wifi_connected_no_internet_4,
+                                          color: Colors.grey.withOpacity(.6)),
+                                    ),
+                                  ),
                                 ),
                                 title: Text(albumsData[index].data.title),
                                 contentPadding: const EdgeInsets.only(left: 8),
@@ -217,6 +230,43 @@ class FotogoDialogs {
                   child: const Text("Cancel"),
                 )
               ],
+            ));
+  }
+
+  static Future<void> showAdminScreenSelectionDialog(
+      BuildContext context) async {
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) => );
+    await Future.delayed(const Duration(milliseconds: 1));
+    return await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+              title: const Text("Choose a screen to continue"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                      "Choose whether to sign in as an admin and continue to the admin dashboard or sign in as a user."),
+                  const SizedBox(height: 30),
+                  OutlinedButton(
+                    onPressed: () => Navigator.pop(context, 0),
+                    child: Text(
+                      "Sign in as admin\n(admin dashboard)",
+                      style: Theme.of(context).textTheme.bodyText1,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  OutlinedButton(
+                    onPressed: () => Navigator.pop(context, 1),
+                    child: Text(
+                      "Sign in as user\n(main app)",
+                      style: Theme.of(context).textTheme.bodyText1,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
             ));
   }
 }

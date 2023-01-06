@@ -8,4 +8,9 @@ class SingleAlbumData {
   List<ImageData>? imagesData;
 
   SingleAlbumData({required this.data, this.imagesData});
+
+  SingleAlbumData copyWith({AlbumData? data, List<ImageData>? imagesData}) {
+    return SingleAlbumData(
+        data: data ?? this.data, imagesData: imagesData ?? this.imagesData);
+  }
 }

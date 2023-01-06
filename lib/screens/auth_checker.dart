@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fotogo/admin/bloc/admin_bloc.dart';
 import 'package:fotogo/auth/bloc/auth_bloc.dart';
 import 'package:fotogo/auth/user/user_provider.dart';
-import 'package:fotogo/config/constants/theme_constants.dart';
 import 'package:fotogo/screens/admin/admin_main_page.dart';
 import 'package:fotogo/widgets/app_widgets.dart';
+import 'package:fotogo/widgets/dialogs.dart';
 import 'package:fotogo/widgets/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,16 +23,6 @@ class AuthChecker extends StatefulWidget {
 class _AuthCheckerState extends State<AuthChecker> {
   final UserProvider _userProvider = UserProvider();
 
-  Future<bool> _getStaySignedIn() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('stay_signed_in') ?? false;
-  }
-
-  void _setStaySignedIn(bool value) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('stay_signed_in', value);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -44,6 +34,39 @@ class _AuthCheckerState extends State<AuthChecker> {
         context.read<AuthBloc>().add(const SignOutEvent());
       }
     });
+  }
+
+  Future<bool> _getStaySignedIn() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('stay_signed_in') ?? false;
+  }
+
+  void _setStaySignedIn(bool value) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('stay_signed_in', value);
+  }
+
+  Widget signInAsAdmin(BuildContext context) {
+    final res = FotogoDialogs.showAdminScreenSelectionDialog(context);
+
+    return FutureBuilder(
+      future: res,
+      builder: (_context, snapshot) {
+        if (snapshot.hasData) {
+          if (snapshot.data! == 0) {
+            return BlocProvider(
+                create: (context) => AdminBloc(), child: const AdminPage());
+          } else if (snapshot.data == null) {
+            context.read<AuthBloc>().add(const SignOutEvent());
+            return Center(child: AppWidgets.fotogoCircularLoadingAnimation());
+          } else {
+            return const AppNavigator();
+          }
+        } else {
+          return Center(child: AppWidgets.fotogoCircularLoadingAnimation());
+        }
+      },
+    );
   }
 
   @override
@@ -61,16 +84,14 @@ class _AuthCheckerState extends State<AuthChecker> {
               } else if (state is AdminSignedIn) {
                 // For security purposes, if admin has signed - set
                 // stay_signed_in to false.
-                // _setStaySignedIn(false);
+                _setStaySignedIn(false);
               }
             },
             builder: (BuildContext context, AuthState state) {
               return AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 child: state is AdminSignedIn
-                    ? BlocProvider(
-                        create: (context) => AdminBloc(),
-                        child: const AdminPage())
+                    ? signInAsAdmin(context)
                     : state is UserSignedIn
                         ? const AppNavigator()
                         : PageTransitionSwitcher(
