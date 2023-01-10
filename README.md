@@ -15,11 +15,11 @@ For your convenience, the account system is via Google Sign-In, so you don't hav
 
 This project was made with Flutter framework, written in the Dart language, and its DB is powered by Firebase Cloud Firestore and Firebase Storage.
 
-[//]: # ## Installing
+<!-- ## Installing
 
-[//]: # Soon, a release will be published with a stable version of the application in a form of an APK file.
-[//]: # All you have to do is download the APK to an android phone with the minimun system requirements as described
-
+Soon, a release will be published with a stable version of the application in a form of an APK file.
+All you have to do is download the APK to an android phone with the minimun system requirements as described
+-->
 
 
 ## Future Updates
